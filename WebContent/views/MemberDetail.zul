@@ -1,123 +1,90 @@
-<window width="900px" height="500px" border="normal" position="center" closable="true" contentStyle="padding:5px;" use="com.imc.ocisv3.controllers.MemberDetailController">
+<window width="1000px" height="520px" border="normal" sizable="true" position="center" closable="true" use="com.imc.ocisv3.controllers.MemberDetailController">
     <caption src="resources/icons/member.png"/>
-    <tabbox id="tbx" width="100%" height="100%">
-        <tabs>
-            <tab label="Information"/>
-            <tab id="tabRelatives" label="Relatives" disabled="true"/>
-            <tab id="tabClaimHistory" label="Member Claim History" disabled="true"/>
-            <tab id="tabPolicyClaimHistory" label="Family Claim History" disabled="true"/>
-            <tab label="Plan Benefit"/>
-            <tab label="Updation"/>
-        </tabs>
-        <tabpanels>
-            <tabpanel height="100%">
-                <vlayout width="100%" height="100%" style="overflow:auto;">
-                    <groupbox title="Personal" closable="false">
-                        <grid width="100%" height="100%" hflex="1" vflex="1">
-                            <columns visible="false">
-                                <column align="right" width="150px"/>
-                                <column/>
-                                <column align="right" width="150px"/>
-                                <column/>
-                            </columns>
-                            <rows>
-                                <row>
-                                    <label value="Name :"/>
-                                    <label id="lName"/>
-                                    <label value="Date of Birth (Age) :"/>
-                                    <hlayout>
-                                        <label id="lDOB"/>
-                                        <label id="lAge"/>
-                                    </hlayout>
-                                </row>
-                                <row>
-                                    <label value="Sex :" />
-                                    <label id="lSex"/>
-                                    <label value="Marital Status :"/>
-                                    <label id="lMaritalStatus"/>
-                                </row>
-                            </rows>
-                        </grid>
-                    </groupbox>
-                    <groupbox title="Policy" closable="false">
-                        <grid width="100%" height="100%" hflex="1" vflex="1">
-                            <columns visible="false">
-                                <column align="right" width="150px"/>
-                                <column/>
-                                <column align="right" width="150px"/>
-                                <column/>
-                            </columns>
-                            <rows>
-                                <row>
-                                    <label value="Client Policy Number :"/>
-                                    <label id="lClientPolicyNumber"/>
-                                    <label value="Starting Date :"/>
-                                    <label id="lStartingDate"/>
-                                </row>
-                                <row>
-                                    <label value="Client ID Number :"/>
-                                    <label id="lClientIDNumber"/>
-                                    <label value="Mature Date :"/>
-                                    <label id="lMatureDate"/>
-                                </row>
-                                <row>
-                                    <label value="Card Number :"/>
-                                    <cell colspan="3">
-                                        <label id="lCardNumber"/>
-                                    </cell>
-                                </row>
-                            </rows>
-                        </grid>
-                    </groupbox>
-                    <groupbox height="200px" title="Plan Registered" closable="false">
-                        <listbox id="lbPlan" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
-                            <listhead>
-                                <listheader label="Type"/>
-                                <listheader label="Plan"/>
-                                <listheader label="Entry Date"/>
-                                <listheader label="Exit Date"/>
-                                <listheader label="Claim"/>
-                            </listhead>
-                        </listbox>
-                    </groupbox>
-                </vlayout>
-            </tabpanel>
-            <tabpanel>
-                <borderlayout width="100%" height="100%">
-                    <north id="northFamilyLimit" size="90px" splittable="true">
-                        <grid width="100%" height="100%" style="border-left:0px; border-top:0px; border-right:0px;">
-                            <columns visible="false">
-                                <column align="right" width="150px"/>
-                                <column align="right"/>
-                                <column width="200px"/>
-                                <column align="right" width="150px"/>
-                                <column align="right"/>
-                            </columns>
-                            <rows>
-                                <row>
-                                    Policy Limit :
-                                    <label id="lFamilyLimit"/>
-                                    <space/>
-                                    Member Usage :
-                                    <label id="lMemberUsage"/>
-                                </row>
-                                <row>
-                                    Remaining Limit :
-                                    <label id="lRemainingLimit"/>
-                                    <space/>
-                                    Policy Usage :
-                                    <label id="lPolicyUsage"/>
-                                </row>
-                                <row>
-                                    <cell colspan="4">
-                                        Outstanding Balance bef. Analyzed :
-                                    </cell>
-                                    <label id="lEDCUsage"/>
-                                </row>
-                            </rows>
-                        </grid>
-                    </north>
-                    <center>
+    <borderlayout width="100%" height="100%">
+        <center style="padding:5px; border-left:0px; border-top:0px;border-bottom:0px;">
+            <tabbox id="tbx" width="100%" height="100%">
+                <tabs>
+                    <tab label="Information"/>
+                    <tab id="tabRelatives" label="Relatives" disabled="true"/>
+                    <tab id="tabClaimHistory" label="Member Claim History" disabled="true"/>
+                    <tab id="tabPolicyClaimHistory" label="Family Claim History" disabled="true"/>
+                    <tab label="Plan Benefit"/>
+                    <tab label="Updation"/>
+                </tabs>
+                <tabpanels>
+                    <tabpanel height="100%">
+                        <vlayout width="100%" height="100%" style="overflow:auto;">
+                            <groupbox title="Personal" closable="false">
+                                <grid width="100%" height="100%" hflex="1" vflex="1">
+                                    <columns visible="false">
+                                        <column align="right" width="150px"/>
+                                        <column/>
+                                        <column align="right" width="150px"/>
+                                        <column/>
+                                    </columns>
+                                    <rows>
+                                        <row>
+                                            <label value="Name :"/>
+                                            <label id="lName"/>
+                                            <label value="Date of Birth (Age) :"/>
+                                            <hlayout>
+                                                <label id="lDOB"/>
+                                                <label id="lAge"/>
+                                            </hlayout>
+                                        </row>
+                                        <row>
+                                            <label value="Sex :" />
+                                            <label id="lSex"/>
+                                            <label value="Marital Status :"/>
+                                            <label id="lMaritalStatus"/>
+                                        </row>
+                                    </rows>
+                                </grid>
+                            </groupbox>
+                            <groupbox title="Policy" closable="false">
+                                <grid width="100%" height="100%" hflex="1" vflex="1">
+                                    <columns visible="false">
+                                        <column align="right" width="150px"/>
+                                        <column/>
+                                        <column align="right" width="150px"/>
+                                        <column/>
+                                    </columns>
+                                    <rows>
+                                        <row>
+                                            <label value="Client Policy Number :"/>
+                                            <label id="lClientPolicyNumber"/>
+                                            <label value="Starting Date :"/>
+                                            <label id="lStartingDate"/>
+                                        </row>
+                                        <row>
+                                            <label value="Client ID Number :"/>
+                                            <label id="lClientIDNumber"/>
+                                            <label value="Mature Date :"/>
+                                            <label id="lMatureDate"/>
+                                        </row>
+                                        <row>
+                                            <label value="Card Number :"/>
+                                            <cell colspan="3">
+                                                <label id="lCardNumber"/>
+                                            </cell>
+                                        </row>
+                                    </rows>
+                                </grid>
+                            </groupbox>
+                            <groupbox height="200px" title="Plan Registered" closable="false">
+                                <listbox id="lbPlan" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
+                                    <listhead>
+                                        <listheader label="Type"/>
+                                        <listheader label="Plan"/>
+                                        <listheader label="Entry Date"/>
+                                        <listheader label="Exit Date"/>
+                                        <listheader label="Claim"/>
+                                    </listhead>
+                                </listbox>
+                            </groupbox>
+                        </vlayout>
+                    </tabpanel>
+                    <tabpanel style="padding:0px;">
                         <listbox id="lbRelatives" width="100%" height="100%" vflex="true" style="white-space:nowrap; border-left:0px; border-bottom:0px; border-right:0px;" onDoubleClick="spaceOwner.showMemberDetail();">
                             <listhead sizable="true">
                                 <listheader label="Card Number" width="130px"/>
@@ -135,71 +102,101 @@
                                 <listheader label="Mature Date" width="100px"/>
                             </listhead>
                         </listbox>
-                    </center>
-                </borderlayout>
-            </tabpanel>
-            <tabpanel>
-                <listbox id="lbClaimHistory" width="100%" height="100%" vflex="true" style="white-space:nowrap;" onDoubleClick="spaceOwner.showClaimDetail();">
-                    <listhead sizable="true">
-                        <listheader label="Type" width="100px"/>
-                        <listheader label="Provider" width="250px"/>
-                        <listheader label="Diagnosis" width="100px"/>
-                        <listheader label="Description" width="100px"/>
-                        <listheader label="Proposed" width="100px"/>
-                        <listheader label="Approved" width="100px"/>
-                        <listheader label="Days" width="50px"/>
-                        <listheader label="Service In" width="100px"/>
-                        <listheader label="Service Out" width="100px"/>
-                        <listheader label="Plan" width="80px"/>
-                    </listhead>
-                    <listfoot>
-                        <listfooter span="4" label="Total amount approved by Analyst: "/>
-                        <listfooter id="ftrApproved" align="right"/>
-                    </listfoot>
-                </listbox>
-                <paging id="pgClaimHistory" height="25px" pageSize="20"/>
-            </tabpanel>
-            <tabpanel>
-                <listbox id="lbPolicyClaimHistory" width="100%" height="100%" vflex="true" style="white-space:nowrap;" onDoubleClick="spaceOwner.showPolicyClaimDetail();">
-                    <listhead sizable="true">
-                        <listheader label="Type" width="100px"/>
-                        <listheader label="Name" width="200px"/>
-                        <listheader label="Provider" width="250px"/>
-                        <listheader label="Diagnosis" width="100px"/>
-                        <listheader label="Description" width="100px"/>
-                        <listheader label="Proposed" width="100px"/>
-                        <listheader label="Approved" width="100px"/>
-                        <listheader label="Days" width="50px"/>
-                        <listheader label="Service In" width="100px"/>
-                        <listheader label="Service Out" width="100px"/>
-                        <listheader label="Plan" width="80px"/>
-                    </listhead>
-                    <listfoot>
-                        <listfooter span="5" label="Total amount approved by Analyst: "/>
-                        <listfooter id="ftrPolicyApproved" align="right"/>
-                    </listfoot>
-                </listbox>
-                <paging id="pgPolicyClaimHistory" height="25px" pageSize="20"/>
-            </tabpanel>
-            <tabpanel>
-                <listbox id="lbPlanItems" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
-                    <listhead>
-                        <listheader label="Code" width="50px"/>
-                        <listheader label="Benefit Description"/>
-                        <listheader label="Amount" width="120px"/>
-                        <listheader label="Description"/>
-                    </listhead>
-                </listbox>
-            </tabpanel>
-            <tabpanel>
-                <listbox id="lbUpdation" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
-                    <listhead>
-                        <listheader label="Datetime" width="130px"/>
-                        <listheader label="Type" width="100px"/>
-                        <listheader label="Parameter" width="500px"/>
-                    </listhead>
-                </listbox>
-            </tabpanel>
-        </tabpanels>
-    </tabbox>
+                    </tabpanel>
+                    <tabpanel>
+                        <listbox id="lbClaimHistory" width="100%" height="100%" vflex="true" style="white-space:nowrap;" onDoubleClick="spaceOwner.showClaimDetail();">
+                            <listhead sizable="true">
+                                <listheader label="Type" width="100px"/>
+                                <listheader label="Provider" width="250px"/>
+                                <listheader label="Diagnosis" width="100px"/>
+                                <listheader label="Description" width="100px"/>
+                                <listheader label="Proposed" width="100px"/>
+                                <listheader label="Approved" width="100px"/>
+                                <listheader label="Days" width="50px"/>
+                                <listheader label="Service In" width="100px"/>
+                                <listheader label="Service Out" width="100px"/>
+                                <listheader label="Plan" width="80px"/>
+                            </listhead>
+                            <listfoot>
+                                <listfooter span="4" label="Total amount approved by Analyst: "/>
+                                <listfooter id="ftrApproved" align="right"/>
+                            </listfoot>
+                        </listbox>
+                        <paging id="pgClaimHistory" height="25px" pageSize="20"/>
+                    </tabpanel>
+                    <tabpanel>
+                        <listbox id="lbPolicyClaimHistory" width="100%" height="100%" vflex="true" style="white-space:nowrap;" onDoubleClick="spaceOwner.showPolicyClaimDetail();">
+                            <listhead sizable="true">
+                                <listheader label="Type" width="100px"/>
+                                <listheader label="Name" width="200px"/>
+                                <listheader label="Provider" width="250px"/>
+                                <listheader label="Diagnosis" width="100px"/>
+                                <listheader label="Description" width="100px"/>
+                                <listheader label="Proposed" width="100px"/>
+                                <listheader label="Approved" width="100px"/>
+                                <listheader label="Days" width="50px"/>
+                                <listheader label="Service In" width="100px"/>
+                                <listheader label="Service Out" width="100px"/>
+                                <listheader label="Plan" width="80px"/>
+                            </listhead>
+                            <listfoot>
+                                <listfooter span="5" label="Total amount approved by Analyst: "/>
+                                <listfooter id="ftrPolicyApproved" align="right"/>
+                            </listfoot>
+                        </listbox>
+                        <paging id="pgPolicyClaimHistory" height="25px" pageSize="20"/>
+                    </tabpanel>
+                    <tabpanel>
+                        <listbox id="lbPlanItems" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
+                            <listhead>
+                                <listheader label="Code" width="50px"/>
+                                <listheader label="Benefit Description"/>
+                                <listheader label="Amount" width="120px"/>
+                                <listheader label="Description"/>
+                            </listhead>
+                        </listbox>
+                    </tabpanel>
+                    <tabpanel>
+                        <listbox id="lbUpdation" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
+                            <listhead>
+                                <listheader label="Datetime" width="130px"/>
+                                <listheader label="Type" width="100px"/>
+                                <listheader label="Parameter" width="500px"/>
+                            </listhead>
+                        </listbox>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        </center>
+        <east id="eastFamilyLimit" size="300px" splittable="true" style="border-top:0px; border-right:0px; border-bottom:0px;">
+            <grid width="100%" height="100%">
+                <columns visible="false">
+                    <column/>
+                    <column align="right"/>
+                </columns>
+                <rows>
+                    <row>
+                        <label value="Policy Limit" style="font-weight:bold;"/>
+                        <label id="lFamilyLimit"/>
+                    </row>
+                    <row>
+                        Member Usage
+                        <label id="lMemberUsage"/>
+                    </row>
+                    <row>
+                        Family Usage (Incl. Member)
+                        <label id="lFamilyUsage"/>
+                    </row>
+                    <row>
+                        Outstanding Balance before Analyzed
+                        <label id="lEDCUsage"/>
+                    </row>
+                    <row>
+                        <label value="Remaining Limit" style="font-weight:bold;"/>
+                        <label id="lRemainingLimit"/>
+                    </row>
+                </rows>
+            </grid>
+        </east>
+    </borderlayout>
 </window>

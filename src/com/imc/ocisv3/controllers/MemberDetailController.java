@@ -107,14 +107,14 @@ public class MemberDetailController extends Window {
         if (familyLimit>0) {
             Double[] remainingFamilyLimit = Libs.getRemainingFamilyLimit(policy.getYear() + "-" + policy.getBr() + "-" + policy.getDist() + "-" + policy.getPolicy_number(), member.getIdx() + "-" + member.getSeq(), familyLimitPlan);
             double edcUsage = Libs.getEDCUsage(policy.getYear() + "-" + policy.getBr() + "-" + policy.getDist() + "-" + policy.getPolicy_number(), member.getIdx());
-            ((North) getFellow("northFamilyLimit")).setOpen(true);
+            ((East) getFellow("eastFamilyLimit")).setOpen(true);
             ((Label) getFellow("lFamilyLimit")).setValue(new DecimalFormat("#,###.##").format(familyLimit));
             ((Label) getFellow("lMemberUsage")).setValue(new DecimalFormat("#,###.##").format(memberUsage));
             ((Label) getFellow("lRemainingLimit")).setValue(new DecimalFormat("#,###.##").format(remainingFamilyLimit[0]-edcUsage));
-            ((Label) getFellow("lPolicyUsage")).setValue(new DecimalFormat("#,###.##").format(remainingFamilyLimit[1]));
+            ((Label) getFellow("lFamilyUsage")).setValue(new DecimalFormat("#,###.##").format(remainingFamilyLimit[1]));
             ((Label) getFellow("lEDCUsage")).setValue(new DecimalFormat("#,###.##").format(edcUsage));
         } else {
-            ((North) getFellow("northFamilyLimit")).setOpen(false);
+            ((East) getFellow("eastFamilyLimit")).setOpen(false);
         }
 
         lbRelatives.getItems().clear();
@@ -461,6 +461,7 @@ public class MemberDetailController extends Window {
                         li.appendChild(new Listcell(Libs.nn(o[i]).trim()));
                         li.appendChild(new Listcell(Libs.getBenefitItemDescription(Libs.nn(o[i]).trim())));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+30])), "#,###.##"));
+                        li.appendChild(new Listcell(""));
 
                         lbPlanItems.appendChild(li);
                     }

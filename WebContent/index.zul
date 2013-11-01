@@ -17,7 +17,7 @@
                 <panelchildren style="text-align:right;">
                     <vlayout>
                         <label value="Online Claim Information System" style="font-size:16pt;color:#888888;"/>
-                        <label value="3.20131031" style="font-size:8pt;color:#888888;"/>
+                        <label value="3.20131101" style="font-size:8pt;color:#888888;"/>
                     </vlayout>
                 </panelchildren>
             </panel>

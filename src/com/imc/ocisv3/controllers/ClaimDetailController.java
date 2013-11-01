@@ -50,11 +50,13 @@ public class ClaimDetailController extends Window {
                     + "a.hclmdiscd1, a.hclmdiscd2, a.hclmdiscd3, "
                     + "b.hproname, a.hclmtclaim, c.hdt1name, "
                     + "c.hdt1bdtyy, c.hdt1bdtmm, c.hdt1bdtdd, "
-                    + "c.hdt1sex, c.hdt1ncard, d.hhdrname "
+                    + "c.hdt1sex, c.hdt1ncard, d.hhdrname, "
+                    + "e.hmem2data1, e.hmem2data2, e.hmem2data3, e.hmem2data4 "
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hltpro b on b.hpronomor=a.hclmnhoscd "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
                     + "inner join idnhltpf.dbo.hlthdr d on d.hhdryy=a.hclmyy and d.hhdrpono=a.hclmpono "
+                    + "inner join idnhltpf.dbo.hltmemo2 e on e.hmem2yy=a.hclmyy and e.hmem2pono=a.hclmpono and e.hmem2idxno=a.hclmidxno and e.hmem2seqno=a.hclmseqno and e.hmem2claim=a.hclmtclaim and e.hmem2count=a.hclmcount "
                     + "where "
                     + "a.hclmcno='" + claimPOJO.getClaim_number() + "' and "
                     + "(convert(varchar,a.hclmyy)+'-'+convert(varchar,a.hclmbr)+'-'+convert(varchar,a.hclmdist)+'-'+convert(varchar,a.hclmpono))='" + claimPOJO.getPolicy_number() + "' and "
@@ -96,6 +98,7 @@ public class ClaimDetailController extends Window {
                 ((Label) getFellow("lCardNumber")).setValue(Libs.nn(o[16]).trim());
                 ((Label) getFellow("lCompanyName")).setValue(Libs.nn(o[17]).trim());
                 ((Label) getFellow("lServiceDays")).setValue(String.valueOf(Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(serviceIn), new SimpleDateFormat("yyyy-MM-dd").parse(serviceOut))));
+                ((Label) getFellow("tRemarks")).setValue(Libs.nn(o[18]).trim() + Libs.nn(o[19]).trim() + "\n" + Libs.nn(o[20]).trim() + Libs.nn(o[21]).trim());
             }
         } catch (Exception ex) {
             log.error("populateInformation", ex);

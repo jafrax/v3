@@ -11,6 +11,8 @@ public class ClaimPOJO implements Serializable {
     private String policy_number;
     private String index;
     private int claim_count;
+    private PolicyPOJO policy;
+    private MemberPOJO member;
 
     public String getClaim_number() {
         return claim_number;
@@ -42,6 +44,22 @@ public class ClaimPOJO implements Serializable {
 
     public void setClaim_count(int claim_count) {
         this.claim_count = claim_count;
+    }
+
+    public PolicyPOJO getPolicy() {
+        return policy;
+    }
+
+    public void setPolicy(PolicyPOJO policy) {
+        this.policy = policy;
+    }
+
+    public MemberPOJO getMember() {
+        return member;
+    }
+
+    public void setMember(MemberPOJO member) {
+        this.member = member;
     }
 
 }

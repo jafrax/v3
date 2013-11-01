@@ -357,6 +357,7 @@ public class PolicyDetailController extends Window {
                         li.appendChild(new Listcell(Libs.nn(o[i]).trim()));
                         li.appendChild(new Listcell(Libs.getBenefitItemDescription(Libs.nn(o[i]).trim())));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+30])), "#,###.##"));
+                        li.appendChild(new Listcell(""));
 
                         lbPlanItems.appendChild(li);
                     }

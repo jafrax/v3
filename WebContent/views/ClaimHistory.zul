@@ -13,6 +13,8 @@
                         <toolbar height="21px">
                             <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.export();"/>
                             <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refresh();"/>
+                            <space width="10px"/>
+                            <toolbarbutton id="tbnShowMemberDetail" image="resources/icons/member.png" disabled="true" tooltiptext="Show Member Detail" onClick="spaceOwner.showMemberDetail();"/>
                         </toolbar>
                         <toolbar align="end" height="21px">
                             <image src="resources/icons/browse.png"/>
