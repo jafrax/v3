@@ -1,0 +1,95 @@
+<window width="900px" height="500px" border="normal" position="center" closable="true" contentStyle="padding:5px;" use="com.imc.ocisv3.controllers.ClaimDetailController">
+    <caption image="resources/icons/claim_detail.png"/>
+    <borderlayout width="100%" height="100%">
+        <center style="border:0px;">
+            <vlayout width="100%" height="100%" style="overflow:auto;">
+                <groupbox title="Personal" closable="false">
+                    <grid width="100%" height="100%" hflex="1" vflex="1">
+                        <columns visible="false">
+                            <column align="right" width="150px"/>
+                            <column/>
+                            <column align="right" width="150px"/>
+                            <column/>
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="Name :"/>
+                                <label id="lName"/>
+                                <label value="Date of Birth (Age) :"/>
+                                <hlayout>
+                                    <label id="lDOB"/>
+                                    <label id="lAge"/>
+                                </hlayout>
+                            </row>
+                            <row>
+                                <label value="Sex :" />
+                                <label id="lSex"/>
+                                <label value="Marital Status :"/>
+                                <label id="lMaritalStatus"/>
+                            </row>
+                            <row>
+                                <label value="Card Number :" />
+                                <label id="lCardNumber"/>
+                                <label value="Company Name :"/>
+                                <label id="lCompanyName"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </groupbox>
+                <groupbox title="Detail" closable="false">
+                    <grid width="100%" height="100%" hflex="1" vflex="1">
+                        <columns visible="false">
+                            <column align="right" width="150px"/>
+                            <column/>
+                            <column align="right" width="150px"/>
+                            <column/>
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="Provider :"/>
+                                <label id="lProvider"/>
+                                <label value="Service In :"/>
+                                <label id="lServiceIn"/>
+                            </row>
+                            <row>
+                                <label value="Claim Type :"/>
+                                <label id="lClaimType"/>
+                                <label value="Service Out :"/>
+                                <label id="lServiceOut"/>
+                            </row>
+                            <row>
+                                <label value="Diagnosis :"/>
+                                <label id="lDiagnosis"/>
+                                <label value="Service Days :"/>
+                                <label id="lServiceDays"/>
+                            </row>
+                            <row>
+                                <label value="Description :"/>
+                                <cell colspan="3">
+                                    <label id="lDescription"/>
+                                </cell>
+                            </row>
+                        </rows>
+                    </grid>
+                </groupbox>
+            </vlayout>
+        </center>
+        <south size="200px" splittable="true">
+            <listbox id="lb" width="100%" height="100%" vflex="true" style="white-space:nowrap; border:0px;">
+                <listhead sizable="true">
+                    <listheader label="Benefit" width="300px"/>
+                    <listheader label="Proposed" width="100px"/>
+                    <listheader label="Approved" width="100px"/>
+                    <listheader label="Excess" width="100px"/>
+                    <listheader label="Remarks" width="300px"/>
+                </listhead>
+                <listfoot>
+                    <listfooter label="Total"/>
+                    <listfooter id="ftrTotalProposed" align="right"/>
+                    <listfooter id="ftrTotalApproved" align="right"/>
+                    <listfooter id="ftrTotalExcess" align="right"/>
+                </listfoot>
+            </listbox>
+        </south>
+    </borderlayout>
+</window>

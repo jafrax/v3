@@ -1,0 +1,74 @@
+<?page title="Online Claim Information System"?>
+<zk xmlns="http://www.zkoss.org/2005/zul" xmlns:h="http://www.w3.org/1999/xhtml">
+    <window width="100%" height="100%" visible="false" use="com.imc.ocisv3.controllers.MainController">
+        <style>
+            body {
+                padding: 0px 0px 0px 0px;
+            }
+            div.z-tree-body {
+                background: none; border: 0; overflow: auto; width: 100%; position: relative;
+            }
+            tr.z-treerow-over {
+                background: #999999;
+            }
+            .shadow {
+                position: absolute;
+                right: 0px;
+            }
+                .hboxRemoveWhiteStrips td.z-hbox-sep {
+                width: 0;
+                padding: 0;
+            }
+        </style>
+        <borderlayout width="100%" height="100%">
+            <west size="220px" splittable="true" style="border-left:0px; border-top:0px; border-bottom:0px; background: url('resources/images/tile.png'); background-repeat: repeat;">
+                <vlayout height="100%">
+                    <space height="5px"/>
+                    <h:div>
+                        <h:img src="resources/images/shadow.png" alt="shadow" class="shadow"/>
+                    </h:div>
+                    <vlayout style="text-align:center; vertical-align:middle; background:none;">
+                        <image id="imgCompanyLogo" width="150px" src="resources/companies/00000.jpg"/>
+                    </vlayout>
+                    <space height="20px"/>
+                    <tree id="tree" width="100%" height="100%" style="background:none; border-left:0px; border-top:0px; border-bottom:0px;">
+                        <treecols visible="false">
+                            <treecol label="Menu"/>
+                        </treecols>
+                        <treechildren>
+                            <treeitem><treerow><treecell image="resources/icons/home.png" label="Home" onClick='spaceOwner.open("Dashboard");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                            <treeitem>
+                                <treerow><treecell label="Insurance" style="color:#FFFFFF; border:0px none;"/></treerow>
+                                <treechildren>
+                                    <treeitem><treerow><treecell label="Products" image="resources/icons/product.png" onClick='spaceOwner.open("Policies");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Members" image="resources/icons/member.png" onClick='spaceOwner.open("MemberList");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                </treechildren>
+                            </treeitem>
+                            <treeitem>
+                                <treerow><treecell label="Customer Service" style="color:#FFFFFF; border:0px none;"/></treerow>
+                                <treechildren>
+                                    <!--<treeitem><treerow><treecell label="Guarantee Letters" onClick='spaceOwner.open("GuaranteeLetters");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>-->
+                                    <treeitem><treerow><treecell label="In Hospital Monitoring" image="resources/icons/ihm.png" onClick='spaceOwner.open("InHospitalMonitoring");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                </treechildren>
+                            </treeitem>
+                            <treeitem>
+                                <treerow><treecell label="Claim Processing" style="color:#FFFFFF; border:0px none;"/></treerow>
+                                <treechildren>
+                                    <treeitem><treerow><treecell label="Claim Summary" image="resources/icons/claim_summary.png" onClick='spaceOwner.open("ClaimSummary");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Claim History" image="resources/icons/claim_history.png" onClick='spaceOwner.open("ClaimHistory");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <!--<treeitem><treerow><treecell label="Rejected/Pending Claim List" onClick='spaceOwner.open("RejectedPendingClaimList");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>-->
+                                </treechildren>
+                            </treeitem>
+                            <treeitem>
+                                <treerow><treecell label="EDC Transactions" image="resources/icons/edc.png" onClick='spaceOwner.open("EDCTransactions");' style="color:#FFFFFF; border:0px none;"/></treerow>
+                            </treeitem>
+                            <treeitem>
+                               <treerow><treecell image="resources/icons/logout.png" label="Logout" onClick="spaceOwner.logout();" style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                        </treechildren>
+                    </tree>
+                </vlayout>
+            </west>
+            <center id="center" style="border-top:0px; border-right:0px; border-bottom:0px; padding:5px;"/>
+        </borderlayout>
+    </window>
+</zk>

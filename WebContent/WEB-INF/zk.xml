@@ -1,0 +1,22 @@
+<zk>
+    <listener>
+        <description>WebApp Start</description>
+        <listener-class>com.imc.ocisv3.tools.WebAppStart</listener-class>
+    </listener>
+
+    <library-property>
+        <name>org.zkoss.theme.preferred</name>
+        <value>silvertail</value>
+    </library-property>
+
+    <system-config>
+        <disable-event-thread>false</disable-event-thread>
+    </system-config>
+
+    <session-config>
+        <session-timeout>1800</session-timeout>
+        <timer-keep-alive>false</timer-keep-alive>
+        <device-type>ajax</device-type>
+        <timeout-uri>index.zul</timeout-uri>
+    </session-config>
+</zk>

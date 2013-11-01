@@ -1,0 +1,150 @@
+<window width="900px" height="540px" border="normal" position="center" closable="true" contentStyle="padding:5px;" use="com.imc.ocisv3.controllers.InHospitalMonitoringDetailController">
+    <caption/>
+    <tabbox id="tbx" width="100%" height="100%">
+        <tabs>
+            <tab label="Information"/>
+            <tab label="Monitoring Records"/>
+            <tab label="Remarks"/>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <vlayout width="100%" height="100%" style="overflow:auto;">
+                    <groupbox title="Personal" closable="false">
+                        <grid width="100%" height="100%" hflex="1" vflex="1">
+                            <columns visible="false">
+                                <column align="right" width="150px"/>
+                                <column/>
+                                <column align="right" width="150px"/>
+                                <column/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="Name :"/>
+                                    <label id="lName"/>
+                                    <label value="Date of Birth (Age) :"/>
+                                    <hlayout>
+                                        <label id="lDOB"/>
+                                        <label id="lAge"/>
+                                    </hlayout>
+                                </row>
+                                <row>
+                                    <label value="Sex :" />
+                                    <label id="lSex"/>
+                                    <label value="Marital Status :"/>
+                                    <label id="lMaritalStatus"/>
+                                </row>
+                                <row>
+                                    <label value="Card Number :" />
+                                    <label id="lCardNumber"/>
+                                    <label value="Company Name :"/>
+                                    <label id="lCompanyName"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+                    <groupbox title="Detail" closable="false">
+                        <grid width="100%" height="100%" hflex="1" vflex="1">
+                            <columns visible="false">
+                                <column align="right" width="150px"/>
+                                <column/>
+                                <column align="right" width="150px"/>
+                                <column/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="Provider :"/>
+                                    <label id="lProvider"/>
+                                    <label value="Status :"/>
+                                    <label id="lStatus"/>
+                                </row>
+                                <row>
+                                    <label value="Room Class :"/>
+                                    <label id="lRoomClass"/>
+                                    <label value="Service In :"/>
+                                    <label id="lServiceIn"/>
+                                </row>
+                                <row>
+                                    <label value="Room Price :" />
+                                    <label id="lRoomPrice"/>
+                                    <label value="Service Out :"/>
+                                    <label id="lServiceOut"/>
+                                </row>
+                                <row>
+                                    <label value="Diagnosis :" />
+                                    <label id="lDiagnosis"/>
+                                    <label value="Last Cost Estimation :"/>
+                                    <label id="lLastCostEstimation"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+                    <groupbox title="Final" closable="false">
+                        <grid width="100%" height="100%" hflex="1" vflex="1">
+                            <columns visible="false">
+                                <column align="right" width="150px"/>
+                                <column/>
+                                <column align="right" width="150px"/>
+                                <column/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="Receipt Number :"/>
+                                    <label id="lReceiptNumber"/>
+                                    <label value="Final Amount :"/>
+                                    <label id="lFinalAmount"/>
+                                </row>
+                                <row>
+                                    <label value="Final Diagnosis :"/>
+                                    <cell colspan="3">
+                                        <label id="lFinalDiagnosis"/>
+                                    </cell>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+                    <groupbox title="PIC" closable="false">
+                        <grid width="100%" height="100%" hflex="1" vflex="1">
+                            <columns visible="false">
+                                <column align="right" width="150px"/>
+                                <column/>
+                                <column align="right" width="150px"/>
+                                <column/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="GL Number :"/>
+                                    <label id="lGLNumber"/>
+                                    <label value="PIC :"/>
+                                    <label id="lPIC"/>
+                                </row>
+                                <row>
+                                    <label value="GL Date :"/>
+                                    <cell colspan="3">
+                                        <label id="lGLDate"/>
+                                    </cell>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+                </vlayout>
+            </tabpanel>
+            <tabpanel>
+                <listbox id="lb" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
+                    <listhead>
+                        <listheader label="Monitor Date" width="130px"/>
+                        <listheader label="Description" width="300px"/>
+                        <listheader label="Cost Estimation" width="120px"/>
+                        <listheader label="Excess" width="120px"/>
+                        <listheader label="Last Diagnose" width="300px"/>
+                        <listheader label="IHM PIC" width="100px"/>
+                        <listheader label="Follow Up" width="130px"/>
+                        <listheader label="Hospital PIC" width="100px"/>
+                    </listhead>
+                </listbox>
+            </tabpanel>
+            <tabpanel>
+                <label id="lRemarks" width="100%" height="100%"/>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+</window>

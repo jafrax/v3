@@ -1,0 +1,37 @@
+<window width="100%" height="100%" use="com.imc.ocisv3.controllers.PoliciesController">
+    <borderlayout width="100%" height="100%">
+        <north style="border:0px none;">
+            <vlayout width="100%" style="padding: 10px;">
+                <label value="Products" style="font-size: 24pt; color: #999999;"/>
+                <space height="10px"/>
+            </vlayout>
+        </north>
+        <center style="border:0px none;">
+            <panel width="100%" height="100%">
+                <panelchildren>
+                    <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
+                        <toolbar height="21px">
+                            <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.export();"/>
+                            <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refresh();"/>
+                        </toolbar>
+                        <toolbar align="end" height="21px">
+                            <image src="resources/icons/browse.png"/>
+                            <textbox id="tQuickSearch" onOK="spaceOwner.quickSearch();"/>
+                        </toolbar>
+                    </hbox>
+                    <listbox id="lb" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;" onSelect="spaceOwner.lbSelected();" onDoubleClick="spaceOwner.showPolicyDetail();">
+                        <listhead>
+                            <listheader label="Product Number" width="120px"/>
+                            <listheader label="Name"/>
+                            <listheader label="Status" width="80px"/>
+                            <listheader label="Members" width="100px"/>
+                            <listheader label="Starting Date" width="100px"/>
+                            <listheader label="Mature Date" width="100px"/>
+                        </listhead>
+                    </listbox>
+                    <paging id="pg" height="25px" pageSize="20"/>
+                </panelchildren>
+            </panel>
+        </center>
+    </borderlayout>
+</window>

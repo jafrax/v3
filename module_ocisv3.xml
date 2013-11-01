@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_ocisv3" default="compile.module.ocisv3">
+  <dirname property="module.ocisv3.basedir" file="${ant.file.module_ocisv3}"/>
+  
+  <property name="module.jdk.home.ocisv3" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.ocisv3" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.ocisv3" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.ocisv3" value="${compiler.args}"/>
+  
+  <property name="ocisv3.output.dir" value="${module.ocisv3.basedir}/out/production/OCISv3"/>
+  <property name="ocisv3.testoutput.dir" value="${module.ocisv3.basedir}/out/test/OCISv3"/>
+  
+  <path id="ocisv3.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="ocisv3.module.production.classpath">
+    <path refid="${module.jdk.classpath.ocisv3}"/>
+    <path refid="library.poi-3.9-20121203.classpath"/>
+    <path refid="library.commons-beanutils-1.8.2.classpath"/>
+    <path refid="library.jtds-1.2.7.classpath"/>
+    <path refid="library.antlr-2.7.7.classpath"/>
+    <path refid="library.log4j-1.2.17.classpath"/>
+    <path refid="library.bsh.classpath"/>
+  </path>
+  
+  <path id="ocisv3.runtime.production.module.classpath">
+    <pathelement location="${ocisv3.output.dir}"/>
+    <path refid="library.poi-3.9-20121203.classpath"/>
+    <path refid="library.commons-beanutils-1.8.2.classpath"/>
+    <path refid="library.jtds-1.2.7.classpath"/>
+    <path refid="library.antlr-2.7.7.classpath"/>
+    <path refid="library.log4j-1.2.17.classpath"/>
+    <path refid="library.bsh.classpath"/>
+  </path>
+  
+  <path id="ocisv3.module.classpath">
+    <path refid="${module.jdk.classpath.ocisv3}"/>
+    <pathelement location="${ocisv3.output.dir}"/>
+    <path refid="library.poi-3.9-20121203.classpath"/>
+    <path refid="library.commons-beanutils-1.8.2.classpath"/>
+    <path refid="library.jtds-1.2.7.classpath"/>
+    <path refid="library.antlr-2.7.7.classpath"/>
+    <path refid="library.log4j-1.2.17.classpath"/>
+    <path refid="library.bsh.classpath"/>
+  </path>
+  
+  <path id="ocisv3.runtime.module.classpath">
+    <pathelement location="${ocisv3.testoutput.dir}"/>
+    <pathelement location="${ocisv3.output.dir}"/>
+    <path refid="library.poi-3.9-20121203.classpath"/>
+    <path refid="library.commons-beanutils-1.8.2.classpath"/>
+    <path refid="library.jtds-1.2.7.classpath"/>
+    <path refid="library.antlr-2.7.7.classpath"/>
+    <path refid="library.log4j-1.2.17.classpath"/>
+    <path refid="library.bsh.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.ocisv3">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.ocisv3">
+    <patternset refid="excluded.from.module.ocisv3"/>
+  </patternset>
+  
+  <path id="ocisv3.module.sourcepath">
+    <dirset dir="${module.ocisv3.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.ocisv3" depends="compile.module.ocisv3.production,compile.module.ocisv3.tests" description="Compile module OCISv3"/>
+  
+  <target name="compile.module.ocisv3.production" depends="register.custom.compilers" description="Compile module OCISv3; production classes">
+    <mkdir dir="${ocisv3.output.dir}"/>
+    <javac2 destdir="${ocisv3.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.ocisv3}/javac">
+      <compilerarg line="${compiler.args.ocisv3}"/>
+      <bootclasspath refid="ocisv3.module.bootclasspath"/>
+      <classpath refid="ocisv3.module.production.classpath"/>
+      <src refid="ocisv3.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.ocisv3"/>
+    </javac2>
+    
+    <copy todir="${ocisv3.output.dir}">
+      <fileset dir="${module.ocisv3.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.ocisv3.tests" depends="register.custom.compilers,compile.module.ocisv3.production" description="compile module OCISv3; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.ocisv3" description="cleanup module">
+    <delete dir="${ocisv3.output.dir}"/>
+    <delete dir="${ocisv3.testoutput.dir}"/>
+  </target>
+</project>

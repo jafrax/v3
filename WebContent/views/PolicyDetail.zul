@@ -1,0 +1,84 @@
+<window width="100%" height="100%" use="com.imc.ocisv3.controllers.PolicyDetailController">
+    <borderlayout width="100%" height="100%">
+        <north style="border:0px none;">
+            <vlayout width="100%" style="padding: 10px;">
+                <label value="Product Detail" style="font-size: 24pt; color: #999999;"/>
+                <label id="lPolicy" style="color: #999999;"/>
+                <space height="10px"/>
+            </vlayout>
+        </north>
+        <center style="border:0px none;">
+            <tabbox width="100%" height="100%">
+                <tabs>
+                    <tab label="Plans List"/>
+                    <tab label="Policies List"/>
+                </tabs>
+                <tabpanels>
+                    <tabpanel>
+                        <borderlayout width="100%" height="100%">
+                            <north size="150px" splittable="true">
+                                <listbox id="lbPlans" width="100%" height="100%" vflex="true" style="white-space:nowrap; border:0px;">
+                                    <listhead visible="false">
+                                        <listheader label="Type" width="100px"/>
+                                    </listhead>
+                                </listbox>
+                            </north>
+                            <center style="padding:5px;">
+                                <vlayout width="100%" height="100%">
+                                    <vlayout width="100%" style="padding: 10px;">
+                                        <label id="lPlanTitle" value="Plan Items" style="font-size: 16pt; color: #999999;"/>
+                                        <space height="5px"/>
+                                    </vlayout>
+                                    <listbox id="lbPlanItems" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
+                                        <listhead>
+                                            <listheader label="Code" width="50px"/>
+                                            <listheader label="Benefit Description"/>
+                                            <listheader label="Amount" width="120px"/>
+                                            <listheader label="Description"/>
+                                        </listhead>
+                                    </listbox>
+                                </vlayout>
+                            </center>
+                        </borderlayout>
+                    </tabpanel>
+                    <tabpanel>
+                        <panel width="100%" height="100%">
+                            <panelchildren>
+                                <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
+                                    <toolbar height="21px">
+                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.exportMembers();"/>
+                                        <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refreshMembers();"/>
+                                    </toolbar>
+                                    <toolbar align="end" height="21px">
+                                        <image src="resources/icons/browse.png"/>
+                                        <textbox id="tQuickSearch" onOK="spaceOwner.quickSearch();"/>
+                                    </toolbar>
+                                </hbox>
+                                <listbox id="lbMembers" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;" onSelect="spaceOwner.lbSelected();" onDoubleClick="spaceOwner.showMemberDetail();">
+                                    <listhead sizable="true">
+                                        <listheader label="Card Number" width="130px"/>
+                                        <listheader label="Status" width="80px"/>
+                                        <listheader label="Policy Number" width="100px"/>
+                                        <listheader label="ID Number" width="100px"/>
+                                        <listheader label="Policy Holder Name" width="250px"/>
+                                        <listheader label="DOB" width="80px"/>
+                                        <listheader label="Age" width="80px"/>
+                                        <listheader label="Sex" width="80px"/>
+                                        <listheader label="IP" width="80px"/>
+                                        <listheader label="OP" width="80px"/>
+                                        <listheader label="Maternity" width="50px"/>
+                                        <listheader label="Dental" width="50px"/>
+                                        <listheader label="Glasses" width="50px"/>
+                                        <listheader label="Starting Date" width="100px"/>
+                                        <listheader label="Mature Date" width="100px"/>
+                                    </listhead>
+                                </listbox>
+                                <paging id="pgMembers" height="25px" pageSize="20"/>
+                            </panelchildren>
+                        </panel>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        </center>
+    </borderlayout>
+</window>

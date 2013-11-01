@@ -1,0 +1,22 @@
+<component name="libraryTable">
+  <library name="bsh">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/bsh.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/commons-fileupload.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/commons-io.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/flashchart.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/sapphire.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/silvertail.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/zcommon.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/zel.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/zhtml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/zk.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/zkbind.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/zkplus.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/zul.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../libraries/java/zk/zweb.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
