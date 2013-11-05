@@ -1,4 +1,4 @@
-<window width="1000px" height="520px" border="normal" sizable="true" position="center" closable="true" use="com.imc.ocisv3.controllers.MemberDetailController">
+<window width="1000px" height="520px" border="normal" maximizable="true" sizable="true" position="center" closable="true" use="com.imc.ocisv3.controllers.MemberDetailController">
     <caption src="resources/icons/member.png"/>
     <borderlayout width="100%" height="100%">
         <center style="padding:5px; border-left:0px; border-top:0px;border-bottom:0px;">

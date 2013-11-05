@@ -57,7 +57,7 @@ public class ClaimListController extends Window {
         if (policy.isEmpty()) title += "All Products - "; else title += policy;
         if (!key.isEmpty()) {
             String[] keySeg = key.split("\\-");
-            title += keySeg[0] + " " + Libs.shortMonths[Integer.valueOf(keySeg[1])] + " ";
+            title += " " + keySeg[0] + " " + Libs.shortMonths[Integer.valueOf(keySeg[1])] + " ";
             if (keySeg[2].equals("I")) title += "INPATIENT";
             if (keySeg[2].equals("O")) title += "OUTPATIENT";
             if (keySeg[2].equals("R")) title += "MATERNITY";

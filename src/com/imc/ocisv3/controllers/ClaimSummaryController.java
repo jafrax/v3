@@ -22,7 +22,7 @@ public class ClaimSummaryController extends Window {
     private Listbox lbFrequency;
     private Listbox lbAmount;
     private Listbox lbHID;
-    private Listbox lbExcessClaimAmount;
+//    private Listbox lbExcessClaimAmount;
     private Flashchart chartFrequency;
     private Flashchart chartAmount;
     private Flashchart chartHID;
@@ -40,7 +40,7 @@ public class ClaimSummaryController extends Window {
         lbFrequency = (Listbox) getFellow("lbFrequency");
         lbAmount = (Listbox) getFellow("lbAmount");
         lbHID = (Listbox) getFellow("lbHID");
-        lbExcessClaimAmount = (Listbox) getFellow("lbExcessClaimAmount");
+//        lbExcessClaimAmount = (Listbox) getFellow("lbExcessClaimAmount");
         chartFrequency = (Flashchart) getFellow("chartFrequency");
         chartAmount = (Flashchart) getFellow("chartAmount");
         chartHID = (Flashchart) getFellow("chartHID");
@@ -49,7 +49,7 @@ public class ClaimSummaryController extends Window {
         Listhead lhFrequency = lbFrequency.getListhead();
         Listhead lhAmount = lbAmount.getListhead();
         Listhead lhHID = lbHID.getListhead();
-        Listhead lhExcessClaimAmount = lbExcessClaimAmount.getListhead();
+//        Listhead lhExcessClaimAmount = lbExcessClaimAmount.getListhead();
 
         for (int i=-11; i<1; i++) {
             Calendar cal = Calendar.getInstance();
@@ -75,13 +75,13 @@ public class ClaimSummaryController extends Window {
             lhHID.appendChild(lhdr);
         }
 
-        for (int i=-11; i<1; i++) {
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MONTH, i);
-            Listheader lhdr = new Listheader(Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
-            lhdr.setWidth("70px");
-            lhExcessClaimAmount.appendChild(lhdr);
-        }
+//        for (int i=-11; i<1; i++) {
+//            Calendar cal = Calendar.getInstance();
+//            cal.add(Calendar.MONTH, i);
+//            Listheader lhdr = new Listheader(Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
+//            lhdr.setWidth("70px");
+//            lhExcessClaimAmount.appendChild(lhdr);
+//        }
 
         cbPolicy.appendItem("All Policies");
         cbPolicy.setSelectedIndex(0);

@@ -56,7 +56,7 @@ public class ClaimDetailController extends Window {
                     + "inner join idnhltpf.dbo.hltpro b on b.hpronomor=a.hclmnhoscd "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
                     + "inner join idnhltpf.dbo.hlthdr d on d.hhdryy=a.hclmyy and d.hhdrpono=a.hclmpono "
-                    + "inner join idnhltpf.dbo.hltmemo2 e on e.hmem2yy=a.hclmyy and e.hmem2pono=a.hclmpono and e.hmem2idxno=a.hclmidxno and e.hmem2seqno=a.hclmseqno and e.hmem2claim=a.hclmtclaim and e.hmem2count=a.hclmcount "
+                    + "left outer join idnhltpf.dbo.hltmemo2 e on e.hmem2yy=a.hclmyy and e.hmem2pono=a.hclmpono and e.hmem2idxno=a.hclmidxno and e.hmem2seqno=a.hclmseqno and e.hmem2claim=a.hclmtclaim and e.hmem2count=a.hclmcount "
                     + "where "
                     + "a.hclmcno='" + claimPOJO.getClaim_number() + "' and "
                     + "(convert(varchar,a.hclmyy)+'-'+convert(varchar,a.hclmbr)+'-'+convert(varchar,a.hclmdist)+'-'+convert(varchar,a.hclmpono))='" + claimPOJO.getPolicy_number() + "' and "
