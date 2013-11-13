@@ -85,8 +85,15 @@ public class ClaimDetailController extends Window {
 
                 String serviceIn = o[0] + "-" + o[1] + "-" + o[2];
                 String serviceOut = o[3] + "-" + o[4] + "-" + o[5];
+                String remarks = Libs.nn(o[18]).trim() + Libs.nn(o[19]).trim() + "\n" + Libs.nn(o[20]).trim() + Libs.nn(o[21]).trim();
+                String provider = Libs.nn(o[9]).trim();
 
-                ((Label) getFellow("lProvider")).setValue(Libs.nn(o[9]).trim());
+                if (remarks.indexOf("[")>-1 && remarks.indexOf("]")>-1) {
+                    provider = remarks.substring(remarks.indexOf("[")+1, remarks.indexOf("]"));
+                    remarks = remarks.substring(remarks.indexOf("]")+1);
+                }
+
+                ((Label) getFellow("lProvider")).setValue(provider);
                 ((Label) getFellow("lDiagnosis")).setValue(diagnosis.toUpperCase());
                 ((Label) getFellow("lDescription")).setValue(Libs.getICDByCode(diagnosis));
                 ((Label) getFellow("lServiceIn")).setValue(serviceIn);
@@ -98,7 +105,7 @@ public class ClaimDetailController extends Window {
                 ((Label) getFellow("lCardNumber")).setValue(Libs.nn(o[16]).trim());
                 ((Label) getFellow("lCompanyName")).setValue(Libs.nn(o[17]).trim());
                 ((Label) getFellow("lServiceDays")).setValue(String.valueOf(Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(serviceIn), new SimpleDateFormat("yyyy-MM-dd").parse(serviceOut))));
-                ((Label) getFellow("tRemarks")).setValue(Libs.nn(o[18]).trim() + Libs.nn(o[19]).trim() + "\n" + Libs.nn(o[20]).trim() + Libs.nn(o[21]).trim());
+                ((Label) getFellow("tRemarks")).setValue(remarks);
             }
         } catch (Exception ex) {
             log.error("populateInformation", ex);
@@ -114,7 +121,8 @@ public class ClaimDetailController extends Window {
             String qry = "select "
                     + "(a.hclmpcode1 + a.hclmpcode2) as plan_code, "
                     + Libs.createListFieldString("a.hclmcamt") + ", "
-                    + Libs.createListFieldString("a.hclmaamt") + " "
+                    + Libs.createListFieldString("a.hclmaamt") + ", "
+                    + Libs.createListFieldString("a.hclmaday") + " "
                     + "from idnhltpf.dbo.hltclm a "
                     + "where "
                     + "a.hclmcno='" + claimPOJO.getClaim_number() + "' and "
@@ -139,6 +147,7 @@ public class ClaimDetailController extends Window {
 
                         Listitem li = new Listitem();
                         li.appendChild(new Listcell(Libs.getBenefitItemDescription(planItem)));
+                        li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+61])), "#"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+1])), "#,###.##"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+31])), "#,###.##"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+1]))-Double.valueOf(Libs.nn(o[i+31])), "#,###.##"));

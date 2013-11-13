@@ -84,13 +84,14 @@
             <listbox id="lb" width="100%" height="100%" vflex="true" style="white-space:nowrap; border:0px;">
                 <listhead sizable="true">
                     <listheader label="Benefit" width="300px"/>
+                    <listheader label="Days" width="50px"/>
                     <listheader label="Proposed" width="100px"/>
                     <listheader label="Approved" width="100px"/>
                     <listheader label="Excess" width="100px"/>
                     <listheader label="Remarks" width="300px"/>
                 </listhead>
                 <listfoot>
-                    <listfooter label="Total"/>
+                    <listfooter label="Total" span="2"/>
                     <listfooter id="ftrTotalProposed" align="right"/>
                     <listfooter id="ftrTotalApproved" align="right"/>
                     <listfooter id="ftrTotalExcess" align="right"/>

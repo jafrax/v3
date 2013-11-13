@@ -143,4 +143,8 @@ public class InHospitalMonitoringController extends Window {
         } else refresh();
     }
 
+    public void export() {
+        Libs.showDeveloping();
+    }
+
 }

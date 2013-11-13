@@ -1,0 +1,67 @@
+<window width="450px" height="210px" border="normal" sizable="true" position="center" closable="true" use="com.imc.ocisv3.controllers.ReportDialogController">
+    <caption image="resources/icons/export.png"/>
+    <panel width="100%" height="100%">
+        <toolbar>
+            <toolbarbutton image="resources/icons/accept.png" tooltiptext="Export" onClick="spaceOwner.export();"/>
+        </toolbar>
+        <panelchildren>
+            <grid width="100%" height="100%">
+                <columns visible="false">
+                    <column width="120px"/>
+                    <column/>
+                </columns>
+                <rows>
+                    <row>
+                        Scope
+                        <combobox id="cbScope" readonly="true">
+                            <comboitem label="Selected"/>
+                            <comboitem label="Custom"/>
+                        </combobox>
+                    </row>
+                    <row>
+                        Product
+                        <combobox id="cbProduct" hflex="true"/>
+                    </row>
+                    <row id="rowPeriod">
+                        Period
+                        <combobox id="cbPeriod" readonly="true">
+                            <comboitem label="Year To Date"/>
+                            <comboitem label="Policy Start to Date"/>
+                            <comboitem label="Date Range"/>
+                            <comboitem label="Month Range"/>
+                            <comboitem label="Year Range"/>
+                        </combobox>
+                    </row>
+                    <row id="rowToDate">
+                        Date
+                        <datebox id="dDate" format="yyyy-MM-dd"/>
+                    </row>
+                    <row id="rowDateRange" visible="false">
+                        Date Range
+                        <hlayout>
+                            <datebox id="dDateStart" format="yyyy-MM-dd"/>-
+                            <datebox id="dDateEnd" format="yyyy-MM-dd"/>
+                        </hlayout>
+                    </row>
+                    <row id="rowMonthRange" visible="false">
+                        Month Range
+                        <hlayout>
+                            <combobox id="cbMonthStart" width="80px"/>
+                            <spinner id="spnMonthYearStart" width="60px"/>
+                            -
+                            <combobox id="cbMonthEnd" width="80px"/>
+                            <spinner id="spnMonthYearEnd" width="60px"/>
+                        </hlayout>
+                    </row>
+                    <row id="rowYearRange" visible="false">
+                        Year Range
+                        <hlayout>
+                            <spinner id="spnYearStart" width="60px"/>-
+                            <spinner id="spnYearEnd" width="60px"/>
+                        </hlayout>
+                    </row>
+                </rows>
+            </grid>
+        </panelchildren>
+    </panel>
+</window>

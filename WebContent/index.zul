@@ -1,50 +1,61 @@
 <?page title="Login to OCIS"?>
-<window vflex="true">
-    <style>
-        body {
-            padding: 0px;
-            background-image: url("resources/images/tile.png");
-            background-repeat: repeat;
-        }
-        .hboxRemoveWhiteStrips td.z-hbox-sep {
-            width: 0;
-            padding: 0;
-        }
-    </style>
-    <window id="wLogin" width="400px" height="150px" position="center" mode="overlapped" contentStyle="padding:15px;" use="com.imc.ocisv3.controllers.IndexController" onOK="spaceOwner.login();">
-        <vlayout width="100%">
-            <panel width="100%" height="40px">
-                <panelchildren style="text-align:right;">
-                    <vlayout>
-                        <label value="Online Claim Information System" style="font-size:16pt;color:#888888;"/>
-                        <label value="3.20131105" style="font-size:8pt;color:#888888;"/>
-                    </vlayout>
-                </panelchildren>
-            </panel>
-            <vlayout height="5px"/>
-            <grid width="100%" vflex="true" style="border:0px;">
-                <columns>
-                    <column/>
-                    <column/>
-                    <column width="80px"/>
-                </columns>
-                <rows>
-                    <row>
+<zk xmlns="http://www.zkoss.org/2005/zul" xmlns:h="http://www.w3.org/1999/xhtml">
+    <window vflex="true">
+        <style>
+            body {
+                padding: 0px;
+                background-image: url("resources/images/tile.png");
+                background-repeat: repeat;
+            }
+            .hboxRemoveWhiteStrips td.z-hbox-sep {
+                width: 0;
+                padding: 0;
+            }
+            .shadowlogo {
+                position: absolute;
+                left: 50%;
+                top: 5%;
+                margin-left: -104px;
+            }
+        </style>
+        <h:div style="text-align:center;">
+            <h:img src="resources/images/shadowlogo.png" alt="shadowlogo" class="shadowlogo"/>
+        </h:div>
+        <window id="wLogin" width="400px" height="150px" position="center" mode="overlapped" contentStyle="padding:15px;" use="com.imc.ocisv3.controllers.IndexController" onOK="spaceOwner.login();">
+            <vlayout width="100%">
+                <panel width="100%" height="40px">
+                    <panelchildren style="text-align:right;">
                         <vlayout>
-                            Username
-                            <textbox id="tUsername" height="24px" hflex="true"/>
+                            <label value="Online Claim Information System" style="font-size:16pt;color:#888888;"/>
+                            <label value="3.20131112" style="font-size:8pt;color:#888888;"/>
                         </vlayout>
-                        <vlayout>
-                            Password
-                            <textbox id="tPassword" type="password" height="24px" hflex="true"/>
-                        </vlayout>
-                        <vlayout>
-                            <vlayout height="18px"/>
-                            <button label="Log In" height="24px" onClick="spaceOwner.login();"/>
-                        </vlayout>
-                    </row>
-                </rows>
-            </grid>
-        </vlayout>
+                    </panelchildren>
+                </panel>
+                <vlayout height="5px"/>
+                <grid width="100%" vflex="true" style="border:0px;">
+                    <columns>
+                        <column/>
+                        <column/>
+                        <column width="80px"/>
+                    </columns>
+                    <rows>
+                        <row>
+                            <vlayout>
+                                Username
+                                <textbox id="tUsername" height="24px" hflex="true"/>
+                            </vlayout>
+                            <vlayout>
+                                Password
+                                <textbox id="tPassword" type="password" height="24px" hflex="true"/>
+                            </vlayout>
+                            <vlayout>
+                                <vlayout height="18px"/>
+                                <button label="Log In" height="24px" onClick="spaceOwner.login();"/>
+                            </vlayout>
+                        </row>
+                    </rows>
+                </grid>
+            </vlayout>
+        </window>
     </window>
-</window>
+</zk>

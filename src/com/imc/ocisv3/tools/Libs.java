@@ -1,6 +1,9 @@
 package com.imc.ocisv3.tools;
 
 import com.imc.ocisv3.pojos.BenefitPOJO;
+import com.imc.ocisv3.pojos.ClaimPOJO;
+import com.imc.ocisv3.pojos.MemberPOJO;
+import com.imc.ocisv3.pojos.PolicyPOJO;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -9,13 +12,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zul.Center;
-import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Calendar;
 
 /**
  * Created by faizal on 10/24/13.
@@ -322,6 +325,144 @@ public class Libs {
         }
 
         return result;
+    }
+
+    public static double getMemberClaimUsage(PolicyPOJO policy, MemberPOJO member) {
+        double result = 0;
+
+        Session s = Libs.sfDB.openSession();
+        try {
+            String qry = "select "
+                    + "sum(" + Libs.createAddFieldString("a.hclmaamt") + ") as approved "
+                    + "from idnhltpf.dbo.hltclm a "
+                    + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
+                    + "where "
+                    + "a.hclmyy=" + policy.getYear() + " and a.hclmpono=" + policy.getPolicy_number() + " "
+                    + "and a.hclmidxno=" + member.getIdx() + " "
+                    + "and a.hclmseqno='" + member.getSeq() + "' "
+                    + "and a.hclmrecid<>'C' ";
+
+            BigDecimal r = (BigDecimal) s.createSQLQuery(qry).uniqueResult();
+            if (r!=null) result = r.doubleValue();
+        } catch (Exception ex) {
+            log.error("getMemberClaimUsage", ex);
+        } finally {
+            if (s!=null && s.isOpen()) s.close();
+        }
+
+        return result;
+    }
+
+    public static void showDeveloping() {
+        Messagebox.show("We are developing this feature. Please wait until futher notice.", "Information", Messagebox.OK, Messagebox.INFORMATION);
+    }
+
+    public static MemberPOJO getMember(String policyNumber, String index) {
+        MemberPOJO memberPOJO = null;
+
+        Session s = Libs.sfDB.openSession();
+        try {
+            String select = "select "
+                    + "a.hdt1ncard, a.hdt1name, "
+                    + "a.hdt1bdtyy, a.hdt1bdtmm, a.hdt1bdtdd, "
+                    + "a.hdt1sex, "
+                    + "b.hdt2plan1, b.hdt2plan2, b.hdt2plan3, b.hdt2plan4, b.hdt2plan5, b.hdt2plan6, "
+                    + "b.hdt2sdtyy, b.hdt2sdtmm, b.hdt2sdtdd, "
+                    + "b.hdt2mdtyy, b.hdt2mdtmm, b.hdt2mdtdd, "
+                    + "a.hdt1idxno, a.hdt1seqno, "
+                    + "c.hempcnid, " //20
+                    + "(convert(varchar,b.hdt2pedty1)+'-'+convert(varchar,b.hdt2pedtm1)+'-'+convert(varchar,b.hdt2pedtd1)) as hdt2pedt1,"
+                    + "(convert(varchar,b.hdt2pedty2)+'-'+convert(varchar,b.hdt2pedtm2)+'-'+convert(varchar,b.hdt2pedtd2)) as hdt2pedt2,"
+                    + "(convert(varchar,b.hdt2pedty3)+'-'+convert(varchar,b.hdt2pedtm3)+'-'+convert(varchar,b.hdt2pedtd3)) as hdt2pedt3,"
+                    + "(convert(varchar,b.hdt2pedty4)+'-'+convert(varchar,b.hdt2pedtm4)+'-'+convert(varchar,b.hdt2pedtd4)) as hdt2pedt4,"
+                    + "(convert(varchar,b.hdt2pedty5)+'-'+convert(varchar,b.hdt2pedtm5)+'-'+convert(varchar,b.hdt2pedtd5)) as hdt2pedt5,"
+                    + "(convert(varchar,b.hdt2pedty6)+'-'+convert(varchar,b.hdt2pedtm6)+'-'+convert(varchar,b.hdt2pedtd6)) as hdt2pedt6,"
+                    + "(convert(varchar,b.hdt2pxdty1)+'-'+convert(varchar,b.hdt2pxdtm1)+'-'+convert(varchar,b.hdt2pxdtd1)) as hdt2pxdt1,"
+                    + "(convert(varchar,b.hdt2pxdty2)+'-'+convert(varchar,b.hdt2pxdtm2)+'-'+convert(varchar,b.hdt2pxdtd2)) as hdt2pxdt2,"
+                    + "(convert(varchar,b.hdt2pxdty3)+'-'+convert(varchar,b.hdt2pxdtm3)+'-'+convert(varchar,b.hdt2pxdtd3)) as hdt2pxdt3,"
+                    + "(convert(varchar,b.hdt2pxdty4)+'-'+convert(varchar,b.hdt2pxdtm4)+'-'+convert(varchar,b.hdt2pxdtd4)) as hdt2pxdt4,"
+                    + "(convert(varchar,b.hdt2pxdty5)+'-'+convert(varchar,b.hdt2pxdtm5)+'-'+convert(varchar,b.hdt2pxdtd5)) as hdt2pxdt5,"
+                    + "(convert(varchar,b.hdt2pxdty6)+'-'+convert(varchar,b.hdt2pxdtm6)+'-'+convert(varchar,b.hdt2pxdtd6)) as hdt2pxdt6, "
+                    + "a.hdt1mstat, c.hempcnpol, " //33
+                    + "a.hdt1yy, a.hdt1br, a.hdt1dist, a.hdt1pono, "
+                    + "d.hhdrname, "
+                    + "b.hdt2moe, " //40
+                    + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd ";
+
+            String qry = "from idnhltpf.dbo.hltdt1 a "
+                    + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
+                    + "inner join idnhltpf.dbo.hltemp c on c.hempyy=a.hdt1yy and c.hemppono=a.hdt1pono and c.hempidxno=a.hdt1idxno and c.hempseqno=a.hdt1seqno and c.hempctr=a.hdt1ctr "
+                    + "inner join idnhltpf.dbo.hlthdr d on d.hhdryy=a.hdt1yy and d.hhdrpono=a.hdt1pono "
+                    + "where "
+                    + "a.hdt1ctr=0 "
+                    + "and d.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "and (convert(varchar,a.hdt1yy)+'-'+convert(varchar,a.hdt1br)+'-'+convert(varchar,a.hdt1dist)+'-'+convert(varchar,a.hdt1pono))='" + policyNumber + "' "
+                    + "and (convert(varchar,a.hdt1idxno)+'-'+a.hdt1seqno)='" + index + "' ";
+
+            List<Object[]> l = s.createSQLQuery(select + qry).list();
+            if (l.size()==1) {
+                Object[] o = l.get(0);
+
+                PolicyPOJO policyPOJO = new PolicyPOJO();
+                policyPOJO.setYear(Integer.valueOf(Libs.nn(o[35])));
+                policyPOJO.setBr(Integer.valueOf(Libs.nn(o[36])));
+                policyPOJO.setDist(Integer.valueOf(Libs.nn(o[37])));
+                policyPOJO.setPolicy_number(Integer.valueOf(Libs.nn(o[38])));
+                policyPOJO.setName(Libs.nn(o[39]).trim());
+
+                Map<String,String> clientPlanMap = Libs.getClientPlanMap(policyPOJO.getPolicy_string());
+
+                memberPOJO = new MemberPOJO();
+                memberPOJO.setPolicy(policyPOJO);
+                memberPOJO.setName(Libs.nn(o[1]).trim());
+                memberPOJO.setCard_number(Libs.nn(o[0]).trim());
+                memberPOJO.setDob(Libs.nn(o[2]) + "-" + Libs.nn(o[3]) + "-" + Libs.nn(o[4]));
+                memberPOJO.setStarting_date(Libs.nn(o[12]) + "-" + Libs.nn(o[13]) + "-" + Libs.nn(o[14]));
+                memberPOJO.setMature_date(Libs.nn(o[15]) + "-" + Libs.nn(o[16]) + "-" + Libs.nn(o[17]));
+                memberPOJO.setSex(Libs.nn(o[5]));
+                memberPOJO.setIp(Libs.nn(o[6]).trim());
+                memberPOJO.setOp(Libs.nn(o[7]).trim());
+                memberPOJO.setMaternity(Libs.nn(o[8]).trim());
+                memberPOJO.setDental(Libs.nn(o[9]).trim());
+                memberPOJO.setGlasses(Libs.nn(o[10]).trim());
+                memberPOJO.setMarital_status(Libs.nn(o[33]));
+                memberPOJO.setIdx(Libs.nn(o[18]));
+                memberPOJO.setSeq(Libs.nn(o[19]));
+                memberPOJO.setClient_policy_number(Libs.nn(o[34]).trim());
+                memberPOJO.setClient_id_number(Libs.nn(o[20]).trim());
+
+                memberPOJO.getPlan_entry_date().add(Libs.nn(o[21]));
+                memberPOJO.getPlan_entry_date().add(Libs.nn(o[22]));
+                memberPOJO.getPlan_entry_date().add(Libs.nn(o[23]));
+                memberPOJO.getPlan_entry_date().add(Libs.nn(o[24]));
+                memberPOJO.getPlan_entry_date().add(Libs.nn(o[25]));
+                memberPOJO.getPlan_entry_date().add(Libs.nn(o[26]));
+                memberPOJO.getPlan_exit_date().add(Libs.nn(o[27]));
+                memberPOJO.getPlan_exit_date().add(Libs.nn(o[28]));
+                memberPOJO.getPlan_exit_date().add(Libs.nn(o[29]));
+                memberPOJO.getPlan_exit_date().add(Libs.nn(o[30]));
+                memberPOJO.getPlan_exit_date().add(Libs.nn(o[31]));
+                memberPOJO.getPlan_exit_date().add(Libs.nn(o[32]));
+            }
+        } catch (Exception ex) {
+            log.error("getMember", ex);
+        } finally {
+            if (s!=null && s.isOpen()) s.close();
+        }
+
+        return memberPOJO;
+    }
+
+    public static void createCell(org.apache.poi.ss.usermodel.Row row, int cnt, Object value) {
+        Cell cell = row.createCell(cnt);
+
+        try {
+            double d = (Double) value;
+            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+            cell.setCellValue(d);
+        } catch (Exception ex) {
+            cell.setCellValue(Libs.nn(value));
+        }
     }
 
 }

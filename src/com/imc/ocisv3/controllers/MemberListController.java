@@ -1,5 +1,6 @@
 package com.imc.ocisv3.controllers;
 
+import com.imc.ocisv3.pojos.BenefitPOJO;
 import com.imc.ocisv3.pojos.MemberPOJO;
 import com.imc.ocisv3.pojos.PolicyPOJO;
 import com.imc.ocisv3.tools.Libs;
@@ -47,7 +48,7 @@ public class MemberListController extends Window {
             }
         });
 
-        cbPolicy.appendItem("All Policies");
+        cbPolicy.appendItem("All Products");
         cbPolicy.setSelectedIndex(0);
         for (String s : Libs.policyMap.keySet()) {
             String policyName = Libs.policyMap.get(s);
@@ -92,8 +93,15 @@ public class MemberListController extends Window {
 
             if (where!=null) qry += "and (" + where + ") ";
 
+            if (cbPolicy.getSelectedIndex()>0) {
+                String policy = cbPolicy.getSelectedItem().getLabel();
+                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+                qry += "and (convert(varchar,a.hdt1yy)+'-'+convert(varchar,a.hdt1br)+'-'+convert(varchar,a.hdt1dist)+'-'+convert(varchar,a.hdt1pono)='" + policy + "') ";
+            }
+
             Integer recordsCount = (Integer) s.createSQLQuery(qry).uniqueResult();
             pg.setTotalSize(recordsCount);
+            System.out.println("-----> " + recordsCount);
         } catch (Exception ex) {
             log.error("populateCountForQuickSearch", ex);
         } finally {
@@ -128,7 +136,9 @@ public class MemberListController extends Window {
                     + "(convert(varchar,b.hdt2pxdty6)+'-'+convert(varchar,b.hdt2pxdtm6)+'-'+convert(varchar,b.hdt2pxdtd6)) as hdt2pxdt6, "
                     + "a.hdt1mstat, c.hempcnpol, " //33
                     + "a.hdt1yy, a.hdt1br, a.hdt1dist, a.hdt1pono, "
-                    + "d.hhdrname ";
+                    + "d.hhdrname, "
+                    + "b.hdt2moe, " //40
+                    + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd ";
 
             String qry = "from idnhltpf.dbo.hltdt1 a "
                     + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
@@ -136,7 +146,8 @@ public class MemberListController extends Window {
                     + "inner join idnhltpf.dbo.hlthdr d on d.hhdryy=a.hdt1yy and d.hhdrpono=a.hdt1pono "
                     + "where "
                     + "a.hdt1ctr=0 "
-                    + "and d.hhdrinsid='" + Libs.insuranceId + "' ";
+                    + "and d.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "and a.hdt1idxno<>99999 ";
 
             if (where!=null) qry += "and (" + where + ") ";
 
@@ -193,8 +204,8 @@ public class MemberListController extends Window {
                 memberPOJO.getPlan_exit_date().add(Libs.nn(o[32]));
 
                 int ageDays = Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(memberPOJO.getDob()), new Date());
-
                 int matureDays = Libs.getDiffDays(new Date(), new SimpleDateFormat("yyyy-MM-dd").parse(memberPOJO.getMature_date()));
+
                 Listcell lcStatus = new Listcell();
                 Label lStatus = new Label();
                 if (matureDays>0) {
@@ -204,20 +215,30 @@ public class MemberListController extends Window {
                     lStatus.setValue("MATURE");
                     lStatus.setStyle("color:#FF0000;");
                 }
+                if (Libs.nn(o[40]).equals("U")) {
+                    String effectiveDate = Libs.nn(o[41]) + "-" + Libs.nn(o[42]) + "-" + Libs.nn(o[43]);
+                    int effectiveDays = Libs.getDiffDays(new Date(), new SimpleDateFormat("yyyy-MM-dd").parse(effectiveDate));
+                    if (effectiveDays<0) {
+                        lStatus.setValue("INACTIVE");
+                        lStatus.setStyle("color:#000000");
+                    }
+                }
+
+                BenefitPOJO benefitPOJO = Libs.getBenefit(policyPOJO.getYear() + "-" + policyPOJO.getBr() + "-" + policyPOJO.getDist() + "-" + policyPOJO.getPolicy_number(), memberPOJO.getIp());
+
                 lcStatus.appendChild(lStatus);
 
                 Listitem li = new Listitem();
                 li.setValue(memberPOJO);
 
-                li.appendChild(new Listcell(memberPOJO.getCard_number()));
                 li.appendChild(lcStatus);
+                li.appendChild(new Listcell(memberPOJO.getName()));
                 li.appendChild(new Listcell(Libs.nn(o[34]).trim()));
                 li.appendChild(new Listcell(Libs.nn(o[20]).trim()));
-                li.appendChild(new Listcell(memberPOJO.getName()));
+                li.appendChild(new Listcell(memberPOJO.getCard_number()));
                 li.appendChild(new Listcell(memberPOJO.getDob()));
                 li.appendChild(Libs.createNumericListcell(ageDays/365, "#"));
                 li.appendChild(new Listcell(memberPOJO.getSex()));
-
                 li.appendChild(new Listcell((clientPlanMap.get(memberPOJO.getIp())==null ? memberPOJO.getIp() : clientPlanMap.get(memberPOJO.getIp()))));
                 li.appendChild(new Listcell((clientPlanMap.get(memberPOJO.getOp())==null ? memberPOJO.getOp() : clientPlanMap.get(memberPOJO.getOp()))));
                 li.appendChild(new Listcell((clientPlanMap.get(memberPOJO.getMaternity())==null ? memberPOJO.getMaternity() : clientPlanMap.get(memberPOJO.getMaternity()))));
@@ -225,45 +246,15 @@ public class MemberListController extends Window {
                 li.appendChild(new Listcell((clientPlanMap.get(memberPOJO.getGlasses())==null ? memberPOJO.getGlasses() : clientPlanMap.get(memberPOJO.getGlasses()))));
                 li.appendChild(new Listcell(memberPOJO.getStarting_date()));
                 li.appendChild(new Listcell(memberPOJO.getMature_date()));
-                lb.appendChild(li);
 
-//                String dob = Libs.nn(o[4]) + "-" + Libs.nn(o[5]) + "-" + Libs.nn(o[6]);
-//                int ageDays = Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(dob), new Date());
-//                String startingDate = Libs.nn(o[7]) + "-" + Libs.nn(o[8]) + "-" + Libs.nn(o[9]);
-//                String matureDate = Libs.nn(o[10]) + "-" + Libs.nn(o[11]) + "-" + Libs.nn(o[12]);
-//
-//                int matureDays = Libs.getDiffDays(new Date(), new SimpleDateFormat("yyyy-MM-dd").parse(matureDate));
-//                Listcell lcStatus = new Listcell();
-//                Label lStatus = new Label();
-//                if (matureDays>0) {
-//                    lStatus.setValue("ACTIVE");
-//                    lStatus.setStyle("color:#00FF00");
-//                } else {
-//                    lStatus.setValue("MATURE");
-//                    lStatus.setStyle("color:#FF0000;");
-//                }
-//                lcStatus.appendChild(lStatus);
-//
-//                Listitem li = new Listitem();
-//
-//                li.appendChild(new Listcell(Libs.nn(o[0]).trim()));
-//                li.appendChild(lcStatus);
-//                li.appendChild(new Listcell(Libs.nn(o[2]).trim()));
-//                li.appendChild(new Listcell(Libs.nn(o[3]).trim()));
-//                li.appendChild(new Listcell(Libs.nn(o[1]).trim()));
-//                li.appendChild(new Listcell(dob));
-//                li.appendChild(Libs.createNumericListcell(ageDays/365, "#"));
-//                li.appendChild(new Listcell(Libs.nn(o[13])));
-//                li.appendChild(new Listcell(Libs.nn(o[14])));
-//                li.appendChild(new Listcell(Libs.nn(o[15])));
-//                li.appendChild(new Listcell(Libs.nn(o[16])));
-//                li.appendChild(new Listcell(Libs.nn(o[17])));
-//                li.appendChild(new Listcell(Libs.nn(o[18])));
-//                li.appendChild(new Listcell(Libs.nn(o[19])));
-//                li.appendChild(new Listcell(startingDate));
-//                li.appendChild(new Listcell(matureDate));
-//
-//                lb.appendChild(li);
+                if (policyPOJO.getPolicy_number()==51039) {
+                    li.appendChild(Libs.createNumericListcell(Libs.getMemberClaimUsage(policyPOJO, memberPOJO), "#,###.##"));
+                    li.appendChild(Libs.createNumericListcell(benefitPOJO.getLimit(), "#,###.##"));
+                } else {
+                    li.appendChild(new Listcell("-"));
+                    li.appendChild(new Listcell("-"));
+                }
+                lb.appendChild(li);
             }
         } catch (Exception ex) {
             log.error("populate", ex);
@@ -280,7 +271,7 @@ public class MemberListController extends Window {
 
     public void quickSearch() {
         String val = ((Textbox) getFellow("tQuickSearch")).getText();
-        if (!val.isEmpty()) {
+        if (!val.isEmpty() || (val.isEmpty() && cbPolicy.getSelectedIndex()>0)) {
             where = "a.hdt1ncard like '%" + val + "%' or "
                     + "a.hdt1name like '%" + val + "%' or "
                     + "c.hempcnpol like '%" + val + "%' or "
@@ -300,6 +291,10 @@ public class MemberListController extends Window {
 
     public void policySelected() {
         quickSearch();
+    }
+
+    public void export() {
+        Libs.showDeveloping();
     }
 
 }

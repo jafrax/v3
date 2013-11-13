@@ -10,11 +10,16 @@ public class EDCTransactionPOJO implements Serializable {
     private String trans_id;
     private String card_number;
     private int policy_number;
+    private int year;
     private int idx;
     private String seq;
     private String type;
     private String icd;
     private String date;
+    private String plan;
+    private Double[] proposed;
+    private Double[] approved;
+    private String name;
 
     public String getTrans_id() {
         return trans_id;
@@ -79,4 +84,45 @@ public class EDCTransactionPOJO implements Serializable {
     public void setDate(String date) {
         this.date = date;
     }
+
+    public String getPlan() {
+        return plan;
+    }
+
+    public void setPlan(String plan) {
+        this.plan = plan;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public Double[] getProposed() {
+        return proposed;
+    }
+
+    public void setProposed(Double[] proposed) {
+        this.proposed = proposed;
+    }
+
+    public Double[] getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Double[] approved) {
+        this.approved = approved;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

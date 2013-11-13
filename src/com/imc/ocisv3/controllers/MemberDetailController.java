@@ -141,7 +141,8 @@ public class MemberDetailController extends Window {
                     + "(convert(varchar,b.hdt2pxdty4)+'-'+convert(varchar,b.hdt2pxdtm4)+'-'+convert(varchar,b.hdt2pxdtd4)) as hdt2pxdt4,"
                     + "(convert(varchar,b.hdt2pxdty5)+'-'+convert(varchar,b.hdt2pxdtm5)+'-'+convert(varchar,b.hdt2pxdtd5)) as hdt2pxdt5,"
                     + "(convert(varchar,b.hdt2pxdty6)+'-'+convert(varchar,b.hdt2pxdtm6)+'-'+convert(varchar,b.hdt2pxdtd6)) as hdt2pxdt6, "
-                    + "a.hdt1mstat, c.hempcnpol "
+                    + "a.hdt1mstat, c.hempcnpol, "
+                    + "b.hdt2moe "
                     + "from idnhltpf.dbo.hltdt1 a "
                     + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
                     + "inner join idnhltpf.dbo.hltemp c on c.hempyy=a.hdt1yy and c.hemppono=a.hdt1pono and c.hempidxno=a.hdt1idxno and c.hempseqno=a.hdt1seqno and c.hempctr=a.hdt1ctr "
@@ -149,6 +150,7 @@ public class MemberDetailController extends Window {
                     + "a.hdt1yy=" + policy.getYear() + " and a.hdt1pono=" + policy.getPolicy_number() + " "
                     + "and a.hdt1idxno=" + member.getIdx() + " and a.hdt1seqno<>'" + member.getSeq() + "' "
                     + "and a.hdt1ctr=0 "
+                    + "and a.hdt1idxno<>99999 "
                     + "order by a.hdt1seqno asc ";
 
             List<Object[]> l = s.createSQLQuery(qry).list();
@@ -186,8 +188,8 @@ public class MemberDetailController extends Window {
                 memberPOJO.getPlan_exit_date().add(Libs.nn(o[32]));
 
                 int ageDays = Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(memberPOJO.getDob()), new Date());
-
                 int matureDays = Libs.getDiffDays(new Date(), new SimpleDateFormat("yyyy-MM-dd").parse(memberPOJO.getMature_date()));
+
                 Listcell lcStatus = new Listcell();
                 Label lStatus = new Label();
                 if (matureDays>0) {
@@ -197,6 +199,15 @@ public class MemberDetailController extends Window {
                     lStatus.setValue("MATURE");
                     lStatus.setStyle("color:#FF0000;");
                 }
+                if (Libs.nn(o[35]).equals("U")) {
+                    String effectiveDate = Libs.nn(o[41]) + "-" + Libs.nn(o[42]) + "-" + Libs.nn(o[43]);
+                    int effectiveDays = Libs.getDiffDays(new Date(), new SimpleDateFormat("yyyy-MM-dd").parse(effectiveDate));
+                    if (effectiveDays<0) {
+                        lStatus.setValue("INACTIVE");
+                        lStatus.setStyle("color:#000000;");
+                    }
+                }
+
                 lcStatus.appendChild(lStatus);
 
                 Listitem li = new Listitem();
@@ -245,10 +256,12 @@ public class MemberDetailController extends Window {
                     + "(" + Libs.createAddFieldString("a.hclmaamt") + ") as approved, "
                     + "a.hclmseqno, " //16
                     + "c.hdt1name, "
-                    + "a.hclmidxno "
+                    + "a.hclmidxno, "
+                    + "d.hmem2data1 "
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hltpro b on b.hpronomor=a.hclmnhoscd "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
+                    + "left outer join idnhltpf.dbo.hltmemo2 d on d.hmem2yy=a.hclmyy and d.hmem2pono=a.hclmpono and d.hmem2idxno=a.hclmidxno and d.hmem2seqno=a.hclmseqno and d.hmem2claim=a.hclmtclaim and d.hmem2count=a.hclmcount "
                     + "where "
                     + "a.hclmyy=" + policy.getYear() + " and a.hclmpono=" + policy.getPolicy_number() + " "
                     + "and a.hclmidxno=" + member.getIdx() + " "
@@ -284,10 +297,16 @@ public class MemberDetailController extends Window {
                     memberClaimCount++;
                     memberUsage += Double.valueOf(Libs.nn(o[15]));
 
+                    String remarks = Libs.nn(o[19]).trim();
+                    String provider = Libs.nn(o[1]).trim();
+                    if (remarks.indexOf("[")>-1 && remarks.indexOf("]")>-1) {
+                        provider = remarks.substring(remarks.indexOf("[")+1, remarks.indexOf("]"));
+                    }
+
                     Listitem li = new Listitem();
 
                     li.appendChild(new Listcell(claimType));
-                    li.appendChild(new Listcell(Libs.nn(o[1]).trim()));
+                    li.appendChild(new Listcell(provider));
                     li.appendChild(new Listcell(diagnosis));
                     li.appendChild(new Listcell(Libs.getICDByCode(diagnosis)));
                     li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[14])), "#,###.##"));

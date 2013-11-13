@@ -84,13 +84,15 @@ public class ClaimListController extends Window {
                     + "(" + Libs.createAddFieldString("a.hclmaamt") + ") as approved, "
                     + "d.hproname, "
                     + "a.hclmcount, "
-                    + "e.hempcnpol, e.hempcnid ";
+                    + "e.hempcnpol, e.hempcnid, "
+                    + "f.hmem2data1 "; //16
 
             String qry = "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
                     + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.hclmnhoscd "
                     + "inner join idnhltpf.dbo.hltemp e on e.hempyy=a.hclmyy and e.hemppono=a.hclmpono and e.hempidxno=a.hclmidxno and e.hempseqno=a.hclmseqno and e.hempctr=0 "
+                    + "left outer join idnhltpf.dbo.hltmemo2 f on f.hmem2yy=a.hclmyy and f.hmem2pono=a.hclmpono and f.hmem2idxno=a.hclmidxno and f.hmem2seqno=a.hclmseqno and f.hmem2claim=a.hclmtclaim and f.hmem2count=a.hclmcount "
                     + "where "
                     + "b.hhdrinsid='" + Libs.insuranceId + "' "
                     + "and a.hclmrecid<>'C' ";
@@ -117,6 +119,12 @@ public class ClaimListController extends Window {
                 String policyName = Libs.nn(o[5]);
                 if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = "HAS - P.T. Semesta Alam";
 
+                String remarks = Libs.nn(o[16]).trim();
+                String provider = Libs.nn(o[12]).trim();
+                if (remarks.indexOf("[")>-1 && remarks.indexOf("]")>-1) {
+                    provider = remarks.substring(remarks.indexOf("[")+1, remarks.indexOf("]"));
+                }
+
                 Listitem li = new Listitem();
 
                 li.appendChild(new Listcell(Libs.nn(o[0])));
@@ -128,7 +136,7 @@ public class ClaimListController extends Window {
                 li.appendChild(new Listcell(Libs.nn(o[9])));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[10])), "#,###.##"));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[11])), "#,###.##"));
-                li.appendChild(new Listcell(Libs.nn(o[12]).trim()));
+                li.appendChild(new Listcell(provider));
 
                 lb.appendChild(li);
 
@@ -207,6 +215,10 @@ public class ClaimListController extends Window {
                     + "a.hclmcno like '%" + val + "%' ";
             populate(0, pg.getPageSize());
         } else refresh();
+    }
+
+    public void export() {
+        Libs.showDeveloping();
     }
 
 }

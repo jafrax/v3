@@ -5,6 +5,7 @@ import com.imc.ocisv3.tools.Libs;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
@@ -23,7 +24,8 @@ public class EDCTransactionsController extends Window {
     private Listbox lbClosedTransactions;
     private Paging pgActiveTransactions;
     private Paging pgClosedTransactions;
-    private String where;
+    private String whereActive;
+    private String whereClosed;
 
     public void onCreate() {
         initComponents();
@@ -49,7 +51,7 @@ public class EDCTransactionsController extends Window {
             @Override
             public void onEvent(Event event) throws Exception {
                 PagingEvent evt = (PagingEvent) event;
-                populateActiveTransactions(evt.getActivePage()*pgClosedTransactions.getPageSize(), pgClosedTransactions.getPageSize());
+                populateClosedTransactions(evt.getActivePage()*pgClosedTransactions.getPageSize(), pgClosedTransactions.getPageSize());
             }
         });
     }
@@ -78,7 +80,7 @@ public class EDCTransactionsController extends Window {
                     + "and a.status='true' ";
 
 
-            if (where!=null) qry += "and (" + where + ") ";
+            if (whereActive!=null) qry += "and (" + whereActive + ") ";
 
             String order = "order by request_date desc ";
             Integer recordsCount = (Integer) s.createSQLQuery(count + qry).uniqueResult();
@@ -129,16 +131,19 @@ public class EDCTransactionsController extends Window {
             String select = "select "
                     + "a.trans_id, a.no_kartu, a.hclmtclaim, "
                     + "a.hclmdiscd1, a.hclmdiscd2, a.hclmdiscd3, "
-                    + "a.hclmnhoscd, "
+                    + "a.hclmnhoscd, " //6
                     + "a.hclmrdatey, a.hclmrdatem, a.hclmrdated, "
-                    + "(a.hclmpcode1 + a.hclmpcode2) as plan_code ";
+                    + "(a.hclmpcode1 + a.hclmpcode2) as plan_code, "
+                    + "a.hclmyy, a.hclmpono, a.hclmidxno, a.hclmseqno, "
+                    + Libs.createListFieldString("a.hclmcamt") + ", "
+                    + Libs.createListFieldString("a.hclmaamt") + " ";
 
             String qry = "from edc_prj.dbo.edc_transclm a "
                     + "where "
                     + "substring(no_kartu, 6, 5) in (" + policies + ") "
                     + "and a.hclmrecid<>'C' ";
 
-            if (where!=null) qry += "and (" + where + ") ";
+            if (whereClosed!=null) qry += "and (" + whereClosed + ") ";
 
             String order = "order by a.hclmrdatey desc, a.hclmrdatem desc, a.hclmrdated desc ";
             Integer recordsCount = (Integer) s.createSQLQuery(count + qry).uniqueResult();
@@ -150,12 +155,32 @@ public class EDCTransactionsController extends Window {
                 if (!Libs.nn(o[4]).trim().isEmpty()) icd += ", " + Libs.nn(o[4]).trim();
                 if (!Libs.nn(o[5]).trim().isEmpty()) icd += ", " + Libs.nn(o[5]).trim();
 
+                String cardNumber = Libs.nn(o[1]);
+                String memberName = Libs.getMemberByCardNumber(cardNumber);
+
                 EDCTransactionPOJO edcTransactionPOJO = new EDCTransactionPOJO();
                 edcTransactionPOJO.setTrans_id(Libs.nn(o[0]));
                 edcTransactionPOJO.setCard_number(Libs.nn(o[1]));
                 edcTransactionPOJO.setType(Libs.nn(o[2]));
                 edcTransactionPOJO.setIcd(icd);
                 edcTransactionPOJO.setDate(Libs.nn(o[7]) + "-" + Libs.nn(o[8]) + "-" + Libs.nn(o[9]));
+                edcTransactionPOJO.setPlan(Libs.nn(o[10]).trim());
+                edcTransactionPOJO.setYear(Integer.valueOf(Libs.nn(o[11])));
+                edcTransactionPOJO.setPolicy_number(Integer.valueOf(Libs.nn(o[12])));
+                edcTransactionPOJO.setIdx(Integer.valueOf(Libs.nn(o[13])));
+                edcTransactionPOJO.setSeq(Libs.nn(o[14]));
+                edcTransactionPOJO.setName(memberName);
+
+                Double[] approved = new Double[30];
+                Double[] proposed = new Double[30];
+
+                for (int i=0; i<30; i++) {
+                    proposed[i] = Double.valueOf(Libs.nn(o[15 + i]));
+                    approved[i] = Double.valueOf(Libs.nn(o[45 + i]));
+                }
+
+                edcTransactionPOJO.setApproved(approved);
+                edcTransactionPOJO.setProposed(proposed);
 
                 Listitem li = new Listitem();
                 li.setValue(edcTransactionPOJO);
@@ -163,8 +188,8 @@ public class EDCTransactionsController extends Window {
                 li.appendChild(new Listcell(edcTransactionPOJO.getTrans_id()));
                 li.appendChild(new Listcell(edcTransactionPOJO.getCard_number()));
                 li.appendChild(new Listcell(edcTransactionPOJO.getType()));
-                li.appendChild(new Listcell(Libs.getMemberByCardNumber(edcTransactionPOJO.getCard_number())));
-                li.appendChild(new Listcell(Libs.nn(o[10]).trim()));
+                li.appendChild(new Listcell(memberName));
+                li.appendChild(new Listcell(edcTransactionPOJO.getPlan()));
                 li.appendChild(new Listcell(edcTransactionPOJO.getIcd()));
                 li.appendChild(new Listcell(Libs.getICDByCode(edcTransactionPOJO.getIcd())));
                 li.appendChild(new Listcell(Libs.getHospitalById(Libs.nn(o[6]).trim())));
@@ -177,6 +202,46 @@ public class EDCTransactionsController extends Window {
         } finally {
             if (s!=null && s.isOpen()) s.close();
         }
+    }
+
+    public void refreshActiveTransactions() {
+        whereActive = null;
+        populateActiveTransactions(0, pgActiveTransactions.getPageSize());
+    }
+
+    public void refreshClosedTransactions() {
+        whereClosed = null;
+        populateClosedTransactions(0, pgClosedTransactions.getPageSize());
+    }
+
+    public void quickSearchActiveTransactions() {
+        String val = ((Textbox) getFellow("tQuickSearchActiveTransactions")).getText();
+        if (!val.isEmpty()) {
+            whereActive = "a.no_kartu like '%" + val + "%' ";
+            populateActiveTransactions(0, pgActiveTransactions.getPageSize());
+        } else refreshActiveTransactions();
+    }
+
+    public void quickSearchClosedTransactions() {
+        String val = ((Textbox) getFellow("tQuickSearchClosedTransactions")).getText();
+        if (!val.isEmpty()) {
+            whereClosed = "a.no_kartu like '%" + val + "%' ";
+            populateClosedTransactions(0, pgClosedTransactions.getPageSize());
+        } else refreshClosedTransactions();
+    }
+
+    public void exportActiveTransactions() {
+        Libs.showDeveloping();
+    }
+
+    public void exportClosedTransactions() {
+        Libs.showDeveloping();
+    }
+
+    public void showClosedTransactionDetail() {
+        Window w = (Window) Executions.createComponents("views/EDCDetail.zul", this, null);
+        w.setAttribute("edc", lbClosedTransactions.getSelectedItem().getValue());
+        w.doModal();
     }
 
 }
