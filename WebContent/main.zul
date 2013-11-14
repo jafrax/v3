@@ -62,8 +62,12 @@
                             <treeitem>
                                 <treerow><treecell label="EDC Transactions" image="resources/icons/edc.png" onClick='spaceOwner.open("EDCTransactions");' style="color:#FFFFFF; border:0px none;"/></treerow>
                             </treeitem>
+                            <treeitem id="tiClientSelection" visible="false">
+                                <treerow><treecell image="resources/icons/client.png" label="Client Selection" onClick="spaceOwner.clientSelection();" style="color:#FFFFFF; border:0px none;"/></treerow>
+                            </treeitem>
                             <treeitem>
-                               <treerow><treecell image="resources/icons/logout.png" label="Logout" onClick="spaceOwner.logout();" style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                               <treerow><treecell image="resources/icons/logout.png" label="Logout" onClick="spaceOwner.logout();" style="color:#FFFFFF; border:0px none;"/></treerow>
+                            </treeitem>
                         </treechildren>
                     </tree>
                 </vlayout>

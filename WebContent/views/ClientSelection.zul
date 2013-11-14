@@ -18,6 +18,7 @@
                 </vlayout>
                 <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
                     <toolbar height="21px">
+                        <toolbarbutton image="../resources/icons/logout.png" tooltiptext="Logout" onClick="spaceOwner.logout();"/>
                         <toolbarbutton image="../resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refresh();"/>
                     </toolbar>
                     <toolbar align="end" height="21px">

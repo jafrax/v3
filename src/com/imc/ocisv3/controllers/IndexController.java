@@ -47,10 +47,10 @@ public class IndexController extends Window {
                 Libs.userLevel = Integer.valueOf(Libs.nn(o[2]));
 
                 if (Libs.userLevel==1) {
-                    Executions.sendRedirect("views/ClientSelection.zul");
+                    Executions.sendRedirect("v3/views/ClientSelection.zul");
                 } else {
                     Libs.insuranceId = Libs.nn(o[1]);
-                    Executions.sendRedirect("main.zul");
+                    Executions.sendRedirect("v3/main.zul");
                 }
             } else {
                 Messagebox.show("Invalid Username/Password combination. This incident is reported.", "Error", Messagebox.OK, Messagebox.ERROR);

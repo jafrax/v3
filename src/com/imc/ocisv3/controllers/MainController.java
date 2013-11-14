@@ -43,6 +43,8 @@ public class MainController extends Window {
         File f = new File(Executions.getCurrent().getSession().getWebApp().getRealPath(imageFile));
         if (!f.exists() || (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051"))) imageFile = "resources/companies/00000.jpg";
         imgCompanyLogo.setSrc(imageFile);
+
+        if (Libs.userLevel==1) ((Treeitem) getFellow("tiClientSelection")).setVisible(true);
     }
 
     private void getPolicies() {
@@ -77,8 +79,12 @@ public class MainController extends Window {
         if (Messagebox.show("Are you sure you want to logout?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION)==Messagebox.OK) {
             Executions.getCurrent().getSession().setMaxInactiveInterval(0);
             Executions.getCurrent().getSession().invalidate();
-            Executions.sendRedirect("index.zul");
+            Executions.sendRedirect("../../");
         }
+    }
+
+    public void clientSelection() {
+        Executions.sendRedirect("views/ClientSelection.zul");
     }
 
 }
