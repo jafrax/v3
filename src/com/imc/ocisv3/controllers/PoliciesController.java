@@ -107,7 +107,7 @@ public class PoliciesController extends Window {
                 li.setValue(policyPOJO);
 
                 li.appendChild(new Listcell(policyNumber));
-                li.appendChild(new Listcell(((Libs.config.get("demo_mode")).equals("true") && Libs.insuranceId.equals("00051")) ? "HAS - P.T. Semesta Alam" : Libs.nn(o[4]).trim()));
+                li.appendChild(new Listcell(((Libs.config.get("demo_mode")).equals("true") && Libs.insuranceId.equals("00051")) ? Libs.nn(Libs.config.get("demo_name")) : Libs.nn(o[4]).trim()));
                 li.appendChild(lcStatus);
                 li.appendChild(Libs.createNumericListcell(getMemberCount(Libs.nn(o[0]), Libs.nn(o[3])), "#,###"));
                 li.appendChild(new Listcell(startingDate));

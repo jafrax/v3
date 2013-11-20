@@ -237,7 +237,7 @@ public class Libs {
         Session s = Libs.sfDB.openSession();
         try {
             String qry = "select "
-                    + "distinct a.hdt1name, a.hdt1pono "
+                    + "top 1 a.hdt1name, a.hdt1pono "
                     + "from idnhltpf.dbo.hltdt1 a "
                     + "where a.hdt1ncard='" + cardNumber + "' ";
 
@@ -463,6 +463,15 @@ public class Libs {
         } catch (Exception ex) {
             cell.setCellValue(Libs.nn(value));
         }
+    }
+
+    public static String getClaimType(String s) {
+        if (s.equals("I")) return "INPATIENT";
+        if (s.equals("O")) return "OUTPATIENT";
+        if (s.equals("R")) return "MATERNITY";
+        if (s.equals("D")) return "DENTAL";
+        if (s.equals("G")) return "GLASSES";
+        return "OTHER";
     }
 
 }

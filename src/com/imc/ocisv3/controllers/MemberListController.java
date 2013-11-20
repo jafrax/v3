@@ -52,7 +52,7 @@ public class MemberListController extends Window {
         cbPolicy.setSelectedIndex(0);
         for (String s : Libs.policyMap.keySet()) {
             String policyName = Libs.policyMap.get(s);
-            if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = "HAS - P.T. Semesta Alam";
+            if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
 
             cbPolicy.appendItem(policyName + " (" + s + ")");
         }

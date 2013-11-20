@@ -47,7 +47,6 @@
                             <treeitem>
                                 <treerow><treecell label="Customer Service" style="color:#FFFFFF; border:0px none;"/></treerow>
                                 <treechildren>
-                                    <!--<treeitem><treerow><treecell label="Guarantee Letters" onClick='spaceOwner.open("GuaranteeLetters");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>-->
                                     <treeitem><treerow><treecell label="In Hospital Monitoring" image="resources/icons/ihm.png" onClick='spaceOwner.open("InHospitalMonitoring");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                                 </treechildren>
                             </treeitem>

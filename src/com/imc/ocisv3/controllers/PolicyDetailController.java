@@ -58,7 +58,7 @@ public class PolicyDetailController extends Window {
         });
 
         String policyName = policy.getName();
-        if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = "HAS - P.T. Semesta Alam";
+        if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
         String subTitle = "[" + policy.getYear() + "-" + policy.getBr() + "-" + policy.getDist() + "-" + policy.getPolicy_number() + "] " + policyName;
         lPolicy.setValue(subTitle);
     }

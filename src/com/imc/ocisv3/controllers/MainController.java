@@ -39,9 +39,16 @@ public class MainController extends Window {
         Libs.rootWindow = this;
         Libs.center = (Center) getFellow("center");
 
-        String imageFile = "resources/companies/" + Libs.insuranceId + ".jpg";
-        File f = new File(Executions.getCurrent().getSession().getWebApp().getRealPath(imageFile));
-        if (!f.exists() || (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051"))) imageFile = "resources/companies/00000.jpg";
+        String imageFile = "";
+
+        if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) {
+            imageFile = "resources/companies/99999.jpg";
+        } else {
+            imageFile = "resources/companies/" + Libs.insuranceId + ".jpg";
+            File f = new File(Executions.getCurrent().getSession().getWebApp().getRealPath(imageFile));
+            if (!f.exists()) imageFile = "resources/companies/00000.jpg";
+        }
+
         imgCompanyLogo.setSrc(imageFile);
 
         if (Libs.userLevel==1) ((Treeitem) getFellow("tiClientSelection")).setVisible(true);

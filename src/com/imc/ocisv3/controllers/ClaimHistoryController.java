@@ -60,7 +60,7 @@ public class ClaimHistoryController extends Window {
         cbPolicy.setSelectedIndex(0);
         for (String s : Libs.policyMap.keySet()) {
             String policyName = Libs.policyMap.get(s);
-            if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = "HAS - P.T. Semesta Alam";
+            if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
 
             cbPolicy.appendItem(policyName + " (" + s + ")");
         }
@@ -195,7 +195,7 @@ public class ClaimHistoryController extends Window {
             List<Object[]> l = s.createSQLQuery(select + qry + order).setFirstResult(offset).setMaxResults(limit).list();
             for (Object[] o : l) {
                 String policyName = Libs.nn(o[5]);
-                if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = "HAS - P.T. Semesta Alam";
+                if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
 
                 String remarks = Libs.nn(o[47]).trim();
                 String provider = Libs.nn(o[12]).trim();
@@ -211,7 +211,7 @@ public class ClaimHistoryController extends Window {
                 li.appendChild(new Listcell(o[6] + "-" + o[7]));
                 li.appendChild(new Listcell(Libs.nn(o[8])));
                 li.appendChild(new Listcell(""));
-                li.appendChild(new Listcell(Libs.nn(o[9])));
+                li.appendChild(new Listcell(Libs.getClaimType(Libs.nn(o[9]))));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[10])), "#,###.##"));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[11])), "#,###.##"));
                 li.appendChild(new Listcell(provider));

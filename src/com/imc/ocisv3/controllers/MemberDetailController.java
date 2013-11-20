@@ -282,13 +282,6 @@ public class MemberDetailController extends Window {
                 String serviceIn = Libs.nn(o[5]) + "-" + Libs.nn(o[6]) + "-" + Libs.nn(o[7]);
                 String serviceOut = Libs.nn(o[8]) + "-" + Libs.nn(o[9]) + "-" + Libs.nn(o[10]);
 
-                String claimType = Libs.nn(o[0]);
-                if (claimType.equals("I")) claimType = "INPATIENT";
-                if (claimType.equals("O")) claimType = "OUTPATIENT";
-                if (claimType.equals("G")) claimType = "GLASSES";
-                if (claimType.equals("R")) claimType = "MATERNITY";
-                if (claimType.equals("D")) claimType = "DENTAL";
-
                 String planString = clientPlanMap.get(Libs.nn(o[11]));
                 if (planString==null) planString = Libs.nn(o[11]);
 
@@ -305,7 +298,7 @@ public class MemberDetailController extends Window {
 
                     Listitem li = new Listitem();
 
-                    li.appendChild(new Listcell(claimType));
+                    li.appendChild(new Listcell(Libs.getClaimType(Libs.nn(o[0]))));
                     li.appendChild(new Listcell(provider));
                     li.appendChild(new Listcell(diagnosis));
                     li.appendChild(new Listcell(Libs.getICDByCode(diagnosis)));
@@ -331,7 +324,7 @@ public class MemberDetailController extends Window {
 
                 policyUsage += Double.valueOf(Libs.nn(o[15]));
 
-                li.appendChild(new Listcell(claimType));
+                li.appendChild(new Listcell(Libs.getClaimType(Libs.nn(o[0]))));
                 li.appendChild(new Listcell(Libs.nn(o[17]).trim()));
                 li.appendChild(new Listcell(Libs.nn(o[1]).trim()));
                 li.appendChild(new Listcell(diagnosis));

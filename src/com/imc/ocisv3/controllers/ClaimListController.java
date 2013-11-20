@@ -122,7 +122,7 @@ public class ClaimListController extends Window {
             List<Object[]> l = s.createSQLQuery(select + qry + order).setFirstResult(offset).setMaxResults(limit).list();
             for (Object[] o : l) {
                 String policyName = Libs.nn(o[5]);
-                if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = "HAS - P.T. Semesta Alam";
+                if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
 
                 String remarks = Libs.nn(o[16]).trim();
                 String provider = Libs.nn(o[12]).trim();

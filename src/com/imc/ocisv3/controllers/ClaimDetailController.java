@@ -93,17 +93,20 @@ public class ClaimDetailController extends Window {
                     remarks = remarks.substring(remarks.indexOf("]")+1);
                 }
 
+                String companyName = Libs.nn(o[17]).trim();
+                if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) companyName = Libs.nn(Libs.config.get("demo_name"));
+
                 ((Label) getFellow("lProvider")).setValue(provider);
                 ((Label) getFellow("lDiagnosis")).setValue(diagnosis.toUpperCase());
                 ((Label) getFellow("lDescription")).setValue(Libs.getICDByCode(diagnosis));
                 ((Label) getFellow("lServiceIn")).setValue(serviceIn);
                 ((Label) getFellow("lServiceOut")).setValue(serviceOut);
-                ((Label) getFellow("lClaimType")).setValue(Libs.nn(o[10]).trim());
+                ((Label) getFellow("lClaimType")).setValue(Libs.getClaimType(Libs.nn(o[10]).trim()));
                 ((Label) getFellow("lName")).setValue(Libs.nn(o[11]).trim());
                 ((Label) getFellow("lDOB")).setValue(dob);
                 ((Label) getFellow("lSex")).setValue(Libs.nn(o[15]).trim());
                 ((Label) getFellow("lCardNumber")).setValue(Libs.nn(o[16]).trim());
-                ((Label) getFellow("lCompanyName")).setValue(Libs.nn(o[17]).trim());
+                ((Label) getFellow("lCompanyName")).setValue(companyName);
                 ((Label) getFellow("lServiceDays")).setValue(String.valueOf(Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(serviceIn), new SimpleDateFormat("yyyy-MM-dd").parse(serviceOut))));
                 ((Label) getFellow("tRemarks")).setValue(remarks);
             }

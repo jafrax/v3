@@ -62,7 +62,7 @@ public class ClientSelectionController extends Window {
                 Listitem li = new Listitem();
                 li.setValue(o[0]);
 
-                if (Libs.config.get("demo_mode").equals("true") && clientName.contains("REDPATH")) clientName = "HAS - P.T. Coca Cola";
+                if (Libs.config.get("demo_mode").equals("true") && clientName.contains("REDPATH")) clientName = Libs.nn(Libs.config.get("demo_name"));
                 li.appendChild(new Listcell(clientName));
 
                 lb.appendChild(li);
