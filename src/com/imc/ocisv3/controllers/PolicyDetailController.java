@@ -389,7 +389,7 @@ public class PolicyDetailController extends Window {
             addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    ((Label) w.getFellow("lPlanTitle")).setValue("Plan Items [" + label + "]");
+                    ((Label) w.getFellow("lPlanTitle")).setValue("Plan Items [" + ((label==null) ? s : label) + "]");
                     displayPlanItems(s);
                 }
             });

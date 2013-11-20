@@ -22,10 +22,11 @@ public class ClaimSummaryController extends Window {
     private Listbox lbFrequency;
     private Listbox lbAmount;
     private Listbox lbHID;
-//    private Listbox lbExcessClaimAmount;
+    private Listbox lbExcess;
     private Flashchart chartFrequency;
     private Flashchart chartAmount;
     private Flashchart chartHID;
+    private Flashchart chartExcess;
     private Combobox cbPolicy;
 
     public void onCreate() {
@@ -33,23 +34,24 @@ public class ClaimSummaryController extends Window {
         populateFrequency();
         populateAmount();
         populateHID();
-        populateExcessClaimAmount();
+        populateExcess();
     }
 
     private void initComponents() {
         lbFrequency = (Listbox) getFellow("lbFrequency");
         lbAmount = (Listbox) getFellow("lbAmount");
         lbHID = (Listbox) getFellow("lbHID");
-//        lbExcessClaimAmount = (Listbox) getFellow("lbExcessClaimAmount");
+        lbExcess = (Listbox) getFellow("lbExcess");
         chartFrequency = (Flashchart) getFellow("chartFrequency");
         chartAmount = (Flashchart) getFellow("chartAmount");
         chartHID = (Flashchart) getFellow("chartHID");
+        chartExcess = (Flashchart) getFellow("chartExcess");
         cbPolicy = (Combobox) getFellow("cbPolicy");
 
         Listhead lhFrequency = lbFrequency.getListhead();
         Listhead lhAmount = lbAmount.getListhead();
         Listhead lhHID = lbHID.getListhead();
-//        Listhead lhExcessClaimAmount = lbExcessClaimAmount.getListhead();
+        Listhead lhExcess = lbExcess.getListhead();
 
         for (int i=-11; i<1; i++) {
             Calendar cal = Calendar.getInstance();
@@ -75,13 +77,13 @@ public class ClaimSummaryController extends Window {
             lhHID.appendChild(lhdr);
         }
 
-//        for (int i=-11; i<1; i++) {
-//            Calendar cal = Calendar.getInstance();
-//            cal.add(Calendar.MONTH, i);
-//            Listheader lhdr = new Listheader(Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
-//            lhdr.setWidth("70px");
-//            lhExcessClaimAmount.appendChild(lhdr);
-//        }
+        for (int i=-11; i<1; i++) {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MONTH, i);
+            Listheader lhdr = new Listheader(Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
+            lhdr.setWidth("70px");
+            lhExcess.appendChild(lhdr);
+        }
 
         cbPolicy.appendItem("All Policies");
         cbPolicy.setSelectedIndex(0);
@@ -408,8 +410,111 @@ public class ClaimSummaryController extends Window {
         }
     }
 
-    private void populateExcessClaimAmount() {
+    private void populateExcess() {
+        lbExcess.getItems().clear();
+        Map<String,Double> claimMap = new HashMap<String,Double>();
 
+        CategoryModel cm = new SimpleCategoryModel();
+
+        Session s = Libs.sfDB.openSession();
+        try {
+            String qry = "select "
+                    + "a.hclmcdatey, a.hclmcdatem, a.hclmtclaim, "
+                    + "sum(" + Libs.createAddFieldString("a.hclmcamt") + ") as proposed, "
+                    + "sum(" + Libs.createAddFieldString("a.hclmaamt") + ") as approved "
+                    + "from idnhltpf.dbo.hltclm a "
+                    + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
+                    + "where "
+                    + "b.hhdrinsid='" + Libs.insuranceId + "' and "
+                    + "a.hclmrecid<>'C' ";
+
+            if (cbPolicy.getSelectedIndex()>0) {
+                String policy = cbPolicy.getSelectedItem().getLabel();
+                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+                qry += "and (convert(varchar,a.hclmyy)+'-'+convert(varchar,a.hclmbr)+'-'+convert(varchar,a.hclmdist)+'-'+convert(varchar,a.hclmpono)='" + policy + "') ";
+            }
+
+            qry += "group by a.hclmcdatey, a.hclmcdatem, a.hclmtclaim ";
+
+            List<Object[]> l = s.createSQLQuery(qry).list();
+
+            for (Object[] o : l) {
+                String key = o[0] + "-" + (Integer.valueOf(Libs.nn(o[1]))-1) + "-" + o[2];
+                claimMap.put(key, Double.valueOf(Libs.nn(o[3]))-Double.valueOf(Libs.nn(o[4])));
+            }
+
+            int emptyInpatient = 0;
+            Listitem liInpatient = new Listitem();
+            liInpatient.appendChild(new Listcell("INPATIENT"));
+            for (int i=-11; i<1; i++) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, i);
+                String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-I";
+                if (claimMap.get(key)==null) emptyInpatient++;
+                liInpatient.appendChild((claimMap.get(key))==null ? new Listcell("") : new ClaimListcell(this, key, claimMap.get(key), "#"));
+                cm.setValue("Inpatient", Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + String.valueOf(cal.get(Calendar.YEAR)).substring(2), claimMap.get(key));
+            }
+
+            int emptyOutpatient = 0;
+            Listitem liOutpatient = new Listitem();
+            liOutpatient.appendChild(new Listcell("OUTPATIENT"));
+            for (int i=-11; i<1; i++) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, i);
+                String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-O";
+                if (claimMap.get(key)==null) emptyOutpatient++;
+                liOutpatient.appendChild((claimMap.get(key))==null ? new Listcell("") : new ClaimListcell(this, key, claimMap.get(key), "#"));
+                cm.setValue("Outpatient", Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + String.valueOf(cal.get(Calendar.YEAR)).substring(2), claimMap.get(key));
+            }
+
+            int emptyMaternity = 0;
+            Listitem liMaternity = new Listitem();
+            liMaternity.appendChild(new Listcell("MATERNITY"));
+            for (int i=-11; i<1; i++) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, i);
+                String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-R";
+                if (claimMap.get(key)==null) emptyMaternity++;
+                liMaternity.appendChild((claimMap.get(key))==null ? new Listcell("") : new ClaimListcell(this, key, claimMap.get(key), "#"));
+                cm.setValue("Maternity", Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + String.valueOf(cal.get(Calendar.YEAR)).substring(2), claimMap.get(key));
+            }
+
+            int emptyDental = 0;
+            Listitem liDental = new Listitem();
+            liDental.appendChild(new Listcell("DENTAL"));
+            for (int i=-11; i<1; i++) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, i);
+                String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-D";
+                if (claimMap.get(key)==null) emptyDental++;
+                liDental.appendChild((claimMap.get(key))==null ? new Listcell("") : new ClaimListcell(this, key, claimMap.get(key), "#"));
+                cm.setValue("Dental", Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + String.valueOf(cal.get(Calendar.YEAR)).substring(2), claimMap.get(key));
+            }
+
+            int emptyGlasses = 0;
+            Listitem liGlasses = new Listitem();
+            liGlasses.appendChild(new Listcell("GLASSES"));
+            for (int i=-11; i<1; i++) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, i);
+                String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-G";
+                if (claimMap.get(key)==null) emptyGlasses++;
+                liGlasses.appendChild((claimMap.get(key))==null ? new Listcell("") : new ClaimListcell(this, key, claimMap.get(key), "#"));
+                cm.setValue("Glasses", Libs.shortMonths[cal.get(Calendar.MONTH)] + " " + String.valueOf(cal.get(Calendar.YEAR)).substring(2), claimMap.get(key));
+            }
+
+            if (liInpatient.getChildren().size()>1 && emptyInpatient!=12) lbExcess.appendChild(liInpatient);
+            if (liOutpatient.getChildren().size()>1 && emptyOutpatient!=12) lbExcess.appendChild(liOutpatient);
+            if (liMaternity.getChildren().size()>1 && emptyMaternity!=12) lbExcess.appendChild(liMaternity);
+            if (liDental.getChildren().size()>1 && emptyDental!=12) lbExcess.appendChild(liDental);
+            if (liGlasses.getChildren().size()>1 && emptyGlasses!=12) lbExcess.appendChild(liGlasses);
+
+            chartExcess.setModel(cm);
+        } catch (Exception ex) {
+            log.error("populateExcess", ex);
+        } finally {
+            if (s!=null && s.isOpen()) s.close();
+        }
     }
 
     class ClaimListcell extends Listcell {
@@ -430,6 +535,7 @@ public class ClaimSummaryController extends Window {
                     Window wl = (Window) Executions.createComponents("views/ClaimList.zul", w, null);
                     wl.setAttribute("policy", policy);
                     wl.setAttribute("key", key);
+                    wl.setAttribute("excess", true);
                     wl.doModal();
                 }
             });
@@ -441,7 +547,7 @@ public class ClaimSummaryController extends Window {
         populateFrequency();
         populateAmount();
         populateHID();
-        populateExcessClaimAmount();
+        populateExcess();
     }
 
 }

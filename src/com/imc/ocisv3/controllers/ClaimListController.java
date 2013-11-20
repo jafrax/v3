@@ -97,6 +97,11 @@ public class ClaimListController extends Window {
                     + "b.hhdrinsid='" + Libs.insuranceId + "' "
                     + "and a.hclmrecid<>'C' ";
 
+            if (getAttribute("excess")!=null && ((Boolean) getAttribute("excess"))) {
+                qry += "and ((" + Libs.createAddFieldString("a.hclmcamt") + ")- "
+                        + "(" + Libs.createAddFieldString("a.hclmaamt") + ")>0) ";
+            }
+
             if (where!=null) qry += "and (" + where + ") ";
 
             if (!policy.isEmpty()) {

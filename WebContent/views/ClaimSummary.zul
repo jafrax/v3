@@ -22,7 +22,7 @@
                                     <tab label="Frequency"/>
                                     <tab label="Amount"/>
                                     <tab label="HID"/>
-                                    <!--<tab label="Excess Claim Amount"/>-->
+                                    <tab label="Excess"/>
                                 </tabs>
                                 <tabpanels>
                                     <tabpanel>
@@ -76,14 +76,23 @@
                                             </center>
                                         </borderlayout>
                                     </tabpanel>
-                                    <!--<tabpanel>-->
-                                        <!--<listbox id="lbExcessClaimAmount" width="100%" height="100%" vflex="true" style="white-space:nowrap;">-->
-                                            <!--<listhead>-->
-                                                <!--<listheader label="Claim Type" width="90px"/>-->
-                                            <!--</listhead>-->
-                                            <!--<frozen columns="1"/>-->
-                                        <!--</listbox>-->
-                                    <!--</tabpanel>-->
+                                    <tabpanel>
+                                        <borderlayout width="100%" height="100%">
+                                            <north height="200px" splittable="true" style="padding:5px;">
+                                                <listbox id="lbExcess" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
+                                                    <listhead>
+                                                        <listheader label="Claim Type" width="90px"/>
+                                                    </listhead>
+                                                    <frozen columns="1"/>
+                                                </listbox>
+                                            </north>
+                                            <center>
+                                                <vlayout width="100%" height="100%" style="text-align:center;">
+                                                    <flashchart id="chartExcess" type="line" width="800px" height="200px"/>
+                                                </vlayout>
+                                            </center>
+                                        </borderlayout>
+                                    </tabpanel>
                                 </tabpanels>
                             </tabbox>
                         </panelchildren>

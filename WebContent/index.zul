@@ -4,7 +4,7 @@
         <style>
             body {
                 padding: 0px;
-                background-image: url("v3/resources/images/tile.png");
+                background-image: url("resources/images/tile.png");
                 background-repeat: repeat;
             }
             .hboxRemoveWhiteStrips td.z-hbox-sep {
@@ -19,7 +19,7 @@
             }
         </style>
         <h:div style="text-align:center;">
-            <h:img src="v3/resources/images/shadowlogo.png" alt="shadowlogo" class="shadowlogo"/>
+            <h:img src="resources/images/shadowlogo.png" alt="shadowlogo" class="shadowlogo"/>
         </h:div>
         <window id="wLogin" width="400px" height="150px" position="center" mode="overlapped" contentStyle="padding:15px;" use="com.imc.ocisv3.controllers.IndexController" onOK="spaceOwner.login();">
             <vlayout width="100%">
@@ -27,7 +27,7 @@
                     <panelchildren style="text-align:right;">
                         <vlayout>
                             <label value="Online Claim Information System" style="font-size:16pt;color:#888888;"/>
-                            <label value="3.20131114" style="font-size:8pt;color:#888888;"/>
+                            <label value="3.20131120" style="font-size:8pt;color:#888888;"/>
                         </vlayout>
                     </panelchildren>
                 </panel>

@@ -98,7 +98,7 @@ public class ClientSelectionController extends Window {
         if (Messagebox.show("Are you sure you want to logout?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION)==Messagebox.OK) {
             Executions.getCurrent().getSession().setMaxInactiveInterval(0);
             Executions.getCurrent().getSession().invalidate();
-            Executions.sendRedirect("../../");
+            Executions.sendRedirect("/index.zul");
         }
     }
 
