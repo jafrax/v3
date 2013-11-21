@@ -176,7 +176,8 @@ public class PolicyDetailController extends Window {
                     + "(convert(varchar,b.hdt2pxdty5)+'-'+convert(varchar,b.hdt2pxdtm5)+'-'+convert(varchar,b.hdt2pxdtd5)) as hdt2pxdt5,"
                     + "(convert(varchar,b.hdt2pxdty6)+'-'+convert(varchar,b.hdt2pxdtm6)+'-'+convert(varchar,b.hdt2pxdtd6)) as hdt2pxdt6, "
                     + "a.hdt1mstat, c.hempcnpol, " //33
-                    + "b.hdt2moe ";
+                    + "b.hdt2moe, "
+                    + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd ";
 
             String qry = "from idnhltpf.dbo.hltdt1 a "
                     + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
@@ -241,7 +242,7 @@ public class PolicyDetailController extends Window {
                     lStatus.setStyle("color:#FF0000;");
                 }
                 if (Libs.nn(o[35]).equals("U")) {
-                    String effectiveDate = Libs.nn(o[41]) + "-" + Libs.nn(o[42]) + "-" + Libs.nn(o[43]);
+                    String effectiveDate = Libs.nn(o[36]) + "-" + Libs.nn(o[37]) + "-" + Libs.nn(o[38]);
                     int effectiveDays = Libs.getDiffDays(new Date(), new SimpleDateFormat("yyyy-MM-dd").parse(effectiveDate));
                     if (effectiveDays<0) {
                         lStatus.setValue("INACTIVE");
