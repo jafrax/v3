@@ -10,28 +10,50 @@
             padding: 0;
         }
     </style>
-    <window id="wLogin" width="400px" height="470px" position="center" mode="overlapped" contentStyle="padding:15px;" use="com.imc.ocisv3.controllers.ClientSelectionController">
-        <panel width="100%" height="100%">
+    <window id="wLogin" width="400px" height="495px" position="center" mode="overlapped" contentStyle="padding:15px;" use="com.imc.ocisv3.controllers.ClientSelectionController">
+        <panel width="100%" height="100%" vflex="1">
             <panelchildren>
-                <vlayout width="100%" height="40px" style="text-align:right;">
-                    <label value="Client Selection" style="font-size:16pt;color:#888888;"/>
-                </vlayout>
-                <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
-                    <toolbar height="21px">
-                        <toolbarbutton image="../resources/icons/logout.png" tooltiptext="Logout" onClick="spaceOwner.logout();"/>
-                        <toolbarbutton image="../resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refresh();"/>
-                    </toolbar>
-                    <toolbar align="end" height="21px">
-                        <image src="../resources/icons/browse.png"/>
-                        <textbox id="tQuickSearch" onOK="spaceOwner.quickSearch();"/>
-                    </toolbar>
-                </hbox>
-                <listbox id="lb" width="99%" height="100%" vflex="true" style="white-space:nowrap;" onDoubleClick="spaceOwner.clientSelected();">
-                    <listhead>
-                        <listheader label="Client Name"/>
-                    </listhead>
-                </listbox>
-                <paging id="pg" height="25px" pageSize="10"/>
+                <panel height="70px">
+                    <panelchildren>
+                        <vlayout width="100%" height="40px" style="text-align:right;">
+                            <label value="Client Selection" style="font-size:16pt;color:#888888;"/>
+                        </vlayout>
+                        <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
+                            <toolbar height="21px">
+                                <toolbarbutton image="../resources/icons/logout.png" tooltiptext="Logout" onClick="spaceOwner.logout();"/>
+                                <toolbarbutton image="../resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refresh();"/>
+                            </toolbar>
+                            <toolbar align="end" height="21px">
+                                <image src="../resources/icons/browse.png"/>
+                                <textbox id="tQuickSearch" onOK="spaceOwner.quickSearch();"/>
+                            </toolbar>
+                        </hbox>
+                    </panelchildren>
+                </panel>
+                <tabbox id="tbx" width="100%" vflex="true">
+                    <tabs>
+                        <tab label="Active Clients"/>
+                        <tab label="Inactive Clients"/>
+                    </tabs>
+                    <tabpanels>
+                        <tabpanel style="padding:0px;">
+                            <listbox id="lbActive" width="100%" vflex="true" style="white-space:nowrap;border:0px;" onDoubleClick="spaceOwner.activeClientSelected();">
+                                <listhead>
+                                    <listheader label="Client Name"/>
+                                </listhead>
+                            </listbox>
+                            <paging id="pgActive" height="25px" pageSize="10" style="border-bottom:0px;"/>
+                        </tabpanel>
+                        <tabpanel style="padding:0px;">
+                            <listbox id="lbInactive" width="99%" height="100%" vflex="true" style="white-space:nowrap;border:0px;" onDoubleClick="spaceOwner.inactiveClientSelected();">
+                                <listhead>
+                                    <listheader label="Client Name"/>
+                                </listhead>
+                            </listbox>
+                            <paging id="pgInactive" height="25px" pageSize="10" style="border-bottom:0px;"/>
+                        </tabpanel>
+                    </tabpanels>
+                </tabbox>
             </panelchildren>
         </panel>
     </window>

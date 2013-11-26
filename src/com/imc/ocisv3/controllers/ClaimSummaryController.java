@@ -28,6 +28,7 @@ public class ClaimSummaryController extends Window {
     private Flashchart chartHID;
     private Flashchart chartExcess;
     private Combobox cbPolicy;
+    private Tabbox tbx;
 
     public void onCreate() {
         initComponents();
@@ -47,6 +48,7 @@ public class ClaimSummaryController extends Window {
         chartHID = (Flashchart) getFellow("chartHID");
         chartExcess = (Flashchart) getFellow("chartExcess");
         cbPolicy = (Combobox) getFellow("cbPolicy");
+        tbx = (Tabbox) getFellow("tbx");
 
         Listhead lhFrequency = lbFrequency.getListhead();
         Listhead lhAmount = lbAmount.getListhead();
@@ -535,7 +537,7 @@ public class ClaimSummaryController extends Window {
                     Window wl = (Window) Executions.createComponents("views/ClaimList.zul", w, null);
                     wl.setAttribute("policy", policy);
                     wl.setAttribute("key", key);
-                    wl.setAttribute("excess", true);
+                    if (tbx.getSelectedIndex()==3) wl.setAttribute("excess", true);
                     wl.doModal();
                 }
             });

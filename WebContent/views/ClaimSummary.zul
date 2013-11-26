@@ -17,7 +17,7 @@
                     </hbox>
                     <panel width="100%" height="100%">
                         <panelchildren style="padding:5px">
-                            <tabbox width="100%" height="100%">
+                            <tabbox id="tbx" width="100%" height="100%">
                                 <tabs>
                                     <tab label="Frequency"/>
                                     <tab label="Amount"/>

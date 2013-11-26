@@ -18,34 +18,48 @@ import java.util.List;
 public class ClientSelectionController extends Window {
 
     private Logger log = LoggerFactory.getLogger(ClientSelectionController.class);
-    private Listbox lb;
-    private Paging pg;
+    private Listbox lbInactive;
+    private Listbox lbActive;
+    private Paging pgInactive;
+    private Paging pgActive;
+    private Tabbox tbx;
     private String where;
 
     public void onCreate() {
         initComponents();
-        populate(0, pg.getPageSize());
+        populateInactive(0, pgInactive.getPageSize());
+        populateActive(0, pgActive.getPageSize());
     }
 
     private void initComponents() {
-        lb = (Listbox) getFellow("lb");
-        pg = (Paging) getFellow("pg");
+        lbInactive = (Listbox) getFellow("lbInactive");
+        lbActive = (Listbox) getFellow("lbActive");
+        pgInactive = (Paging) getFellow("pgInactive");
+        pgActive = (Paging) getFellow("pgActive");
+        tbx = (Tabbox) getFellow("tbx");
 
-        pg.addEventListener("onPaging", new EventListener() {
+        pgInactive.addEventListener("onPaging", new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
                 PagingEvent evt = (PagingEvent) event;
-                populate(evt.getActivePage()*pg.getPageSize(), pg.getPageSize());
+                populateInactive(evt.getActivePage()*pgInactive.getPageSize(), pgInactive.getPageSize());
+            }
+        });
+        pgActive.addEventListener("onPaging", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                PagingEvent evt = (PagingEvent) event;
+                populateActive(evt.getActivePage()*pgActive.getPageSize(), pgActive.getPageSize());
             }
         });
     }
 
-    private void populate(int offset, int limit) {
-        lb.getItems().clear();
+    private void populateInactive(int offset, int limit) {
+        lbInactive.getItems().clear();
         Session s = Libs.sfEDC.openSession();
         try {
-            String countQry = "select count(*) from ocis.dbo.cis_inslf where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073') ";
-            String qry = "select hinsid, hinsname from ocis.dbo.cis_inslf where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073') ";
+            String countQry = "select count(*) from ocis.dbo.cis_inslf where hinsid not in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073') ";
+            String qry = "select hinsid, hinsname from ocis.dbo.cis_inslf where hinsid not in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073') ";
 
             if (where!=null) {
                 countQry += "and (" + where + ") ";
@@ -53,7 +67,7 @@ public class ClientSelectionController extends Window {
             }
 
             Integer count = (Integer) s.createSQLQuery(countQry).uniqueResult();
-            pg.setTotalSize(count);
+            pgInactive.setTotalSize(count);
 
             List<Object[]> l = s.createSQLQuery(qry).setFirstResult(offset).setMaxResults(limit).list();
             for (Object[] o : l) {
@@ -65,11 +79,46 @@ public class ClientSelectionController extends Window {
                 if (Libs.config.get("demo_mode").equals("true") && clientName.contains("REDPATH")) clientName = Libs.nn(Libs.config.get("demo_name"));
                 li.appendChild(new Listcell(clientName));
 
-                lb.appendChild(li);
+                lbInactive.appendChild(li);
             }
 
         } catch (Exception ex) {
-            log.error("populate", ex);
+            log.error("populateInactive", ex);
+        } finally {
+            if (s!=null && s.isOpen()) s.close();
+        }
+    }
+
+    private void populateActive(int offset, int limit) {
+        lbActive.getItems().clear();
+        Session s = Libs.sfDB.openSession();
+        try {
+            String countQry = "select count(*) from idnhltpf.dbo.hltins where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073') ";
+            String qry = "select hinsid, hinsname from idnhltpf.dbo.hltins where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073') ";
+
+            if (where!=null) {
+                countQry += "and (" + where + ") ";
+                qry += "and (" + where + ") ";
+            }
+
+            Integer count = (Integer) s.createSQLQuery(countQry).uniqueResult();
+            pgActive.setTotalSize(count);
+
+            List<Object[]> l = s.createSQLQuery(qry).setFirstResult(offset).setMaxResults(limit).list();
+            for (Object[] o : l) {
+                String clientName = Libs.nn(o[1]).trim();
+
+                Listitem li = new Listitem();
+                li.setValue(o[0]);
+
+                if (Libs.config.get("demo_mode").equals("true") && clientName.contains("REDPATH")) clientName = Libs.nn(Libs.config.get("demo_name"));
+                li.appendChild(new Listcell(clientName));
+
+                lbActive.appendChild(li);
+            }
+
+        } catch (Exception ex) {
+            log.error("populateActive", ex);
         } finally {
             if (s!=null && s.isOpen()) s.close();
         }
@@ -77,11 +126,17 @@ public class ClientSelectionController extends Window {
 
     public void refresh() {
         where = null;
-        populate(0, pg.getPageSize());
+        populateInactive(0, pgInactive.getPageSize());
+        populateActive(0, pgActive.getPageSize());
     }
 
-    public void clientSelected() {
-        Libs.insuranceId = lb.getSelectedItem().getValue().toString();
+    public void inactiveClientSelected() {
+        Libs.insuranceId = lbInactive.getSelectedItem().getValue().toString();
+        Executions.sendRedirect("../main.zul");
+    }
+
+    public void activeClientSelected() {
+        Libs.insuranceId = lbActive.getSelectedItem().getValue().toString();
         Executions.sendRedirect("../main.zul");
     }
 
@@ -90,7 +145,12 @@ public class ClientSelectionController extends Window {
         if (!val.isEmpty()) {
             where = "convert(varchar,hinsname) like '%" + val + "%' or "
                     + "hinsid like '%" + val + "%' ";
-            populate(0, pg.getPageSize());
+
+            if (tbx.getSelectedIndex()==1) {
+                populateInactive(0, pgInactive.getPageSize());
+            } else {
+                populateActive(0, pgActive.getPageSize());
+            }
         } else refresh();
     }
 
