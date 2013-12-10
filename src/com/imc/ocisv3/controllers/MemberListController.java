@@ -283,7 +283,7 @@ public class MemberListController extends Window {
 
     public void showMemberDetail() {
         MemberPOJO memberPOJO = lb.getSelectedItem().getValue();
-        Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.rootWindow, null);
+        Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.getRootWindow(), null);
         w.setAttribute("policy", memberPOJO.getPolicy());
         w.setAttribute("member", memberPOJO);
         w.doModal();

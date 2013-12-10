@@ -313,7 +313,7 @@ public class ClaimHistoryController extends Window {
 
     public void showMemberDetail() {
         ClaimPOJO claimPOJO = lb.getSelectedItem().getValue();
-        Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.rootWindow, null);
+        Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.getRootWindow(), null);
         w.setAttribute("policy", claimPOJO.getPolicy());
         w.setAttribute("member", claimPOJO.getMember());
         w.doModal();

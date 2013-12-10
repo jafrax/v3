@@ -126,7 +126,7 @@ public class InHospitalMonitoringController extends Window {
     public void lbSelected() {}
 
     public void showInHospitalMonitoringDetail() {
-        Window w = (Window) Executions.createComponents("views/InHospitalMonitoringDetail.zul", Libs.rootWindow, null);
+        Window w = (Window) Executions.createComponents("views/InHospitalMonitoringDetail.zul", Libs.getRootWindow(), null);
         w.setAttribute("ihm", lb.getSelectedItem().getValue());
         w.doModal();
     }

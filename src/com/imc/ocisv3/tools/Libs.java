@@ -12,8 +12,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.*;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -26,8 +26,6 @@ import java.util.Calendar;
 public class Libs {
 
     private static Logger log = LoggerFactory.getLogger(Libs.class);
-    public static Window rootWindow;
-    public static Center center;
     public static Properties config;
     public static SessionFactory sfDB;
     public static SessionFactory sfEDC;
@@ -36,6 +34,18 @@ public class Libs {
     public static String insuranceId = "00046";
     public static int userLevel = 1;
     public static Map<String,String> policyMap = new HashMap<String,String>();
+
+    public static org.zkoss.zk.ui.Session getSession() {
+        return Executions.getCurrent().getSession();
+    }
+
+    public static Center getCenter() {
+        return (Center) getSession().getAttribute("center");
+    }
+
+    public static Window getRootWindow() {
+        return (Window) getSession().getAttribute("rootWindow");
+    }
 
     public static String nn(Object o) {
         if (o!=null) return o.toString(); else return "";

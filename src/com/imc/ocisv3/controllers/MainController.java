@@ -36,8 +36,8 @@ public class MainController extends Window {
         tree = (Tree) getFellow("tree");
         imgCompanyLogo = (Image) getFellow("imgCompanyLogo");
 
-        Libs.rootWindow = this;
-        Libs.center = (Center) getFellow("center");
+        Libs.getSession().setAttribute("rootWindow", this);
+        Libs.getSession().setAttribute("center", getFellow("center"));
 
         String imageFile = "";
 
@@ -78,8 +78,8 @@ public class MainController extends Window {
     }
 
     public void open(String view) {
-        if (Libs.center.getChildren().size()>0) Libs.center.removeChild(Libs.center.getFirstChild());
-        Executions.createComponents("views/" + view + ".zul", Libs.center, null);
+        if (Libs.getCenter().getChildren().size()>0) Libs.getCenter().removeChild(Libs.getCenter().getFirstChild());
+        Executions.createComponents("views/" + view + ".zul", Libs.getCenter(), null);
     }
 
     public void logout() {

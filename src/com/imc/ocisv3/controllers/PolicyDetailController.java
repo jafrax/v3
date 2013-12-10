@@ -338,7 +338,7 @@ public class PolicyDetailController extends Window {
     }
 
     public void showMemberDetail() {
-        Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.rootWindow, null);
+        Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.getRootWindow(), null);
         w.setAttribute("policy", policy);
         w.setAttribute("member", lbMembers.getSelectedItem().getValue());
         w.doModal();

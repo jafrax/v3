@@ -158,8 +158,8 @@ public class PoliciesController extends Window {
     }
 
     public void showPolicyDetail() {
-        if (Libs.center.getChildren().size()>0) Libs.center.removeChild(Libs.center.getFirstChild());
-        Window w = (Window) Executions.createComponents("views/PolicyDetail.zul", Libs.center, null);
+        if (Libs.getCenter().getChildren().size()>0) Libs.getCenter().removeChild(Libs.getCenter().getFirstChild());
+        Window w = (Window) Executions.createComponents("views/PolicyDetail.zul", Libs.getCenter(), null);
         w.setAttribute("policy", lb.getSelectedItem().getValue());
     }
 
