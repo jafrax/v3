@@ -147,9 +147,15 @@ public class MemberDetailController extends Window {
                     + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
                     + "inner join idnhltpf.dbo.hltemp c on c.hempyy=a.hdt1yy and c.hemppono=a.hdt1pono and c.hempidxno=a.hdt1idxno and c.hempseqno=a.hdt1seqno and c.hempctr=a.hdt1ctr "
                     + "where "
-                    + "a.hdt1yy=" + policy.getYear() + " and a.hdt1pono=" + policy.getPolicy_number() + " "
-                    + "and a.hdt1idxno=" + member.getIdx() + " and a.hdt1seqno<>'" + member.getSeq() + "' "
-                    + "and a.hdt1ctr=0 "
+                    + "a.hdt1yy=" + policy.getYear() + " and a.hdt1pono=" + policy.getPolicy_number() + " ";
+
+            if (Libs.nn(Libs.config.get("family_by_polclient")).contains(String.valueOf(policy.getPolicy_number()))) {
+                qry += "and c.hempcnpol='" + member.getClient_policy_number() + "' and c.hempcnid<>'" + member.getClient_id_number() + "' ";
+            } else {
+                qry += "and a.hdt1idxno=" + member.getIdx() + " and a.hdt1seqno<>'" + member.getSeq() + "' ";
+            }
+
+            qry += "and a.hdt1ctr=0 "
                     + "and a.hdt1idxno<>99999 "
                     + "order by a.hdt1seqno asc ";
 
@@ -257,15 +263,23 @@ public class MemberDetailController extends Window {
                     + "a.hclmseqno, " //16
                     + "c.hdt1name, "
                     + "a.hclmidxno, "
-                    + "d.hmem2data1 "
+                    + "d.hmem2data1, "
+                    + "e.hempcnpol, e.hempcnid " // 20
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hltpro b on b.hpronomor=a.hclmnhoscd "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
+                    + "inner join idnhltpf.dbo.hltemp e on e.hempyy=a.hclmyy and e.hemppono=a.hclmpono and e.hempidxno=a.hclmidxno and e.hempseqno=a.hclmseqno and e.hempctr=c.hdt1ctr "
                     + "left outer join idnhltpf.dbo.hltmemo2 d on d.hmem2yy=a.hclmyy and d.hmem2pono=a.hclmpono and d.hmem2idxno=a.hclmidxno and d.hmem2seqno=a.hclmseqno and d.hmem2claim=a.hclmtclaim and d.hmem2count=a.hclmcount "
                     + "where "
-                    + "a.hclmyy=" + policy.getYear() + " and a.hclmpono=" + policy.getPolicy_number() + " "
-                    + "and a.hclmidxno=" + member.getIdx() + " "
-                    + "and a.hclmrecid<>'C' "
+                    + "a.hclmyy=" + policy.getYear() + " and a.hclmpono=" + policy.getPolicy_number() + " ";
+
+            if (Libs.nn(Libs.config.get("family_by_polclient")).contains(String.valueOf(policy.getPolicy_number()))) {
+                qry += "and e.hempcnpol='" + member.getClient_policy_number() + "' ";
+            } else {
+                qry += "and a.hclmidxno=" + member.getIdx() + " ";
+            }
+
+            qry += "and a.hclmrecid<>'C' "
                     + "order by a.hclmcdatey desc, a.hclmcdatem desc, a.hclmcdated desc ";
 
             int memberClaimCount = 0;
@@ -285,8 +299,17 @@ public class MemberDetailController extends Window {
                 String planString = clientPlanMap.get(Libs.nn(o[11]));
                 if (planString==null) planString = Libs.nn(o[11]);
 
+                boolean memberClaim = false;
+
+                if (Libs.nn(Libs.config.get("family_by_polclient")).contains(String.valueOf(policy.getPolicy_number()))) {
+                    if (Libs.nn(o[21]).trim().equals(Libs.nn(member.getClient_id_number()))) memberClaim = true;
+                } else {
+                    if (Libs.nn(o[16]).equals(Libs.nn(member.getSeq()))) memberClaim = true;
+                }
+
 //                Claim History
-                if (Libs.nn(o[16]).equals(Libs.nn(member.getSeq()))) {
+                //if (Libs.nn(o[16]).equals(Libs.nn(member.getSeq()))) {
+                if (memberClaim) {
                     memberClaimCount++;
                     memberUsage += Double.valueOf(Libs.nn(o[15]));
 

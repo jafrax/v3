@@ -101,7 +101,6 @@ public class MemberListController extends Window {
 
             Integer recordsCount = (Integer) s.createSQLQuery(qry).uniqueResult();
             pg.setTotalSize(recordsCount);
-            System.out.println("-----> " + recordsCount);
         } catch (Exception ex) {
             log.error("populateCountForQuickSearch", ex);
         } finally {

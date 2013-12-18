@@ -139,7 +139,7 @@ public class InHospitalMonitoringDetailController extends Window {
                     + "(" + Libs.createAddFieldString("a.hclmaamt") + ") as approved, "
                     + "b.nosuratkwitansi, b.tanggal_perawatan2 "
                     + "from idnhltpf.dbo.hltclm a "
-                    + "inner join aso.dbo.pre_ip_provider b on b.thn_polis=a.hclmyy and b.no_polis=a.hclmpono and b.idx=a.hclmidxno and b.seq=a.hclmseqno and b.no_surat_jaminan='" + Libs.nn(ihm[0]) + "' "
+                    + "inner join aso.dbo.pre_ip_provider b on b.thn_polis=a.hclmyy and b.no_polis=a.hclmpono and b.idx=a.hclmidxno and b.seq=a.hclmseqno and a.hclmcno='IDN/'+b.no_hid and b.no_surat_jaminan='" + Libs.nn(ihm[0]) + "' "
                     + "where "
                     + "a.hclmyy=" + Libs.nn(ihm[1]) + " and "
                     + "a.hclmpono=" + Libs.nn(ihm[4]) + " and "

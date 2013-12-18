@@ -190,6 +190,8 @@ public class Libs {
     }
 
     public static Double[] getRemainingFamilyLimit(String policyNumber, String index, String planCode) {
+        String[] policySeg = policyNumber.split("\\-");
+        String[] clientData = getClientData(policyNumber, index);
         Double[] result = new Double[2];
 
         BenefitPOJO benefitPOJO = Libs.getBenefit(policyNumber, planCode);
@@ -202,10 +204,18 @@ public class Libs {
                     + "hclmaamt11+hclmaamt12+hclmaamt13+hclmaamt14+hclmaamt15+hclmaamt16+hclmaamt17+hclmaamt18+hclmaamt19+hclmaamt20+ "
                     + "hclmaamt12+hclmaamt22+hclmaamt23+hclmaamt24+hclmaamt25+hclmaamt26+hclmaamt27+hclmaamt28+hclmaamt29+hclmaamt30 "
                     + ") "
-                    + "from idnhltpf.dbo.hltclm "
+                    + "from idnhltpf.dbo.hltclm a "
+                    + "inner join idnhltpf.dbo.hltemp c on c.hempyy=a.hclmyy and c.hemppono=a.hclmpono and c.hempidxno=a.hclmidxno and c.hempseqno=a.hclmseqno and c.hempctr=0 "
                     + "where "
-                    + "convert(varchar,hclmyy)+'-'+convert(varchar,hclmbr)+'-'+convert(varchar,hclmdist)+'-'+convert(varchar,hclmpono)='" + policyNumber + "' "
-                    + "and hclmidxno='" + index.substring(0, index.indexOf("-")) + "' and hclmrecid<>'C' ";
+                    + "convert(varchar,hclmyy)+'-'+convert(varchar,hclmbr)+'-'+convert(varchar,hclmdist)+'-'+convert(varchar,hclmpono)='" + policyNumber + "' ";
+
+            if (Libs.nn(Libs.config.get("family_by_polclient")).contains(policySeg[3])) {
+                if (clientData!=null) qry += "and c.hempcnpol='" + clientData[0] + "' ";
+            } else {
+                qry += "and hclmidxno='" + index.substring(0, index.indexOf("-")) + "' ";
+            }
+
+            qry += "and hclmrecid<>'C' ";
 
             BigDecimal r = (BigDecimal) s.createSQLQuery(qry).uniqueResult();
 
@@ -482,6 +492,33 @@ public class Libs {
         if (s.equals("D")) return "DENTAL";
         if (s.equals("G")) return "GLASSES";
         return "OTHER";
+    }
+
+    public static String[] getClientData(String policyNumber, String index) {
+        String[] result = null;
+        Session s = Libs.sfDB.openSession();
+        try {
+            String qry = "select "
+                    + "hempcnpol, hempcnid "
+                    + "from idnhltpf.dbo.hltemp "
+                    + "where "
+                    + "convert(varchar,hempyy)+'-'+convert(varchar,hempbr)+'-'+convert(varchar,hempdist)+'-'+convert(varchar,hemppono)='" + policyNumber + "' "
+                    + "and (convert(varchar,hempidxno)+'-'+hempseqno)='" + index + "'";
+
+            List<Object[]> l = s.createSQLQuery(qry).list();
+            if (l.size()==1) {
+                Object[] o = l.get(0);
+                result = new String[2];
+                result[0] = Libs.nn(o[0]).trim();
+                result[1] = Libs.nn(o[1]).trim();
+            }
+        } catch (Exception ex) {
+            log.error("getClientData", ex);
+        } finally {
+            if (s!=null && s.isOpen()) s.close();
+        }
+
+        return result;
     }
 
 }

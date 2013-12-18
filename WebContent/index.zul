@@ -27,34 +27,34 @@
                     <panelchildren style="text-align:right;">
                         <vlayout>
                             <label value="Online Claim Information System" style="font-size:16pt;color:#888888;"/>
-                            <label value="3.20131210" style="font-size:8pt;color:#888888;"/>
+                            <label value="3.20131218" style="font-size:8pt;color:#888888;"/>
                         </vlayout>
                     </panelchildren>
                 </panel>
-                <vlayout height="5px"/>
-                <grid width="100%" vflex="true" style="border:0px;">
-                    <columns>
-                        <column/>
-                        <column/>
-                        <column width="80px"/>
-                    </columns>
-                    <rows>
-                        <row>
-                            <vlayout>
-                                Username
-                                <textbox id="tUsername" height="24px" hflex="true"/>
-                            </vlayout>
-                            <vlayout>
-                                Password
-                                <textbox id="tPassword" type="password" height="24px" hflex="true"/>
-                            </vlayout>
-                            <vlayout>
-                                <vlayout height="18px"/>
-                                <button label="Log In" height="24px" onClick="spaceOwner.login();"/>
-                            </vlayout>
-                        </row>
-                    </rows>
-                </grid>
+                <space height="10px"/>
+                <vlayout width="100%">
+                    <hlayout width="100%">
+                        <hlayout width="150px">
+                            Username
+                        </hlayout>
+                        <hlayout width="150px">
+                            Password
+                        </hlayout>
+                        <hlayout width="100px">
+                        </hlayout>
+                    </hlayout>
+                    <hlayout width="100%">
+                        <hlayout width="150px">
+                            <textbox id="tUsername" height="24px" hflex="true"/>
+                        </hlayout>
+                        <hlayout width="150px">
+                            <textbox id="tPassword" type="password" height="24px" hflex="true"/>
+                        </hlayout>
+                        <hlayout width="60px">
+                            <button label="Log In" height="30px" hflex="true" onClick="spaceOwner.login();"/>
+                        </hlayout>
+                    </hlayout>
+                </vlayout>
             </vlayout>
         </window>
     </window>
