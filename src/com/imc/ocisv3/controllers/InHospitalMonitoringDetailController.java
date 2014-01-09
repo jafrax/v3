@@ -76,12 +76,12 @@ public class InHospitalMonitoringDetailController extends Window {
             lStatus.setStyle("color:#FF0000;");
         }
 
-        ((Label) getFellow("lServiceIn")).setValue(Libs.nn(ihm[18]).substring(0, 10));
+        ((Label) getFellow("lServiceIn")).setValue(ihm[28]==null ? (Libs.nn(ihm[18]).startsWith("1900") ? "" : Libs.nn(ihm[18]).substring(0, 10)) : Libs.nn(ihm[28]));
         ((Label) getFellow("lCompanyName")).setValue(Libs.nn(ihm[19]).trim());
         ((Label) getFellow("lDiagnosis")).setValue(Libs.nn(ihm[20]).trim() + " (" + Libs.nn(ihm[21]).trim() + ")");
         ((Label) getFellow("lPIC")).setValue(Libs.nn(ihm[22]).trim());
         ((Label) getFellow("lGLDate")).setValue(Libs.nn(ihm[23]).substring(0, 10));
-        ((Label) getFellow("lServiceOut")).setValue(Libs.nn(ihm[24]).substring(0, 10));
+        ((Label) getFellow("lServiceOut")).setValue(ihm[29]==null ? (Libs.nn(ihm[24]).startsWith("1900") ? "" : Libs.nn(ihm[24]).substring(0, 10)) : Libs.nn(ihm[29]));
 
         Label lLastCostEstimation = (Label) getFellow("lLastCostEstimation");
         lLastCostEstimation.setStyle("text-align:right;");

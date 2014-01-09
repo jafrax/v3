@@ -23,7 +23,7 @@
                     <listheader label="Claim Type" width="50px"/>
                     <listheader label="Amount" width="130px"/>
                     <listheader label="Paid" width="130px"/>
-                    <listheader label="Provider Name" width="200px"/>
+                    <listheader label="Hospital" width="200px"/>
                 </listhead>
                 <listfoot>
                     <listfooter id="ftr" span="5"/>

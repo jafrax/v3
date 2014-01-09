@@ -18,7 +18,6 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -55,6 +54,7 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -64,41 +64,73 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="EDCDetailController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/EDCDetailController.java">
+      <file leaf-file-name="InHospitalMonitoringDetailController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringDetailController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="53" selection-start="2028" selection-end="2108" vertical-scroll-proportion="0.0" vertical-offset="855" max-vertical-offset="1605">
+            <state line="78" column="111" selection-start="2704" selection-end="2704" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2520">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MemberDetailController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberDetailController.java">
+      <file leaf-file-name="DashboardController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/DashboardController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="282" column="48" selection-start="15954" selection-end="15955" vertical-scroll-proportion="-4.269231" vertical-offset="3894" max-vertical-offset="8055">
+            <state line="14" column="13" selection-start="290" selection-end="290" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1395">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MemberListController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberListController.java">
+      <file leaf-file-name="Dashboard.zul" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/WebContent/views/Dashboard.zul">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="0" selection-start="4045" selection-end="4045" vertical-scroll-proportion="-4.0" vertical-offset="1156" max-vertical-offset="4290">
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#1175#1443#0" expanded="false" />
-                <element signature="e#1432#1433#0" expanded="false" />
-              </folding>
+            <state line="13" column="0" selection-start="722" selection-end="722" vertical-scroll-proportion="0.3617811" vertical-offset="0" max-vertical-offset="539">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.zul" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="main.zul" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/WebContent/main.zul">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="73" column="104" selection-start="5417" selection-end="5417" vertical-scroll-proportion="0.0" vertical-offset="691" max-vertical-offset="1230">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="InHospitalMonitoringController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="93" column="0" selection-start="3895" selection-end="3895" vertical-scroll-proportion="0.0" vertical-offset="691" max-vertical-offset="2190">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WebAppStart.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/WebAppStart.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="81" column="35" selection-start="3486" selection-end="3486" vertical-scroll-proportion="0.0" vertical-offset="1215" max-vertical-offset="1575">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.zul" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebContent/index.zul">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="22" selection-start="2605" selection-end="2605" vertical-scroll-proportion="1.1636904" vertical-offset="464" max-vertical-offset="990">
+            <state line="29" column="52" selection-start="1333" selection-end="1333" vertical-scroll-proportion="0.0" vertical-offset="203" max-vertical-offset="990">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ClaimList.zul" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/WebContent/views/ClaimList.zul">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="25" column="47" selection-start="1737" selection-end="1737" vertical-scroll-proportion="0.0" vertical-offset="61" max-vertical-offset="600">
               <folding />
             </state>
           </provider>
@@ -107,7 +139,16 @@
       <file leaf-file-name="config.properties" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebContent/conf/config.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="10" selection-start="307" selection-end="307" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
+            <state line="8" column="24" selection-start="201" selection-end="212" vertical-scroll-proportion="0.0" vertical-offset="120" max-vertical-offset="330">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Libs.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/Libs.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="48" column="0" selection-start="1768" selection-end="1768" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="7950">
               <folding />
             </state>
           </provider>
@@ -126,25 +167,29 @@
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/ClaimSummaryController.java" />
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/ClaimListController.java" />
         <option value="$PROJECT_DIR$/build.xml" />
-        <option value="$PROJECT_DIR$/WebContent/main.zul" />
-        <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/ClientSelectionController.java" />
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/PoliciesController.java" />
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MainController.java" />
-        <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringController.java" />
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/PolicyDetailController.java" />
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/ClaimHistoryController.java" />
         <option value="$PROJECT_DIR$/WebContent/conf/config.properties" />
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/tools/Libs.java" />
-        <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringDetailController.java" />
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberDetailController.java" />
         <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberListController.java" />
+        <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/ClientSelectionController.java" />
+        <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringController.java" />
         <option value="$PROJECT_DIR$/WebContent/index.zul" />
+        <option value="$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringDetailController.java" />
+        <option value="$PROJECT_DIR$/WebContent/main.zul" />
+        <option value="$PROJECT_DIR$/WebContent/views/ClaimList.zul" />
+        <option value="$PROJECT_DIR$/WebContent/views/Dashboard.zul" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="1366" />
-    <option name="height" value="732" />
+    <option name="x" value="-2" />
+    <option name="y" value="-3" />
+    <option name="width" value="1370" />
+    <option name="height" value="739" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -173,6 +218,7 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -403,7 +449,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -418,15 +463,15 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/build.xml" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="build" />
     <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="build" />
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
-    <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
-    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
+    <property name="FullScreen" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
+    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -458,6 +503,7 @@
       <option name="CLASS_NAME" value="" />
       <option name="PACKAGE_NAME" value="" />
       <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
       <option name="PREFERRED_AVD" value="" />
       <option name="USE_COMMAND_LINE" value="true" />
       <option name="COMMAND_LINE" value="" />
@@ -466,6 +512,7 @@
       <option name="NETWORK_SPEED" value="full" />
       <option name="NETWORK_LATENCY" value="none" />
       <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
       <method />
     </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
@@ -555,7 +602,9 @@
       <option name="ACTIVITY_CLASS" value="" />
       <option name="MODE" value="default_activity" />
       <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
       <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
       <option name="PREFERRED_AVD" value="" />
       <option name="USE_COMMAND_LINE" value="true" />
       <option name="COMMAND_LINE" value="" />
@@ -564,6 +613,7 @@
       <option name="NETWORK_SPEED" value="full" />
       <option name="NETWORK_LATENCY" value="none" />
       <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
       <method />
     </configuration>
     <list size="0" />
@@ -587,7 +637,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1366" height="732" extended-state="4" />
+    <frame x="-2" y="-3" width="1370" height="739" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -595,24 +645,30 @@
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15577507" sideWeight="0.67687076" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15483384" sideWeight="0.67687076" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2588997" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32312927" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32305196" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34118542" sideWeight="0.67687076" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3383686" sideWeight="0.67687076" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847896" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
     </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USERS">
+      <collection />
+    </option>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -642,16 +698,219 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/ClientSelectionController.java">
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberListController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="18" selection-start="845" selection-end="845" vertical-scroll-proportion="0.0" vertical-offset="450" max-vertical-offset="2205">
+        <state line="150" column="24" selection-start="7517" selection-end="7577" vertical-scroll-proportion="0.0" vertical-offset="2250" max-vertical-offset="4575">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/EDCTransactionsController.java">
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/WebAppStart.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="13" selection-start="487" selection-end="487" vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="5760">
+        <state line="81" column="35" selection-start="3486" selection-end="3486" vertical-scroll-proportion="0.0" vertical-offset="1215" max-vertical-offset="1575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/index.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="30" selection-start="1945" selection-end="1945" vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="990">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/views/ClaimList.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="261" selection-end="900" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="600">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/conf/config.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="24" selection-start="201" selection-end="212" vertical-scroll-proportion="0.0" vertical-offset="120" max-vertical-offset="330">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/Libs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="0" selection-start="1768" selection-end="1768" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="7950">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/EDCDetailController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="53" selection-start="2028" selection-end="2108" vertical-scroll-proportion="0.0" vertical-offset="855" max-vertical-offset="1770">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberDetailController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="467" column="26" selection-start="25015" selection-end="25262" vertical-scroll-proportion="0.0" vertical-offset="7005" max-vertical-offset="8280">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/ClientSelectionController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="438" selection-start="4879" selection-end="4879" vertical-scroll-proportion="0.0" vertical-offset="1440" max-vertical-offset="2325">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberListController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="24" selection-start="7517" selection-end="7577" vertical-scroll-proportion="0.0" vertical-offset="2250" max-vertical-offset="4575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/WebAppStart.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="81" column="35" selection-start="3486" selection-end="3486" vertical-scroll-proportion="0.0" vertical-offset="1215" max-vertical-offset="1575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/index.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="30" selection-start="1945" selection-end="1945" vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="990">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/views/ClaimList.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="261" selection-end="900" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="600">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/conf/config.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="24" selection-start="201" selection-end="212" vertical-scroll-proportion="0.0" vertical-offset="120" max-vertical-offset="330">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/Libs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="0" selection-start="1768" selection-end="1768" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="7950">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/EDCDetailController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="53" selection-start="2028" selection-end="2108" vertical-scroll-proportion="0.0" vertical-offset="855" max-vertical-offset="1770">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberDetailController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="282" column="48" selection-start="15954" selection-end="15955" vertical-scroll-proportion="0.0" vertical-offset="4230" max-vertical-offset="8280">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberListController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="24" selection-start="7517" selection-end="7577" vertical-scroll-proportion="0.0" vertical-offset="2250" max-vertical-offset="4575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/WebAppStart.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="81" column="35" selection-start="3486" selection-end="3486" vertical-scroll-proportion="0.0" vertical-offset="1215" max-vertical-offset="1575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/index.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="30" selection-start="1945" selection-end="1945" vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="990">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/views/ClaimList.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="261" selection-end="900" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="600">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/conf/config.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="24" selection-start="201" selection-end="212" vertical-scroll-proportion="0.0" vertical-offset="120" max-vertical-offset="330">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/Libs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="0" selection-start="1768" selection-end="1768" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="7950">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/EDCDetailController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="53" selection-start="2028" selection-end="2108" vertical-scroll-proportion="0.0" vertical-offset="855" max-vertical-offset="1770">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberDetailController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="282" column="48" selection-start="15954" selection-end="15955" vertical-scroll-proportion="0.0" vertical-offset="4230" max-vertical-offset="8280">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberListController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="24" selection-start="7517" selection-end="7577" vertical-scroll-proportion="0.0" vertical-offset="2250" max-vertical-offset="4575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/WebAppStart.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="5" selection-start="703" selection-end="1010" vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="1575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/index.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="30" selection-start="1945" selection-end="1945" vertical-scroll-proportion="0.0" vertical-offset="134" max-vertical-offset="990">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/views/ClaimList.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="261" selection-end="900" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="600">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/conf/config.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="14" selection-start="0" selection-end="334" vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="330">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/Libs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="0" selection-start="1768" selection-end="1768" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="7680">
           <folding />
         </state>
       </provider>
@@ -671,13 +930,6 @@
     <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MainController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="38" column="59" selection-start="1126" selection-end="1126" vertical-scroll-proportion="0.0" vertical-offset="354" max-vertical-offset="1425">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="128" column="116" selection-start="5163" selection-end="5163" vertical-scroll-proportion="0.26444834" vertical-offset="1769" max-vertical-offset="2340">
           <folding />
         </state>
       </provider>
@@ -703,48 +955,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/Libs.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="496" column="32" selection-start="21575" selection-end="22626" vertical-scroll-proportion="0.0" vertical-offset="547" max-vertical-offset="1140">
-          <folding>
-            <element signature="docComment;class#Libs#0" expanded="false" />
-            <element signature="method#getSession#0;class#Libs#0" expanded="false" />
-            <element signature="method#getCenter#0;class#Libs#0" expanded="false" />
-            <element signature="method#getRootWindow#0;class#Libs#0" expanded="false" />
-            <element signature="method#nn#0;class#Libs#0" expanded="false" />
-            <element signature="method#getDiffDays#0;class#Libs#0" expanded="false" />
-            <element signature="method#createNumericListcell#0;class#Libs#0" expanded="false" />
-            <element signature="method#createNumericListcell#1;class#Libs#0" expanded="false" />
-            <element signature="method#createAddFieldString#0;class#Libs#0" expanded="false" />
-            <element signature="method#createListFieldString#0;class#Libs#0" expanded="false" />
-            <element signature="method#getBenefitItemDescription#0;class#Libs#0" expanded="false" />
-            <element signature="method#getProposed#0;class#Libs#0" expanded="false" />
-            <element signature="method#getApproved#0;class#Libs#0" expanded="false" />
-            <element signature="method#createXLSRow#0;class#Libs#0" expanded="false" />
-            <element signature="method#getBenefit#0;class#Libs#0" expanded="false" />
-            <element signature="method#getRemainingFamilyLimit#0;class#Libs#0" expanded="false" />
-            <element signature="method#getEDCUsage#0;class#Libs#0" expanded="false" />
-            <element signature="method#getMemberByCardNumber#0;class#Libs#0" expanded="false" />
-            <element signature="method#getHospitalById#0;class#Libs#0" expanded="false" />
-            <element signature="method#getClientPlanMap#0;class#Libs#0" expanded="false" />
-            <element signature="method#getICDByCode#0;class#Libs#0" expanded="false" />
-            <element signature="method#getMemberClaimUsage#0;class#Libs#0" expanded="false" />
-            <element signature="method#showDeveloping#0;class#Libs#0" expanded="false" />
-            <element signature="method#getMember#0;class#Libs#0" expanded="false" />
-            <element signature="method#createCell#0;class#Libs#0" expanded="false" />
-            <element signature="method#getClaimType#0;class#Libs#0" expanded="false" />
-            <element signature="method#getClientData#0;class#Libs#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringDetailController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="141" column="188" selection-start="5951" selection-end="5951" vertical-scroll-proportion="0.0" vertical-offset="1779" max-vertical-offset="2520">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/EDCDetailController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="57" column="53" selection-start="2028" selection-end="2108" vertical-scroll-proportion="0.0" vertical-offset="855" max-vertical-offset="1605">
@@ -752,34 +962,93 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberListController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="24" selection-start="7517" selection-end="7577" vertical-scroll-proportion="0.0" vertical-offset="2250" max-vertical-offset="4290">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/Libs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="0" selection-start="1768" selection-end="1768" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="7680">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/tools/WebAppStart.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="81" column="35" selection-start="3486" selection-end="3486" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="1425">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/conf/config.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="10" selection-start="307" selection-end="307" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
+        <state line="8" column="24" selection-start="201" selection-end="212" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberDetailController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="282" column="48" selection-start="15954" selection-end="15955" vertical-scroll-proportion="-4.269231" vertical-offset="3894" max-vertical-offset="8055">
+        <state line="467" column="26" selection-start="25015" selection-end="25262" vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="930">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/MemberListController.java">
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/ClientSelectionController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="0" selection-start="4045" selection-end="4045" vertical-scroll-proportion="-4.0" vertical-offset="1156" max-vertical-offset="4290">
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1175#1443#0" expanded="false" />
-            <element signature="e#1432#1433#0" expanded="false" />
-          </folding>
+        <state line="96" column="438" selection-start="4879" selection-end="4879" vertical-scroll-proportion="0.0" vertical-offset="1440" max-vertical-offset="2325">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="93" column="0" selection-start="3895" selection-end="3895" vertical-scroll-proportion="0.0" vertical-offset="691" max-vertical-offset="2190">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/InHospitalMonitoringDetailController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="78" column="111" selection-start="2704" selection-end="2704" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2520">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/imc/ocisv3/controllers/DashboardController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="13" selection-start="290" selection-end="290" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1395">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/main.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="73" column="104" selection-start="5417" selection-end="5417" vertical-scroll-proportion="0.0" vertical-offset="691" max-vertical-offset="1230">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/views/ClaimList.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="47" selection-start="1737" selection-end="1737" vertical-scroll-proportion="0.0" vertical-offset="61" max-vertical-offset="600">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/index.zul">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="22" selection-start="2605" selection-end="2605" vertical-scroll-proportion="1.1636904" vertical-offset="464" max-vertical-offset="990">
+        <state line="29" column="52" selection-start="1333" selection-end="1333" vertical-scroll-proportion="0.0" vertical-offset="203" max-vertical-offset="990">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/views/Dashboard.zul">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="0" selection-start="722" selection-end="722" vertical-scroll-proportion="0.3617811" vertical-offset="0" max-vertical-offset="539">
           <folding />
         </state>
       </provider>

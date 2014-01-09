@@ -66,10 +66,13 @@ public class InHospitalMonitoringController extends Window {
                     + "a.diagnosa, a.icd, " // 20
                     + "a.user_prv, tgl_print, "
                     + "a.tg_keluar, a.estimasi, a.notepenting, "
-                    + "c.hdt1mstat " // 27
+                    + "c.hdt1mstat, " // 27
+                    + "(convert(varchar,hclmsinyy)+'-'+convert(varchar,hclmsinmm)+'-'+convert(varchar,hclmsindd)) as sin, "
+                    + "(convert(varchar,hclmsoutyy)+'-'+convert(varchar,hclmsoutmm)+'-'+convert(varchar,hclmsoutdd)) as sout "
                     + "from surjam_new.dbo.ms_surjam a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.thn_polis and b.hhdrpono=a.no_polis "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
+                    + "left outer join idnhltpf.dbo.hltclm d on d.hclmcno='IDN/' + a.no_hid "
                     + "where "
                     + "b.hhdrinsid='" + Libs.insuranceId + "' ";
 
