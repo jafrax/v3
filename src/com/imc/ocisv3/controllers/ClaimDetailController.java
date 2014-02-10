@@ -1,13 +1,19 @@
 package com.imc.ocisv3.controllers;
 
+import bsh.Interpreter;
 import com.imc.ocisv3.pojos.BenefitPOJO;
 import com.imc.ocisv3.pojos.ClaimPOJO;
 import com.imc.ocisv3.tools.Libs;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,9 +27,9 @@ public class ClaimDetailController extends Window {
     private Logger log = LoggerFactory.getLogger(ClaimDetailController.class);
     private ClaimPOJO claimPOJO;
     private Listbox lb;
+    private Listheader lhDaysLeft;
 
     public void onCreate() {
-        System.out.println("created");
         claimPOJO = (ClaimPOJO) getAttribute("claim");
 
         initComponents();
@@ -32,8 +38,14 @@ public class ClaimDetailController extends Window {
 
     private void initComponents() {
         lb = (Listbox) getFellow("lb");
+        lhDaysLeft = (Listheader) getFellow("lhDaysLeft");
 
         getCaption().setLabel("Claim Detail [" + claimPOJO.getClaim_number() + "]");
+
+//        if (Libs.nn(Libs.config.get("show_remaining_days")).contains(Libs.nn(claimPOJO.getPolicy().getPolicy_number()))) {
+//            System.out.println("here!");
+//            lhDaysLeft.setVisible(true);
+//        }
     }
 
     private void populate() {
@@ -71,6 +83,23 @@ public class ClaimDetailController extends Window {
                 if (!Libs.nn(o[7]).trim().isEmpty()) diagnosis += ", " + Libs.nn(o[7]).trim();
                 if (!Libs.nn(o[8]).trim().isEmpty()) diagnosis += ", " + Libs.nn(o[8]).trim();
 
+                String[] segShowRemainingDays = Libs.nn(Libs.config.get("show_remaining_days")).split("\\,");
+                for (String seg : segShowRemainingDays) {
+                    String[] segDisease = seg.split("\\:");
+                    if (segDisease[0].equals(Libs.nn(claimPOJO.getPolicy().getPolicy_number()))) {
+                        boolean show = false;
+                        if (segDisease.length==1) {
+                            show = true;
+                        } else if (diagnosis.contains(segDisease[1])) {
+                            show = true;
+                        }
+
+                        if (show) {
+                            lhDaysLeft.setVisible(true);
+                        }
+                    }
+                }
+
                 String dob = Libs.nn(o[12]) + "-" + Libs.nn(o[13]) + "-" + Libs.nn(o[14]);
                 int ageDays = 0;
                 try {
@@ -107,7 +136,7 @@ public class ClaimDetailController extends Window {
                 ((Label) getFellow("lSex")).setValue(Libs.nn(o[15]).trim());
                 ((Label) getFellow("lCardNumber")).setValue(Libs.nn(o[16]).trim());
                 ((Label) getFellow("lCompanyName")).setValue(companyName);
-                ((Label) getFellow("lServiceDays")).setValue(String.valueOf(Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(serviceIn), new SimpleDateFormat("yyyy-MM-dd").parse(serviceOut))));
+                ((Label) getFellow("lServiceDays")).setValue(String.valueOf(Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(serviceIn), new SimpleDateFormat("yyyy-MM-dd").parse(serviceOut))+1));
                 ((Label) getFellow("tRemarks")).setValue(remarks);
             }
         } catch (Exception ex) {
@@ -125,7 +154,8 @@ public class ClaimDetailController extends Window {
                     + "(a.hclmpcode1 + a.hclmpcode2) as plan_code, "
                     + Libs.createListFieldString("a.hclmcamt") + ", "
                     + Libs.createListFieldString("a.hclmaamt") + ", "
-                    + Libs.createListFieldString("a.hclmaday") + " "
+                    + Libs.createListFieldString("a.hclmaday") + ", "
+                    + "a.hclmtclaim "
                     + "from idnhltpf.dbo.hltclm a "
                     + "where "
                     + "a.hclmcno='" + claimPOJO.getClaim_number() + "' and "
@@ -148,14 +178,39 @@ public class ClaimDetailController extends Window {
                         totalProposed += Double.valueOf(Libs.nn(o[i+1]));
                         totalApproved += Double.valueOf(Libs.nn(o[i+31]));
 
+                        String remarks = Libs.loadAdvancedMemo(claimPOJO.getPolicy_number(), claimPOJO.getIndex(), claimPOJO.getClaim_count(), Libs.nn(o[91]), claimPOJO.getClaim_number(), planItem);
+
                         Listitem li = new Listitem();
                         li.appendChild(new Listcell(Libs.getBenefitItemDescription(planItem)));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+61])), "#"));
+                        li.appendChild(Libs.createNumericListcell(0, "#"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+1])), "#,###.##"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+31])), "#,###.##"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+1]))-Double.valueOf(Libs.nn(o[i+31])), "#,###.##"));
-                        li.appendChild(new Listcell(""));
+                        li.appendChild(Libs.createRemarksListcell(remarks, this));
                         lb.appendChild(li);
+
+                        try {
+                            File f = new File(Executions.getCurrent().getSession().getWebApp().getRealPath("rules/" + claimPOJO.getPolicy().getPolicy_number() + "_Claim_Detail_Row.rule"));
+                            if (f.exists()) {
+                                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                                String rule = "";
+                                while (br.ready()) {
+                                    rule += br.readLine();
+                                }
+                                br.close();
+
+                                Interpreter interpreter = new Interpreter();
+                                interpreter.set("config", Libs.config);
+                                interpreter.set("claim", claimPOJO);
+                                interpreter.set("li", li);
+                                interpreter.set("benefitCode", planItem);
+                                interpreter.set("diagnosis", ((Label) getFellow("lDiagnosis")).getValue());
+                                interpreter.eval(rule);
+                            }
+                        } catch (Exception ex) {
+                            log.error("populatePlanItems", ex);
+                        }
                     }
                     i++;
                 }

@@ -85,6 +85,7 @@
                 <listhead sizable="true">
                     <listheader label="Benefit" width="300px"/>
                     <listheader label="Days" width="50px"/>
+                    <listheader id="lhDaysLeft" label="Days Left" width="50px" visible="false"/>
                     <listheader label="Proposed" width="100px"/>
                     <listheader label="Approved" width="100px"/>
                     <listheader label="Excess" width="100px"/>

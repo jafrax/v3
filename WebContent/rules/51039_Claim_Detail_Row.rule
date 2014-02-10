@@ -1,0 +1,12 @@
+import org.zkoss.zul.Listcell;
+import com.imc.ocisv3.tools.Libs;
+
+if (diagnosis.contains("B20")) {
+    String[] policySeg = claim.getPolicy_number().split("\\-");
+    String[] indexSeg = claim.getIndex().split("\\-");
+
+    int daysLeft = 60 - Libs.getUsageDays(Integer.valueOf(policySeg[0]), Integer.valueOf(policySeg[3]), Integer.valueOf(indexSeg[0]), indexSeg[1], 2);
+    if (benefitCode.equals("IN099")) {
+       ((Listcell) li.getChildren().get(2)).setLabel(String.valueOf(daysLeft));
+    }
+}

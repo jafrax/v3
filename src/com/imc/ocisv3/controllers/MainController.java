@@ -36,8 +36,8 @@ public class MainController extends Window {
         tree = (Tree) getFellow("tree");
         imgCompanyLogo = (Image) getFellow("imgCompanyLogo");
 
-        Libs.getSession().setAttribute("rootWindow", this);
-        Libs.getSession().setAttribute("center", getFellow("center"));
+        Libs.getDesktop().setAttribute("rootWindow", this);
+        Libs.getDesktop().setAttribute("center", getFellow("center"));
 
         String imageFile = "";
 

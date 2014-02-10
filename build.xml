@@ -44,6 +44,7 @@
         <delete dir="${webapps.dir}/${war.name}/resources"/>
         <delete dir="${webapps.dir}/${war.name}/views"/>
         <delete dir="${webapps.dir}/${war.name}/reports"/>
+        <delete dir="${webapps.dir}/${war.name}/rules"/>
         <copy todir="${webapps.dir}/${war.name}/views" overwrite="true">
             <fileset dir="WebContent/views" includes="**/*.*"/>
         </copy>
@@ -52,6 +53,9 @@
         </copy>
         <copy todir="${webapps.dir}/${war.name}/reports" overwrite="true">
             <fileset dir="WebContent/reports" includes="**/*.*"/>
+        </copy>
+        <copy todir="${webapps.dir}/${war.name}/rules" overwrite="true">
+            <fileset dir="WebContent/rules" includes="**/*.*"/>
         </copy>
         <copy file="WebContent/index.zul" tofile="${webapps.dir}/${war.name}/index.zul" overwrite="true"/>
         <copy file="WebContent/main.zul" tofile="${webapps.dir}/${war.name}/main.zul" overwrite="true"/>

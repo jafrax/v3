@@ -6,6 +6,7 @@
                 <tabs>
                     <tab label="Information"/>
                     <tab id="tabRelatives" label="Relatives" disabled="true"/>
+                    <tab id="tabOngoingClaim" label="Ongoing Claim" disabled="true"/>
                     <tab id="tabClaimHistory" label="Member Claim History" disabled="true"/>
                     <tab id="tabPolicyClaimHistory" label="Family Claim History" disabled="true"/>
                     <tab label="Plan Benefit"/>
@@ -104,6 +105,27 @@
                         </listbox>
                     </tabpanel>
                     <tabpanel>
+                        <listbox id="lbOngoingClaim" width="100%" height="100%" vflex="true" style="white-space:nowrap;" onDoubleClick="spaceOwner.showClaimDetail();">
+                            <listhead sizable="true">
+                                <listheader label="Type" width="100px"/>
+                                <listheader label="Provider" width="250px"/>
+                                <listheader label="Diagnosis" width="100px"/>
+                                <listheader label="Description" width="100px"/>
+                                <listheader label="Proposed" width="100px"/>
+                                <listheader label="Approved" width="100px"/>
+                                <listheader label="Days" width="50px"/>
+                                <listheader label="Service In" width="100px"/>
+                                <listheader label="Service Out" width="100px"/>
+                                <listheader label="Plan" width="80px"/>
+                                <listheader label="Source" width="80px"/>
+                            </listhead>
+                            <listfoot>
+                                <listfooter span="4" label="Total amount: "/>
+                                <listfooter id="ftrOngoingApproved" align="right"/>
+                            </listfoot>
+                        </listbox>
+                    </tabpanel>
+                    <tabpanel>
                         <listbox id="lbClaimHistory" width="100%" height="100%" vflex="true" style="white-space:nowrap;" onDoubleClick="spaceOwner.showClaimDetail();">
                             <listhead sizable="true">
                                 <listheader label="Type" width="100px"/>
@@ -146,15 +168,24 @@
                         </listbox>
                         <paging id="pgPolicyClaimHistory" height="25px" pageSize="20"/>
                     </tabpanel>
-                    <tabpanel>
-                        <listbox id="lbPlanItems" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
-                            <listhead>
-                                <listheader label="Code" width="50px"/>
-                                <listheader label="Benefit Description"/>
-                                <listheader label="Amount" width="120px"/>
-                                <listheader label="Description"/>
-                            </listhead>
-                        </listbox>
+                    <tabpanel style="padding:0px;">
+                        <panel width="100%" height="100%">
+                            <panelchildren>
+                                <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
+                                    <toolbar align="end" height="21px">
+                                        <combobox id="cbPlans" onChange="spaceOwner.planSelected();"/>
+                                    </toolbar>
+                                </hbox>
+                                <listbox id="lbPlanItems" width="100%" height="100%" vflex="true" style="white-space:nowrap;border-top:0px;border-left:0px;border-right:0px;border-bottom:0px;">
+                                    <listhead>
+                                        <listheader label="Code" width="50px"/>
+                                        <listheader label="Benefit Description"/>
+                                        <listheader label="Amount" width="120px"/>
+                                        <listheader label="Description"/>
+                                    </listhead>
+                                </listbox>
+                            </panelchildren>
+                        </panel>
                     </tabpanel>
                     <tabpanel>
                         <listbox id="lbUpdation" width="100%" height="100%" vflex="true" style="white-space:nowrap;">
@@ -168,11 +199,11 @@
                 </tabpanels>
             </tabbox>
         </center>
-        <east id="eastFamilyLimit" size="300px" splittable="true" style="border-top:0px; border-right:0px; border-bottom:0px;">
+        <east id="eastFamilyLimit" size="220px" splittable="true" style="border-top:0px; border-right:0px; border-bottom:0px;" visible="false" open="false">
             <grid width="100%" height="100%">
                 <columns visible="false">
-                    <column/>
-                    <column align="right"/>
+                    <column width="120px"/>
+                    <column width="100px" align="right"/>
                 </columns>
                 <rows>
                     <row>

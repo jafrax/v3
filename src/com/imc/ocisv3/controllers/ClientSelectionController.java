@@ -26,9 +26,16 @@ public class ClientSelectionController extends Window {
     private String where;
 
     public void onCreate() {
-        initComponents();
-        populateInactive(0, pgInactive.getPageSize());
-        populateActive(0, pgActive.getPageSize());
+        if (Executions.getCurrent().getSession().getAttribute("u")!=null) {
+            initComponents();
+            initComponents();
+            populateInactive(0, pgInactive.getPageSize());
+            populateActive(0, pgActive.getPageSize());
+        } else {
+            Executions.getCurrent().getSession().setMaxInactiveInterval(0);
+            Executions.getCurrent().getSession().invalidate();
+            Executions.sendRedirect("index.zul");
+        }
     }
 
     private void initComponents() {
@@ -59,12 +66,14 @@ public class ClientSelectionController extends Window {
         Session s = Libs.sfEDC.openSession();
         try {
             String countQry = "select count(*) from ocis.dbo.cis_inslf where hinsid not in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') ";
-            String qry = "select hinsid, hinsname from ocis.dbo.cis_inslf where hinsid not in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') order by hinsname asc ";
+            String qry = "select hinsid, hinsname from ocis.dbo.cis_inslf where hinsid not in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') ";
 
             if (where!=null) {
                 countQry += "and (" + where + ") ";
                 qry += "and (" + where + ") ";
             }
+
+            qry += "order by hinsname asc";
 
             Integer count = (Integer) s.createSQLQuery(countQry).uniqueResult();
             pgInactive.setTotalSize(count);
@@ -94,12 +103,14 @@ public class ClientSelectionController extends Window {
         Session s = Libs.sfDB.openSession();
         try {
             String countQry = "select count(*) from idnhltpf.dbo.hltins where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') ";
-            String qry = "select hinsid, hinsname from idnhltpf.dbo.hltins where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') order by hinsname asc ";
+            String qry = "select hinsid, hinsname from idnhltpf.dbo.hltins where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') ";
 
             if (where!=null) {
                 countQry += "and (" + where + ") ";
                 qry += "and (" + where + ") ";
             }
+
+            qry += "order by hinsname asc";
 
             Integer count = (Integer) s.createSQLQuery(countQry).uniqueResult();
             pgActive.setTotalSize(count);

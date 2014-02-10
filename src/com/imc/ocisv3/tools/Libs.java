@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.*;
 import java.math.BigDecimal;
@@ -39,12 +40,16 @@ public class Libs {
         return Executions.getCurrent().getSession();
     }
 
+    public static Desktop getDesktop() {
+        return Executions.getCurrent().getDesktop();
+    }
+
     public static Center getCenter() {
-        return (Center) getSession().getAttribute("center");
+        return (Center) getDesktop().getAttribute("center");
     }
 
     public static Window getRootWindow() {
-        return (Window) getSession().getAttribute("rootWindow");
+        return (Window) getDesktop().getAttribute("rootWindow");
     }
 
     public static String nn(Object o) {
@@ -518,6 +523,72 @@ public class Libs {
             if (s!=null && s.isOpen()) s.close();
         }
 
+        return result;
+    }
+
+    public static String loadAdvancedMemo(String policyNumber, String index, int claimCount, String claimType, String claimNumber, String benefitCode) {
+        String result = "";
+        String[] policySeg = policyNumber.split("-");
+        String[] indexSeg = index.split("-");
+        Session s = sfDB.openSession();
+        try {
+            String qry = "select memo "
+                    + "from imcs.dbo.advanced_memo "
+                    + "where "
+                    + "policy_year=" + policySeg[0] + " "
+                    + "and policy_number=" + policySeg[3] + " "
+                    + "and idx=" + indexSeg[0] + " "
+                    + "and seq='" + indexSeg[1] + "' "
+                    + "and claim_count=" + claimCount + " "
+                    + "and claim_type='" + claimType + "' "
+                    + "and claim_number='" + claimNumber + "' "
+                    + "and benefit_code='" + benefitCode + "' ";
+
+            result = (String) s.createSQLQuery(qry).uniqueResult();
+        } catch (Exception ex) {
+            log.error("loadAdvancedMemo", ex);
+        } finally {
+            s.close();
+        }
+        return result;
+    }
+
+    public static Listcell createRemarksListcell(String remarks, Window w) {
+        Listcell lc = new Listcell(remarks);
+        Popup p = new Popup();
+        p.setWidth("300px");
+        p.setHeight("200px");
+        Textbox t = new Textbox();
+        t.setReadonly(true);
+        t.setText(remarks);
+        t.setWidth("98%");
+        t.setHeight("95%");
+        t.setRows(3);
+        p.appendChild(t);
+        lc.setTooltip(p);
+        w.appendChild(p);
+        return lc;
+    }
+
+    public static Integer getUsageDays(int policyYear, int policyNumber, int index, String sequence, int benefitPos) {
+        int result = 0;
+        Session s = sfDB.openSession();
+        try {
+            String q = "select sum(hclmaday" + benefitPos + ") "
+                    + "from idnhltpf.dbo.hltclm "
+                    + "where "
+                    + "hclmyy=" + policyYear + " "
+                    + "and hclmpono=" + policyNumber + " "
+                    + "and hclmidxno=" + index + " "
+                    + "and hclmseqno='" + sequence + "' "
+                    + "and hclmrecid<>'C' ";
+
+            result = ((BigDecimal) s.createSQLQuery(q).uniqueResult()).intValue();
+        } catch (Exception ex) {
+            log.error("getUsageDays", ex);
+        } finally {
+            s.close();
+        }
         return result;
     }
 
