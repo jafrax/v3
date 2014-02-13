@@ -94,4 +94,9 @@ public class MainController extends Window {
         Executions.sendRedirect("views/ClientSelection.zul");
     }
 
+    public void changePassword() {
+        Window w = (Window) Executions.createComponents("views/ChangePassword.zul", this, null);
+        w.doModal();
+    }
+
 }
