@@ -33,7 +33,7 @@
                                         <listhead>
                                             <listheader label="Code" width="50px"/>
                                             <listheader label="Benefit Description"/>
-                                            <listheader label="Amount" width="120px"/>
+                                            <listheader label="Limit" width="120px"/>
                                             <listheader label="Description"/>
                                         </listhead>
                                     </listbox>
@@ -41,12 +41,12 @@
                             </center>
                         </borderlayout>
                     </tabpanel>
-                    <tabpanel>
+                    <tabpanel style="padding:0px;">
                         <panel width="100%" height="100%">
                             <panelchildren>
                                 <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
                                     <toolbar height="21px">
-                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.exportMembers();"/>
+                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.exportMembers();"/>
                                         <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refreshMembers();"/>
                                     </toolbar>
                                     <toolbar align="end" height="21px">

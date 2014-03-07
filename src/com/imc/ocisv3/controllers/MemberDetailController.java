@@ -50,10 +50,12 @@ public class MemberDetailController extends Window {
     private Map<String,String> clientPlanMap;
 
     public void onCreate() {
-        policy = (PolicyPOJO) getAttribute("policy");
-        member = (MemberPOJO) getAttribute("member");
-        initComponents();
-        populate();
+        if (!Libs.checkSession()) {
+            policy = (PolicyPOJO) getAttribute("policy");
+            member = (MemberPOJO) getAttribute("member");
+            initComponents();
+            populate();
+        }
     }
 
     private void initComponents() {
@@ -620,10 +622,13 @@ public class MemberDetailController extends Window {
 
     private Listitem createPlanLine(String type, String plan, String entryDate, String exitDate) {
         int planClaimCount = 0;
+        double limit = 0;
+        double planUsage = 0;
 
         Session s = Libs.sfDB.openSession();
         try {
-            String qry = "select count(*) "
+            String q = "select count(*), "
+                    + "sum(" + Libs.runningFields("hclmaamt", 1, 30, true) + ") as approved "
                     + "from idnhltpf.dbo.hltclm "
                     + "where "
                     + "hclmyy=" + policy.getYear() + " and hclmpono=" + policy.getPolicy_number() + " "
@@ -631,7 +636,30 @@ public class MemberDetailController extends Window {
                     + "and (hclmpcode1 + hclmpcode2)='" + plan + "' "
                     + "and hclmrecid<>'C' ";
 
-            planClaimCount = (Integer) s.createSQLQuery(qry).uniqueResult();
+            Object[] o = (Object[]) s.createSQLQuery(q).uniqueResult();
+            planClaimCount = (Integer) o[0];
+            if (o[1]!=null) planUsage = ((BigDecimal) o[1]).doubleValue();
+
+            q = "select hbftlmtamt "
+                    + "from idnhltpf.dbo.hltbft "
+                    + "where "
+                    + "hbftyy=" + policy.getYear() + " "
+                    + "and hbftpono=" + policy.getPolicy_number() + " "
+                    + "and hbftcode='" + plan + "' ";
+
+            limit = ((BigDecimal) s.createSQLQuery(q).uniqueResult()).doubleValue();
+
+            if (limit==0) {
+                q = "select hgajilmt "
+                        + "from idnhltpf.dbo.hltgajisuh "
+                        + "where "
+                        + "hgajiyy=" + policy.getYear() + " "
+                        + "and hgajipono=" + policy.getPolicy_number() + " "
+                        + "and hgajiidxno=" + member.getIdx() + " "
+                        + "and hgajiseqno='" + member.getSeq() + "' ";
+
+                limit = ((BigDecimal) s.createSQLQuery(q).uniqueResult()).doubleValue();
+            }
         } catch (Exception ex) {
             log.error("createPlanLine", ex);
         } finally {
@@ -646,7 +674,9 @@ public class MemberDetailController extends Window {
         li.appendChild(new Listcell(planString));
         li.appendChild(new Listcell(entryDate.equals("0-0-0") ? "" : entryDate));
         li.appendChild(new Listcell(exitDate.equals("0-0-0") ? "" : exitDate));
-        li.appendChild(Libs.createNumericListcell(planClaimCount, "#,###"));
+        li.appendChild(Libs.createNumericListcell(planClaimCount, "###"));
+        li.appendChild(Libs.createNumericListcell(limit, "#,###.00"));
+        li.appendChild(Libs.createNumericListcell(limit - planUsage, "#,###.00"));
         return li;
     }
 

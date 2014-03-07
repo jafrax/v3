@@ -29,8 +29,8 @@
                             <listheader label="Product Name" width="130px"/>
                             <listheader label="Index" width="70px"/>
                             <listheader label="Name" width="200px"/>
-                            <listheader label="Status" width="50px"/>
-                            <listheader label="Claim Type" width="50px"/>
+                            <listheader label="Status" width="80px"/>
+                            <listheader label="Claim Type" width="60px"/>
                             <listheader label="Amount" width="130px"/>
                             <listheader label="Paid" width="130px"/>
                             <listheader label="Provider Name" width="200px"/>

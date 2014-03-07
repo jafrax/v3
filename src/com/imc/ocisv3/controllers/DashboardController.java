@@ -16,10 +16,14 @@ public class DashboardController extends Window {
 
     private Logger log = LoggerFactory.getLogger(DashboardController.class);
     private Flashchart chartFrequency;
+    private String userProductViewrestriction;
 
     public void onCreate() {
-        initComponents();
-        populateChartFrequency();
+        if (!Libs.checkSession()) {
+            userProductViewrestriction = Libs.restrictUserProductView.get(Libs.getUser());
+            initComponents();
+            populateChartFrequency();
+        }
     }
 
     private void initComponents() {
@@ -37,9 +41,12 @@ public class DashboardController extends Window {
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' and "
-                    + "a.hclmrecid<>'C' "
-                    + "group by a.hclmcdatey, a.hclmcdatem, a.hclmtclaim ";
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and "
+                    + "a.hclmrecid<>'C' ";
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
+
+            qry += "group by a.hclmcdatey, a.hclmcdatem, a.hclmtclaim ";
 
             List<Object[]> l = s.createSQLQuery(qry).list();
 

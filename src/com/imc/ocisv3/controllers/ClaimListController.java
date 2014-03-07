@@ -32,12 +32,14 @@ public class ClaimListController extends Window {
     private Listfooter ftr;
 
     public void onCreate() {
-        policy = (String) getAttribute("policy");
-        key = (String) getAttribute("key");
+        if (!Libs.checkSession()) {
+            policy = (String) getAttribute("policy");
+            key = (String) getAttribute("key");
 
-        initComponents();
-        populateCount();
-        populate(0, pg.getPageSize());
+            initComponents();
+            populateCount();
+            populate(0, pg.getPageSize());
+        }
     }
 
     private void initComponents() {
@@ -94,7 +96,7 @@ public class ClaimListController extends Window {
                     + "inner join idnhltpf.dbo.hltemp e on e.hempyy=a.hclmyy and e.hemppono=a.hclmpono and e.hempidxno=a.hclmidxno and e.hempseqno=a.hclmseqno and e.hempctr=0 "
                     + "left outer join idnhltpf.dbo.hltmemo2 f on f.hmem2yy=a.hclmyy and f.hmem2pono=a.hclmpono and f.hmem2idxno=a.hclmidxno and f.hmem2seqno=a.hclmseqno and f.hmem2claim=a.hclmtclaim and f.hmem2count=a.hclmcount "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
                     + "and a.hclmrecid<>'C' ";
 
             if (getAttribute("excess")!=null && ((Boolean) getAttribute("excess"))) {
@@ -122,7 +124,7 @@ public class ClaimListController extends Window {
             List<Object[]> l = s.createSQLQuery(select + qry + order).setFirstResult(offset).setMaxResults(limit).list();
             for (Object[] o : l) {
                 String policyName = Libs.nn(o[5]);
-                if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
+                if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
 
                 String remarks = Libs.nn(o[16]).trim();
                 String provider = Libs.nn(o[12]).trim();
@@ -171,8 +173,13 @@ public class ClaimListController extends Window {
             String qry = "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
                     + "and a.hclmrecid<>'C' ";
+
+            if (getAttribute("excess")!=null && ((Boolean) getAttribute("excess"))) {
+                qry += "and ((" + Libs.createAddFieldString("a.hclmcamt") + ")- "
+                        + "(" + Libs.createAddFieldString("a.hclmaamt") + ")>0) ";
+            }
 
             if (where!=null) qry += "and (" + where + ") ";
 

@@ -4,6 +4,11 @@
         <listener-class>com.imc.ocisv3.tools.WebAppStart</listener-class>
     </listener>
 
+    <listener>
+        <description>Session Listener</description>
+        <listener-class>com.imc.ocisv3.tools.SessionCleanupListener</listener-class>
+    </listener>
+
     <library-property>
         <name>org.zkoss.theme.preferred</name>
         <value>silvertail</value>
@@ -14,7 +19,7 @@
     </system-config>
 
     <session-config>
-        <session-timeout>1800</session-timeout>
+        <session-timeout>300</session-timeout>
         <timer-keep-alive>false</timer-keep-alive>
         <device-type>ajax</device-type>
         <timeout-uri>index.zul</timeout-uri>

@@ -9,6 +9,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,10 +48,12 @@ public class IndexController extends Window {
                 Executions.getCurrent().getSession().setAttribute("u", tUsername.getText());
                 Libs.userLevel = Integer.valueOf(Libs.nn(o[2]));
 
+                Libs.log_login(tUsername.getText(), new Timestamp(new Date().getTime()));
+
                 if (Libs.userLevel==1) {
                     Executions.sendRedirect("views/ClientSelection.zul");
                 } else {
-                    Libs.insuranceId = Libs.nn(o[1]);
+                    Libs.getSession().setAttribute("insuranceId", Libs.nn(o[1]));
                     Executions.sendRedirect("main.zul");
                 }
             } else {

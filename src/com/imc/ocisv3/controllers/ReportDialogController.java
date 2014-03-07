@@ -32,9 +32,13 @@ public class ReportDialogController extends Window {
     private Row rowMonthRange;
     private Row rowDateRange;
     private Row rowYearRange;
+    private String userProductViewrestriction;
 
     public void onCreate() {
-        initComponents();
+        if (!Libs.checkSession()) {
+            userProductViewrestriction = Libs.restrictUserProductView.get(Libs.getUser());
+            initComponents();
+        }
     }
 
     private void initComponents() {
@@ -134,11 +138,19 @@ public class ReportDialogController extends Window {
         int i = 0;
         cbProduct.appendItem("All Products");
         cbProduct.setSelectedIndex(0);
+        boolean show = true;
         for (String s : Libs.policyMap.keySet()) {
             String productName = Libs.policyMap.get(s);
             String productString = productName + " (" + s + ")";
-            if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) productName = Libs.config.get("demo_name").toString();
-            cbProduct.appendItem(productString);
+            if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) productName = Libs.config.get("demo_name").toString();
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) {
+                if (!userProductViewrestriction.contains(s.split("\\-")[3])) show=false;
+                else show=true;
+            }
+
+            if (show) cbProduct.appendItem(productString);
+
             if (productString.equals(String.valueOf(getAttribute("product")))) cbProduct.setSelectedIndex(i+1);
             i++;
         }

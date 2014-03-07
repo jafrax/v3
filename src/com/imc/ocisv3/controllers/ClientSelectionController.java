@@ -24,17 +24,17 @@ public class ClientSelectionController extends Window {
     private Paging pgActive;
     private Tabbox tbx;
     private String where;
+    private String activeClients = "";
 
     public void onCreate() {
-        if (Executions.getCurrent().getSession().getAttribute("u")!=null) {
-            initComponents();
+        if (Libs.getSession().getAttribute("u")==null) {
+            Executions.getCurrent().getSession().setMaxInactiveInterval(0);
+            Executions.getCurrent().getSession().invalidate();
+            Executions.sendRedirect("http://ocis.imcare177.com");
+        } else {
             initComponents();
             populateInactive(0, pgInactive.getPageSize());
             populateActive(0, pgActive.getPageSize());
-        } else {
-            Executions.getCurrent().getSession().setMaxInactiveInterval(0);
-            Executions.getCurrent().getSession().invalidate();
-            Executions.sendRedirect("index.zul");
         }
     }
 
@@ -44,6 +44,12 @@ public class ClientSelectionController extends Window {
         pgInactive = (Paging) getFellow("pgInactive");
         pgActive = (Paging) getFellow("pgActive");
         tbx = (Tabbox) getFellow("tbx");
+
+        String[] activeClientsSeg = Libs.nn(Libs.config.get("active_clients")).split("\\,");
+        for (String activeClient : activeClientsSeg) {
+            activeClients += "'" + activeClient + "',";
+        }
+        if (activeClients.endsWith(",")) activeClients = activeClients.substring(0, activeClients.length()-1);
 
         pgInactive.addEventListener("onPaging", new EventListener() {
             @Override
@@ -65,8 +71,8 @@ public class ClientSelectionController extends Window {
         lbInactive.getItems().clear();
         Session s = Libs.sfEDC.openSession();
         try {
-            String countQry = "select count(*) from ocis.dbo.cis_inslf where hinsid not in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') ";
-            String qry = "select hinsid, hinsname from ocis.dbo.cis_inslf where hinsid not in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') ";
+            String countQry = "select count(*) from ocis.dbo.cis_inslf where hinsid not in (" + activeClients + ") ";
+            String qry = "select hinsid, hinsname from ocis.dbo.cis_inslf where hinsid not in (" + activeClients + ") ";
 
             if (where!=null) {
                 countQry += "and (" + where + ") ";
@@ -102,8 +108,8 @@ public class ClientSelectionController extends Window {
         lbActive.getItems().clear();
         Session s = Libs.sfDB.openSession();
         try {
-            String countQry = "select count(*) from idnhltpf.dbo.hltins where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') ";
-            String qry = "select hinsid, hinsname from idnhltpf.dbo.hltins where hinsid in ('00002', '00003', '00004', '00012', '00018', '00022', '00029', '00034', '00036', '00037', '00040', '00042', '00044', '00046', '00050', '00051', '00052', '00053', '00054', '00059', '00061', '00062', '00063', '00064', '00067', '00068', '00070', '00071', '00072', '00073', '00075', '00076', '00077', '00078', '00079', '00080') ";
+            String countQry = "select count(*) from idnhltpf.dbo.hltins where hinsid in (" + activeClients + ") ";
+            String qry = "select hinsid, hinsname from idnhltpf.dbo.hltins where hinsid in (" + activeClients + ") ";
 
             if (where!=null) {
                 countQry += "and (" + where + ") ";
@@ -142,12 +148,12 @@ public class ClientSelectionController extends Window {
     }
 
     public void inactiveClientSelected() {
-        Libs.insuranceId = lbInactive.getSelectedItem().getValue().toString();
+        Libs.getSession().setAttribute("insuranceId", lbInactive.getSelectedItem().getValue().toString());
         Executions.sendRedirect("../main.zul");
     }
 
     public void activeClientSelected() {
-        Libs.insuranceId = lbActive.getSelectedItem().getValue().toString();
+        Libs.getSession().setAttribute("insuranceId", lbActive.getSelectedItem().getValue().toString());
         Executions.sendRedirect("../main.zul");
     }
 

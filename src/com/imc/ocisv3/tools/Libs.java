@@ -16,6 +16,7 @@ import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,8 +33,8 @@ public class Libs {
     public static SessionFactory sfEDC;
     public static String[] months = new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
     public static String[] shortMonths = new String[] { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
-    public static String insuranceId = "00046";
     public static int userLevel = 1;
+    public static Map<String,String> restrictUserProductView = new HashMap<String,String>();
     public static Map<String,String> policyMap = new HashMap<String,String>();
 
     public static org.zkoss.zk.ui.Session getSession() {
@@ -42,6 +43,14 @@ public class Libs {
 
     public static Desktop getDesktop() {
         return Executions.getCurrent().getDesktop();
+    }
+
+    public static String getInsuranceId() {
+        return Libs.nn(Executions.getCurrent().getSession().getAttribute("insuranceId"));
+    }
+
+    public static String getUser() {
+        return Libs.nn(Executions.getCurrent().getSession().getAttribute("u"));
     }
 
     public static Center getCenter() {
@@ -420,7 +429,7 @@ public class Libs {
                     + "inner join idnhltpf.dbo.hlthdr d on d.hhdryy=a.hdt1yy and d.hhdrpono=a.hdt1pono "
                     + "where "
                     + "a.hdt1ctr=0 "
-                    + "and d.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "and d.hhdrinsid='" + getInsuranceId() + "' "
                     + "and (convert(varchar,a.hdt1yy)+'-'+convert(varchar,a.hdt1br)+'-'+convert(varchar,a.hdt1dist)+'-'+convert(varchar,a.hdt1pono))='" + policyNumber + "' "
                     + "and (convert(varchar,a.hdt1idxno)+'-'+a.hdt1seqno)='" + index + "' ";
 
@@ -590,6 +599,64 @@ public class Libs {
             s.close();
         }
         return result;
+    }
+
+    public static String getStatus(String status) {
+        if (status.equals("X")) return "PROCESSED";
+        if (status.trim().isEmpty()) return "READY TO PAY";
+        if (status.equals("P")) return "PAID";
+        if (status.equals("D")) return "DELAY";
+        if (status.equals("R")) return "REJECT";
+        return "";
+    }
+
+    public static boolean checkSession() {
+        if (getSession().getAttribute("u")==null || getInsuranceId().isEmpty()) {
+            Executions.getCurrent().getSession().setMaxInactiveInterval(0);
+            Executions.getCurrent().getSession().invalidate();
+            Executions.sendRedirect("http://ocis.imcare177.com");
+            return true;
+        }
+        return false;
+    }
+
+    public static void log_login(String username, Timestamp dt) {
+        Session s = sfDB.openSession();
+        try {
+            String q = "insert into ocisv3.dbo.login_log "
+                    + "values ("
+                    + "'" + username + "', "
+                    + "'" + dt + "') ";
+
+            s.createSQLQuery(q).executeUpdate();
+            s.beginTransaction().commit();
+        } catch (Exception ex) {
+            log.error("log_login", ex);
+        } finally {
+            s.close();
+        }
+    }
+
+    public static String runningFields(String fieldName, int start, int end, boolean isSum) {
+        String result = "";
+        for (int i=start; i<end+1; i++) {
+            result += fieldName + i;
+            if (isSum) result += "+"; else result += ",";
+        }
+        if (result.endsWith("+") || result.endsWith(",")) result = result.substring(0, result.length()-1);
+        return result;
+    }
+
+    public static String fixDate(String date) {
+        String[] seg = date.split("\\-");
+
+        String segM = "0" + seg[1];
+        String segD = "0" + seg[2];
+
+        segM = segM.substring(segM.length()-2);
+        segD = segD.substring(segD.length()-2);
+
+        return seg[0] + "-" + segM + "-" + segD;
     }
 
 }

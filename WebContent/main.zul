@@ -55,7 +55,7 @@
                                 <treechildren>
                                     <treeitem><treerow><treecell label="Claim Summary" image="resources/icons/claim_summary.png" onClick='spaceOwner.open("ClaimSummary");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                                     <treeitem><treerow><treecell label="Claim History" image="resources/icons/claim_history.png" onClick='spaceOwner.open("ClaimHistory");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
-                                    <!--<treeitem><treerow><treecell label="Rejected/Pending Claim List" onClick='spaceOwner.open("RejectedPendingClaimList");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>-->
+                                    <treeitem><treerow><treecell label="Rejected/Pending Claims" image="resources/icons/rd_claim.png" onClick='spaceOwner.open("RejectedPendingClaimList");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                                 </treechildren>
                             </treeitem>
                             <treeitem>
@@ -63,6 +63,12 @@
                             </treeitem>
                             <treeitem id="tiClientSelection" visible="false">
                                 <treerow><treecell image="resources/icons/client.png" label="Client Selection" onClick="spaceOwner.clientSelection();" style="color:#FFFFFF; border:0px none;"/></treerow>
+                            </treeitem>
+                            <treeitem>
+                                <treerow><treecell label="Reports" style="color:#FFFFFF; border:0px none;"/></treerow>
+                                <treechildren>
+                                    <treeitem><treerow><treecell label="Download Report" image="resources/icons/report.png" onClick='spaceOwner.changePassword();' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                </treechildren>
                             </treeitem>
                             <treeitem>
                                 <treerow><treecell label="Administration" style="color:#FFFFFF; border:0px none;"/></treerow>

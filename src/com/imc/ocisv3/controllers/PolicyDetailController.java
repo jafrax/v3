@@ -36,10 +36,12 @@ public class PolicyDetailController extends Window {
     private Map<String,String> clientPlanMap;
 
     public void onCreate() {
-        policy = (PolicyPOJO) getAttribute("policy");
-        initComponents();
-        populatePlans();
-        populateMembers(0, pgMembers.getPageSize());
+        if (!Libs.checkSession()) {
+            policy = (PolicyPOJO) getAttribute("policy");
+            initComponents();
+            populatePlans();
+            populateMembers(0, pgMembers.getPageSize());
+        }
     }
 
     private void initComponents() {
@@ -58,7 +60,7 @@ public class PolicyDetailController extends Window {
         });
 
         String policyName = policy.getName();
-        if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
+        if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
         String subTitle = "[" + policy.getYear() + "-" + policy.getBr() + "-" + policy.getDist() + "-" + policy.getPolicy_number() + "] " + policyName;
         lPolicy.setValue(subTitle);
     }

@@ -29,12 +29,16 @@ public class EDCTransactionsController extends Window {
     private String whereActive;
     private String whereClosed;
     private String whereManual;
+    private String userProductViewrestriction;
 
     public void onCreate() {
-        initComponents();
-        populateActiveTransactions(0, pgActiveTransactions.getPageSize());
-        populateClosedTransactions(0, pgClosedTransactions.getPageSize());
-        populateManualTransactions(0, pgManualTransactions.getPageSize());
+        if (!Libs.checkSession()) {
+            userProductViewrestriction = Libs.restrictUserProductView.get(Libs.getUser());
+            initComponents();
+            populateActiveTransactions(0, pgActiveTransactions.getPageSize());
+            populateClosedTransactions(0, pgClosedTransactions.getPageSize());
+            populateManualTransactions(0, pgManualTransactions.getPageSize());
+        }
     }
 
     private void initComponents() {
@@ -77,6 +81,8 @@ public class EDCTransactionsController extends Window {
             for (String policy : Libs.policyMap.keySet()) policies += "'" + policy.substring(policy.lastIndexOf("-")+1) + "', ";
             if (policies.endsWith(", ")) policies = policies.substring(0, policies.length()-2);
 
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) policies = userProductViewrestriction;
+
             String count = "select count(*) ";
 
             String select = "select "
@@ -89,7 +95,8 @@ public class EDCTransactionsController extends Window {
                     + "where substring(a.no_kartu, 6, 5) in (" + policies + ") "
                     + "and a.request_function='Validation' and a.icd<>'' and len(a.icd)>2 "
                     + "and b.trans_id is null "
-                    + "and a.status='true' ";
+                    + "and a.status='true' "
+                    + "and a.type not in ('I', 'R') ";
 
 
             if (whereActive!=null) qry += "and (" + whereActive + ") ";
@@ -137,6 +144,8 @@ public class EDCTransactionsController extends Window {
             String policies = "";
             for (String policy : Libs.policyMap.keySet()) policies += "'" + policy.substring(policy.lastIndexOf("-")+1) + "', ";
             if (policies.endsWith(", ")) policies = policies.substring(0, policies.length()-2);
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) policies = userProductViewrestriction;
 
             String count = "select count(*) ";
 
@@ -224,6 +233,8 @@ public class EDCTransactionsController extends Window {
             String policies = "";
             for (String policy : Libs.policyMap.keySet()) policies += "'" + policy.substring(policy.lastIndexOf("-")+1) + "', ";
             if (policies.endsWith(", ")) policies = policies.substring(0, policies.length()-2);
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) policies = userProductViewrestriction;
 
             String count = "select count(*) ";
 
@@ -348,7 +359,9 @@ public class EDCTransactionsController extends Window {
                     + Libs.createListFieldString("a.hclmaamt") + " ";
 
             String qry = "from edc_prj.dbo.edc_transclm a "
-                    + "where trans_id=" + edc.getTrans_id();
+                    + "where trans_id=" + edc.getTrans_id() + " ";
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) qry = "and substring(a.no_kartu, 6, 5) in (" + userProductViewrestriction + ") ";
 
             List<Object[]> l = s.createSQLQuery(select + qry).list();
             if (l.size()==1) {

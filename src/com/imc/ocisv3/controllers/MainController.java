@@ -20,15 +20,11 @@ public class MainController extends Window {
     private Image imgCompanyLogo;
 
     public void onCreate() {
-        if (Executions.getCurrent().getSession().getAttribute("u")!=null) {
+        if (!Libs.checkSession()) {
             initComponents();
             getPolicies();
             open("Dashboard");
             setVisible(true);
-        } else {
-            Executions.getCurrent().getSession().setMaxInactiveInterval(0);
-            Executions.getCurrent().getSession().invalidate();
-            Executions.sendRedirect("index.zul");
         }
     }
 
@@ -41,10 +37,10 @@ public class MainController extends Window {
 
         String imageFile = "";
 
-        if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) {
-            imageFile = "resources/companies/99999.jpg";
+        if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) {
+            imageFile = "/resources/companies/99999.jpg";
         } else {
-            imageFile = "resources/companies/" + Libs.insuranceId + ".jpg";
+            imageFile = "/resources/companies/" + Libs.getInsuranceId() + ".jpg";
             File f = new File(Executions.getCurrent().getSession().getWebApp().getRealPath(imageFile));
             if (!f.exists()) imageFile = "resources/companies/00000.jpg";
         }
@@ -63,7 +59,7 @@ public class MainController extends Window {
                     + "a.hhdrname "
                     + "from idnhltpf.dbo.hlthdr a "
                     + "where "
-                    + "a.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "a.hhdrinsid='" + Libs.getInsuranceId() + "' "
                     + "order by a.hhdrname asc ";
 
             List<Object[]> l = s.createSQLQuery(qry).list();

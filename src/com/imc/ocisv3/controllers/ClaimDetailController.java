@@ -30,10 +30,11 @@ public class ClaimDetailController extends Window {
     private Listheader lhDaysLeft;
 
     public void onCreate() {
-        claimPOJO = (ClaimPOJO) getAttribute("claim");
-
-        initComponents();
-        populate();
+        if (!Libs.checkSession()) {
+            claimPOJO = (ClaimPOJO) getAttribute("claim");
+            initComponents();
+            populate();
+        }
     }
 
     private void initComponents() {
@@ -41,11 +42,6 @@ public class ClaimDetailController extends Window {
         lhDaysLeft = (Listheader) getFellow("lhDaysLeft");
 
         getCaption().setLabel("Claim Detail [" + claimPOJO.getClaim_number() + "]");
-
-//        if (Libs.nn(Libs.config.get("show_remaining_days")).contains(Libs.nn(claimPOJO.getPolicy().getPolicy_number()))) {
-//            System.out.println("here!");
-//            lhDaysLeft.setVisible(true);
-//        }
     }
 
     private void populate() {
@@ -63,7 +59,8 @@ public class ClaimDetailController extends Window {
                     + "b.hproname, a.hclmtclaim, c.hdt1name, "
                     + "c.hdt1bdtyy, c.hdt1bdtmm, c.hdt1bdtdd, "
                     + "c.hdt1sex, c.hdt1ncard, d.hhdrname, "
-                    + "e.hmem2data1, e.hmem2data2, e.hmem2data3, e.hmem2data4 "
+                    + "e.hmem2data1, e.hmem2data2, e.hmem2data3, e.hmem2data4, "
+                    + "a.hclmrdatey, a.hclmrdatem, a.hclmrdated "
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hltpro b on b.hpronomor=a.hclmnhoscd "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
@@ -78,6 +75,26 @@ public class ClaimDetailController extends Window {
             List<Object[]> l = s.createSQLQuery(qry).list();
             if (l.size()==1) {
                 Object[] o = l.get(0);
+
+                if ("I,R".contains(Libs.nn(o[10]))) {
+                    getFellow("lTitleServiceIn").setVisible(true);
+                    getFellow("lTitleServiceOut").setVisible(true);
+                    getFellow("lTitleServiceDays").setVisible(true);
+                    getFellow("lServiceIn").setVisible(true);
+                    getFellow("lServiceOut").setVisible(true);
+                    getFellow("lServiceDays").setVisible(true);
+                    getFellow("lTitleReceiptDate").setVisible(false);
+                    getFellow("lReceiptDate").setVisible(false);
+                } else {
+                    getFellow("lTitleServiceIn").setVisible(false);
+                    getFellow("lTitleServiceOut").setVisible(false);
+                    getFellow("lTitleServiceDays").setVisible(false);
+                    getFellow("lServiceIn").setVisible(false);
+                    getFellow("lServiceOut").setVisible(false);
+                    getFellow("lServiceDays").setVisible(false);
+                    getFellow("lTitleReceiptDate").setVisible(true);
+                    getFellow("lReceiptDate").setVisible(true);
+                }
 
                 String diagnosis = Libs.nn(o[6]).trim();
                 if (!Libs.nn(o[7]).trim().isEmpty()) diagnosis += ", " + Libs.nn(o[7]).trim();
@@ -101,6 +118,7 @@ public class ClaimDetailController extends Window {
                 }
 
                 String dob = Libs.nn(o[12]) + "-" + Libs.nn(o[13]) + "-" + Libs.nn(o[14]);
+                String receiptDate = Libs.nn(o[22]) + "-" + Libs.nn(o[23]) + "-" + Libs.nn(o[24]);
                 int ageDays = 0;
                 try {
                     ageDays = Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(dob), new Date());
@@ -123,16 +141,17 @@ public class ClaimDetailController extends Window {
                 }
 
                 String companyName = Libs.nn(o[17]).trim();
-                if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) companyName = Libs.nn(Libs.config.get("demo_name"));
+                if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) companyName = Libs.nn(Libs.config.get("demo_name"));
 
                 ((Label) getFellow("lProvider")).setValue(provider);
                 ((Label) getFellow("lDiagnosis")).setValue(diagnosis.toUpperCase());
                 ((Label) getFellow("lDescription")).setValue(Libs.getICDByCode(diagnosis));
-                ((Label) getFellow("lServiceIn")).setValue(serviceIn);
-                ((Label) getFellow("lServiceOut")).setValue(serviceOut);
+                ((Label) getFellow("lServiceIn")).setValue(Libs.fixDate(serviceIn));
+                ((Label) getFellow("lServiceOut")).setValue(Libs.fixDate(serviceOut));
+                ((Label) getFellow("lReceiptDate")).setValue(Libs.fixDate(receiptDate));
                 ((Label) getFellow("lClaimType")).setValue(Libs.getClaimType(Libs.nn(o[10]).trim()));
                 ((Label) getFellow("lName")).setValue(Libs.nn(o[11]).trim());
-                ((Label) getFellow("lDOB")).setValue(dob);
+                ((Label) getFellow("lDOB")).setValue(Libs.fixDate(dob));
                 ((Label) getFellow("lSex")).setValue(Libs.nn(o[15]).trim());
                 ((Label) getFellow("lCardNumber")).setValue(Libs.nn(o[16]).trim());
                 ((Label) getFellow("lCompanyName")).setValue(companyName);
@@ -191,7 +210,7 @@ public class ClaimDetailController extends Window {
                         lb.appendChild(li);
 
                         try {
-                            File f = new File(Executions.getCurrent().getSession().getWebApp().getRealPath("rules/" + claimPOJO.getPolicy().getPolicy_number() + "_Claim_Detail_Row.rule"));
+                            File f = new File(Executions.getCurrent().getSession().getWebApp().getRealPath("/rules/" + claimPOJO.getPolicy().getPolicy_number() + "_Claim_Detail_Row.rule"));
                             if (f.exists()) {
                                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                                 String rule = "";

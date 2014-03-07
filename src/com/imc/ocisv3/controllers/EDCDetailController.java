@@ -23,9 +23,11 @@ public class EDCDetailController extends Window {
     private Listbox lb;
 
     public void onCreate() {
-        edcTransaction = (EDCTransactionPOJO) getAttribute("edc");
-        initComponents();
-        populate();
+        if (!Libs.checkSession()) {
+            edcTransaction = (EDCTransactionPOJO) getAttribute("edc");
+            initComponents();
+            populate();
+        }
     }
 
     private void initComponents() {

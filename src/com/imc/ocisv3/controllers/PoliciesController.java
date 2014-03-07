@@ -31,10 +31,14 @@ public class PoliciesController extends Window {
     private Listbox lb;
     private Paging pg;
     private String where;
+    private String userProductViewrestriction;
 
     public void onCreate() {
-        initComponents();
-        populate(0, pg.getPageSize());
+        if (!Libs.checkSession()) {
+            userProductViewrestriction = Libs.restrictUserProductView.get(Libs.getUser());
+            initComponents();
+            populate(0, pg.getPageSize());
+        }
     }
 
     private void initComponents() {
@@ -58,7 +62,7 @@ public class PoliciesController extends Window {
             String countQry = "select count(*) "
                     + "from idnhltpf.dbo.hlthdr a "
                     + "where "
-                    + "a.hhdrinsid='" + Libs.insuranceId + "' ";
+                    + "a.hhdrinsid='" + Libs.getInsuranceId() + "' ";
 
             String qry = "select "
                     + "a.hhdryy, a.hhdrbr, a.hhdrdist, a.hhdrpono, "
@@ -67,7 +71,7 @@ public class PoliciesController extends Window {
                     + "a.hhdrmdtyy, a.hhdrmdtmm, a.hhdrmdtdd "
                     + "from idnhltpf.dbo.hlthdr a "
                     + "where "
-                    + "a.hhdrinsid='" + Libs.insuranceId + "' ";
+                    + "a.hhdrinsid='" + Libs.getInsuranceId() + "' ";
 
             if (where!=null) {
                 countQry += "and (" + where + ") ";
@@ -77,6 +81,7 @@ public class PoliciesController extends Window {
             Integer count = (Integer) s.createSQLQuery(countQry).uniqueResult();
             pg.setTotalSize(count);
 
+            boolean show = true;
             List<Object[]> l = s.createSQLQuery(qry).setFirstResult(offset).setMaxResults(limit).list();
             for (Object[] o : l) {
                 String policyNumber = Libs.nn(o[0]) + "-" + Libs.nn(o[1]) + "-" + Libs.nn(o[2]) + "-" + Libs.nn(o[3]);
@@ -107,12 +112,18 @@ public class PoliciesController extends Window {
                 li.setValue(policyPOJO);
 
                 li.appendChild(new Listcell(policyNumber));
-                li.appendChild(new Listcell(((Libs.config.get("demo_mode")).equals("true") && Libs.insuranceId.equals("00051")) ? Libs.nn(Libs.config.get("demo_name")) : Libs.nn(o[4]).trim()));
+                li.appendChild(new Listcell(((Libs.config.get("demo_mode")).equals("true") && Libs.getInsuranceId().equals("00051")) ? Libs.nn(Libs.config.get("demo_name")) : Libs.nn(o[4]).trim()));
                 li.appendChild(lcStatus);
                 li.appendChild(Libs.createNumericListcell(getMemberCount(Libs.nn(o[0]), Libs.nn(o[3])), "#,###"));
                 li.appendChild(new Listcell(startingDate));
                 li.appendChild(new Listcell(matureDate));
-                lb.appendChild(li);
+
+                if (!Libs.nn(userProductViewrestriction).isEmpty()) {
+                    if (!userProductViewrestriction.contains(Libs.nn(o[3]))) show=false;
+                    else show=true;
+                }
+
+                if (show) lb.appendChild(li);
             }
         } catch (Exception ex) {
             log.error("populate", ex);
@@ -173,7 +184,7 @@ public class PoliciesController extends Window {
                     + "a.hhdrmdtyy, a.hhdrmdtmm, a.hhdrmdtdd "
                     + "from idnhltpf.dbo.hlthdr a "
                     + "where "
-                    + "a.hhdrinsid='" + Libs.insuranceId + "' ";
+                    + "a.hhdrinsid='" + Libs.getInsuranceId() + "' ";
 
             if (where!=null) qry += "and (" + where + ") ";
 
@@ -217,7 +228,7 @@ public class PoliciesController extends Window {
             fos.close();
 
             FileInputStream fis = new FileInputStream(f);
-            Filedownload.save(fis, "Application/Excel", Libs.insuranceId + "-Policies-" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xls");
+            Filedownload.save(fis, "Application/Excel", Libs.getInsuranceId() + "-Policies-" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xls");
         } catch (Exception ex) {
             log.error("export", ex);
         } finally {

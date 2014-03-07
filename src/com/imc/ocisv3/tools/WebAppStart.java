@@ -29,8 +29,18 @@ public class WebAppStart implements WebAppInit {
     private void loadConfig(WebApp wa) {
         Libs.config = new Properties();
         try {
-            File f = new File(wa.getRealPath("conf/config.properties"));
+            File f = new File(wa.getRealPath("/conf/config.properties"));
             Libs.config.load(new FileInputStream(f));
+
+            String restrict_user_product_view = Libs.nn(Libs.config.get("restrict_user_product_view"));
+            if (!restrict_user_product_view.isEmpty()) {
+                String[] seg = restrict_user_product_view.split("\\|");
+                for (String s : seg) {
+                    String u = s.split("\\:")[0];
+                    String v = s.split("\\:")[1];
+                    Libs.restrictUserProductView.put(u, v);
+                }
+            }
         } catch (Exception ex) {
             log.error("loadConfig", ex);
         }

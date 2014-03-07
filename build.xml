@@ -2,7 +2,7 @@
 <project name="ocisv3">
 
     <property name="external.lib.path" value="/home/data/workspace/libraries/java"/>
-    <property name="webapps.dir" value="/home/data/programs/apache-tomcat-7.0.42/webapps/"/>
+    <property name="webapps.dir" value="/home/data/programs/apache-tomcat-8.0.0-RC10/webapps/"/>
     <property name="temp.dir" value="/home/data/temp/"/>
     <property name="war.name" value="OCISv3"/>
 

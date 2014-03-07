@@ -80,6 +80,8 @@
                                         <listheader label="Entry Date"/>
                                         <listheader label="Exit Date"/>
                                         <listheader label="Claim"/>
+                                        <listheader label="Limit"/>
+                                        <listheader label="Available"/>
                                     </listhead>
                                 </listbox>
                             </groupbox>
@@ -180,7 +182,7 @@
                                     <listhead>
                                         <listheader label="Code" width="50px"/>
                                         <listheader label="Benefit Description"/>
-                                        <listheader label="Amount" width="120px"/>
+                                        <listheader label="Limit" width="120px"/>
                                         <listheader label="Description"/>
                                     </listhead>
                                 </listbox>

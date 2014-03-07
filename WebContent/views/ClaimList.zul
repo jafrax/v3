@@ -4,7 +4,7 @@
         <panelchildren>
             <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
                 <toolbar height="21px">
-                    <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.export();"/>
+                    <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.export();"/>
                     <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refresh();"/>
                 </toolbar>
                 <toolbar align="end" height="21px">

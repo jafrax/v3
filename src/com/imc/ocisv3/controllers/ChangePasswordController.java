@@ -21,8 +21,10 @@ public class ChangePasswordController extends Window {
     private String username;
 
     public void onCreate() {
-        initComponents();
-        username = Libs.nn(Executions.getCurrent().getSession().getAttribute("u"));
+        if (!Libs.checkSession()) {
+            initComponents();
+            username = Libs.nn(Libs.getSession().getAttribute("u"));
+        }
     }
 
     private void initComponents() {

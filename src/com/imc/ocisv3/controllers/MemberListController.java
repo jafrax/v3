@@ -28,11 +28,15 @@ public class MemberListController extends Window {
     private Paging pg;
     private String where;
     private Combobox cbPolicy;
+    private String userProductViewrestriction;
 
     public void onCreate() {
-        initComponents();
-        populateCount();
-        populate(0, pg.getPageSize());
+        if (!Libs.checkSession()) {
+            userProductViewrestriction = Libs.restrictUserProductView.get(Libs.getUser());
+            initComponents();
+            populateCount();
+            populate(0, pg.getPageSize());
+        }
     }
 
     private void initComponents() {
@@ -50,11 +54,18 @@ public class MemberListController extends Window {
 
         cbPolicy.appendItem("All Products");
         cbPolicy.setSelectedIndex(0);
+        boolean show = true;
         for (String s : Libs.policyMap.keySet()) {
             String policyName = Libs.policyMap.get(s);
-            if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
+            if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
 
-            cbPolicy.appendItem(policyName + " (" + s + ")");
+            String restriction = Libs.restrictUserProductView.get(Libs.getUser());
+            if (!Libs.nn(restriction).isEmpty()) {
+                if (!restriction.contains(s.split("\\-")[3])) show=false;
+                else show=true;
+            }
+
+            if (show) cbPolicy.appendItem(policyName + " (" + s + ")");
         }
     }
 
@@ -65,7 +76,7 @@ public class MemberListController extends Window {
                     + "from idnhltpf.dbo.hltdt1 a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hdt1yy and b.hhdrpono=a.hdt1pono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
                     + "and a.hdt1ctr=0 ";
 
             if (where!=null) qry += "and (" + where + ") ";
@@ -88,7 +99,7 @@ public class MemberListController extends Window {
                     + "inner join idnhltpf.dbo.hltdt2 d on d.hdt2yy=a.hdt1yy and d.hdt2pono=a.hdt1pono and d.hdt2idxno=a.hdt1idxno and d.hdt2seqno=a.hdt1seqno and d.hdt2ctr=a.hdt1ctr "
                     + "inner join idnhltpf.dbo.hltemp c on c.hempyy=a.hdt1yy and c.hemppono=a.hdt1pono and c.hempidxno=a.hdt1idxno and c.hempseqno=a.hdt1seqno and c.hempctr=a.hdt1ctr "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
                     + "and a.hdt1ctr=0 ";
 
             if (where!=null) qry += "and (" + where + ") ";
@@ -145,8 +156,10 @@ public class MemberListController extends Window {
                     + "inner join idnhltpf.dbo.hlthdr d on d.hhdryy=a.hdt1yy and d.hhdrpono=a.hdt1pono "
                     + "where "
                     + "a.hdt1ctr=0 "
-                    + "and d.hhdrinsid='" + Libs.insuranceId + "' "
+                    + "and d.hhdrinsid='" + Libs.getInsuranceId() + "' "
                     + "and a.hdt1idxno<>99999 ";
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and d.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (where!=null) qry += "and (" + where + ") ";
 

@@ -21,10 +21,14 @@ public class InHospitalMonitoringController extends Window {
     private Listbox lb;
     private Paging pg;
     private String where;
+    private String userProductViewrestriction;
 
     public void onCreate() {
-        initComponents();
-        populate(0, pg.getPageSize());
+        if (!Libs.checkSession()) {
+            userProductViewrestriction = Libs.restrictUserProductView.get(Libs.getUser());
+            initComponents();
+            populate(0, pg.getPageSize());
+        }
     }
 
     private void initComponents() {
@@ -50,7 +54,7 @@ public class InHospitalMonitoringController extends Window {
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.thn_polis and b.hhdrpono=a.no_polis "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' ";
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' ";
 
             String qry = "select "
                     + "a.nosurat, "
@@ -74,7 +78,9 @@ public class InHospitalMonitoringController extends Window {
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
                     + "left outer join idnhltpf.dbo.hltclm d on d.hclmcno='IDN/' + a.no_hid "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' ";
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' ";
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (where!=null) {
                 countQry += "and (" + where + ") ";

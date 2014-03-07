@@ -29,13 +29,17 @@ public class ClaimSummaryController extends Window {
     private Flashchart chartExcess;
     private Combobox cbPolicy;
     private Tabbox tbx;
+    private String userProductViewrestriction;
 
     public void onCreate() {
-        initComponents();
-        populateFrequency();
-        populateAmount();
-        populateHID();
-        populateExcess();
+        if (!Libs.checkSession()) {
+            userProductViewrestriction = Libs.restrictUserProductView.get(Libs.getUser());
+            initComponents();
+            populateFrequency();
+            populateAmount();
+            populateHID();
+            populateExcess();
+        }
     }
 
     private void initComponents() {
@@ -89,11 +93,18 @@ public class ClaimSummaryController extends Window {
 
         cbPolicy.appendItem("All Policies");
         cbPolicy.setSelectedIndex(0);
+        boolean show = true;
         for (String s : Libs.policyMap.keySet()) {
             String policyName = Libs.policyMap.get(s);
-            if (Libs.config.get("demo_mode").equals("true") && Libs.insuranceId.equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
+            if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
 
-            cbPolicy.appendItem(policyName + " (" + s + ")");
+            String restriction = Libs.restrictUserProductView.get(Libs.getUser());
+            if (!Libs.nn(restriction).isEmpty()) {
+                if (!restriction.contains(s.split("\\-")[3])) show=false;
+                else show=true;
+            }
+
+            if (show) cbPolicy.appendItem(policyName + " (" + s + ")");
         }
     }
 
@@ -110,8 +121,10 @@ public class ClaimSummaryController extends Window {
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' and "
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and "
                     + "a.hclmrecid<>'C' ";
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (cbPolicy.getSelectedIndex()>0) {
                 String policy = cbPolicy.getSelectedItem().getLabel();
@@ -216,8 +229,10 @@ public class ClaimSummaryController extends Window {
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' and "
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and "
                     + "a.hclmrecid<>'C' ";
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (cbPolicy.getSelectedIndex()>0) {
                 String policy = cbPolicy.getSelectedItem().getLabel();
@@ -321,7 +336,9 @@ public class ClaimSummaryController extends Window {
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' and hclmrecid<>'C' ";
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and hclmrecid<>'C' ";
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (cbPolicy.getSelectedIndex()>0) {
                 String policy = cbPolicy.getSelectedItem().getLabel();
@@ -427,8 +444,10 @@ public class ClaimSummaryController extends Window {
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.insuranceId + "' and "
+                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and "
                     + "a.hclmrecid<>'C' ";
+
+            if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (cbPolicy.getSelectedIndex()>0) {
                 String policy = cbPolicy.getSelectedItem().getLabel();

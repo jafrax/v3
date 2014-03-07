@@ -19,7 +19,7 @@
                             <panelchildren>
                                 <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
                                     <toolbar height="21px">
-                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.exportActiveTransactions();"/>
+                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.exportActiveTransactions();"/>
                                         <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refreshActiveTransactions();"/>
                                     </toolbar>
                                     <toolbar align="end" height="21px">
@@ -48,7 +48,7 @@
                             <panelchildren>
                                 <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
                                     <toolbar height="21px">
-                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.exportClosedTransactions();"/>
+                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.exportClosedTransactions();"/>
                                         <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refreshClosedTransactions();"/>
                                     </toolbar>
                                     <toolbar align="end" height="21px">
@@ -78,7 +78,7 @@
                             <panelchildren>
                                 <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
                                     <toolbar height="21px">
-                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.exportManualTransactions();"/>
+                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.exportManualTransactions();"/>
                                         <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refreshManualTransactions();"/>
                                     </toolbar>
                                     <toolbar align="end" height="21px">

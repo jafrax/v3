@@ -21,9 +21,11 @@ public class InHospitalMonitoringDetailController extends Window {
     private Listbox lb;
 
     public void onCreate() {
-        ihm = (Object[]) getAttribute("ihm");
-        initComponents();
-        populate();
+        if (!Libs.checkSession()) {
+            ihm = (Object[]) getAttribute("ihm");
+            initComponents();
+            populate();
+        }
     }
 
     private void initComponents() {

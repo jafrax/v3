@@ -48,19 +48,25 @@
                             <row>
                                 <label value="Provider :"/>
                                 <label id="lProvider"/>
-                                <label value="Service In :"/>
-                                <label id="lServiceIn"/>
+                                <hlayout>
+                                    <label id="lTitleServiceIn" value="Service In :"/>
+                                    <label id="lTitleReceiptDate" value="Receipt Date :"/>
+                                </hlayout>
+                                <hlayout>
+                                    <label id="lServiceIn"/>
+                                    <label id="lReceiptDate"/>
+                                </hlayout>
                             </row>
                             <row>
                                 <label value="Claim Type :"/>
                                 <label id="lClaimType"/>
-                                <label value="Service Out :"/>
+                                <label id="lTitleServiceOut" value="Service Out :"/>
                                 <label id="lServiceOut"/>
                             </row>
                             <row>
                                 <label value="Diagnosis :"/>
                                 <label id="lDiagnosis"/>
-                                <label value="Service Days :"/>
+                                <label id="lTitleServiceDays" value="Service Days :"/>
                                 <label id="lServiceDays"/>
                             </row>
                             <row>
