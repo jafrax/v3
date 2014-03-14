@@ -15,15 +15,19 @@
                 position: absolute;
                 right: 0px;
             }
-                .hboxRemoveWhiteStrips td.z-hbox-sep {
+            .hboxRemoveWhiteStrips td.z-hbox-sep {
                 width: 0;
                 padding: 0;
             }
         </style>
         <borderlayout width="100%" height="100%">
             <west size="220px" splittable="true" style="border-left:0px; border-top:0px; border-bottom:0px; background: url('resources/images/tile.png'); background-repeat: repeat;">
-                <vlayout height="100%">
-                    <space height="5px"/>
+                <vlayout height="100%" style="overflow:auto;">
+                    <space height="1px"/>
+                    <h:div style="text-align:center;">
+                        <label id="lUsername" style="color:#FFFFFF"/>
+                    </h:div>
+                    <space height="4px"/>
                     <h:div>
                         <h:img src="resources/images/shadow.png" alt="shadow" class="shadow"/>
                     </h:div>
@@ -31,7 +35,7 @@
                         <image id="imgCompanyLogo" width="150px" src="resources/companies/00000.jpg"/>
                     </vlayout>
                     <space height="20px"/>
-                    <tree id="tree" width="100%" height="100%" style="background:none; border-left:0px; border-top:0px; border-bottom:0px;">
+                    <tree id="tree" width="100%" height="100%" style="background:none; border-left:0px; border-top:0px; border-bottom:0px; border-right:0px;">
                         <treecols visible="false">
                             <treecol label="Menu"/>
                         </treecols>
@@ -77,7 +81,7 @@
                                 </treechildren>
                             </treeitem>
                             <treeitem>
-                               <treerow><treecell image="resources/icons/logout.png" label="Logout" onClick="spaceOwner.logout();" style="color:#FFFFFF; border:0px none;"/></treerow>
+                                <treerow><treecell image="resources/icons/logout.png" label="Logout" onClick="spaceOwner.logout();" style="color:#FFFFFF; border:0px none;"/></treerow>
                             </treeitem>
                         </treechildren>
                     </tree>

@@ -35,6 +35,8 @@ public class MainController extends Window {
         Libs.getDesktop().setAttribute("rootWindow", this);
         Libs.getDesktop().setAttribute("center", getFellow("center"));
 
+        ((Label) getFellow("lUsername")).setValue("User: " + Libs.nn(Executions.getCurrent().getSession().getAttribute("u")));
+
         String imageFile = "";
 
         if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) {
@@ -47,7 +49,7 @@ public class MainController extends Window {
 
         imgCompanyLogo.setSrc(imageFile);
 
-        if (Libs.userLevel==1) ((Treeitem) getFellow("tiClientSelection")).setVisible(true);
+        if (Libs.userLevel==1) getFellow("tiClientSelection").setVisible(true);
     }
 
     private void getPolicies() {
