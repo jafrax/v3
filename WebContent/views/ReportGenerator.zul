@@ -1,0 +1,28 @@
+<window border="normal" width="600px" height="400px" style="padding:0px;" sizable="true" closable="true" position="center" contentStyle="padding:0px;" use="com.imc.ocisv3.controllers.ReportGeneratorController">
+    <caption label="Report Generator" image="resources/icons/report.png"/>
+    <panel width="100%" height="100%">
+        <toolbar>
+            <toolbarbutton id="tbnGenerateReport" image="/resources/icons/report.png" tooltiptext="Generate Report" disabled="true" onClick="spaceOwner.generateReport();"/>
+        </toolbar>
+        <panelchildren>
+            <borderlayout width="100%" height="100%">
+                <center title="Report Name" style="border-left:0px; border-top:0px; border-bottom:0px;">
+                    <listbox id="lb" width="100%" height="100%" vflex="true" style="white-space:nowrap; border:0px;" onSelect="spaceOwner.reportSelected();" onDoubleClick="spaceOwner.generateReport();">
+                        <listhead sizable="true" visible="false">
+                            <listheader label="Report Name"/>
+                        </listhead>
+                    </listbox>
+                </center>
+                <east title="Report Parameters" size="400px" splittable="true" style="border-top:0px; border-right:0px; border-bottom:0px;">
+                    <grid id="grid" width="100%" height="100%" vflex="true" hflex="true" style="border:0px;">
+                        <columns visible="false">
+                            <column width="150px"/>
+                            <column/>
+                        </columns>
+                        <rows id="rows"/>
+                    </grid>
+                </east>
+            </borderlayout>
+        </panelchildren>
+    </panel>
+</window>

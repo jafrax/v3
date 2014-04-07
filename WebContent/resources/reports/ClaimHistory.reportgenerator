@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<reportgenerator>
+    <properties>
+        <title>Claim History</title>
+        <status>Production</status>
+        <parameters>
+            <parameter id="product" title="Product" type="PRODUCT_SELECTOR"/>
+            <parameter id="daterange" title="Date Range" type="DATE_RANGE"/>
+        </parameters>
+    </properties>
+    <content>
+        <![CDATA[
+            String[] columns = new String[] {
+                    "POLICY YEAR", "BR", "DIST", "POLICY NUMBER", "COMPANY NAME", "INDEX", "SEQ", "CARD NUMBER",
+                    "NAME", "COUNT", "TYPE", "CLAIM-YEAR", "CLAIM-MONTH", "CLAIM-DAY", "SIN-YEAR", "SIN-MONTH",
+                    "SIN-DAY", "SOUT-YEAR", "SOUT-MONTH", "SOUT-DAY", "RECEIPT-YEAR", "RECEIPT-MONTH",
+                    "RECEIPT-DAY", "PAYMENT-YEAR", "PAYMENT-MONTH", "PAYMENT-DAY", "HID NUMBER", "PROVIDER NAME",
+                    "ICD1", "ICD2", "ICD3", "PROPOSED", "APPROVED", "STATUS", "MEMO", "SEX", "AGE" };
+
+            String qry = "select "
+                    + "a.HCLMYY as POLICY_YEAR, a.HCLMBR as BR, a.HCLMDIST as DIST, a.HCLMPONO as POLICY_NUMBER, c.HHDRNAME as COMPANY_NAME, "
+                    + "b.HDT1IDXNO as 'INDEX', b.HDT1SEQNO as SEQ, b.HDT1NCARD as CARD_NUMBER, b.HDT1NAME as 'NAME', "
+                    + "a.HCLMCOUNT as 'COUNT', a.HCLMTCLAIM as 'TYPE', "
+                    + "a.HCLMCDATEY as 'CLAIM_YEAR', a.HCLMCDATEM as 'CLAIM_MONTH', HCLMCDATED as 'CLAIM_DAY', "
+                    + "a.HCLMSINYY as 'SIN_YEAR', a.HCLMSINMM as 'SIN_MONTH', HCLMSINDD as 'SIN_DAY', "
+                    + "a.HCLMSOUTYY as 'SOUT_YEAR', a.HCLMSOUTMM as 'SOUT_MONTH', HCLMSOUTDD as 'SOUT_DAY', "
+                    + "a.HCLMRDATEY as 'RECEIPT_YEAR', a.HCLMRDATEM as 'RECEIPT_MONTH', HCLMRDATED as 'RECEIPT_DAY', "
+                    + "a.HCLMPDATEY as 'PAYMENT_YEAR', a.HCLMPDATEM as 'PAYMENT_MONTH', HCLMPDATED as 'PAYMENT_DAY', "
+                    + "a.HCLMCNO as 'HID_NUMBER', "
+                    + "e.HPRONAME as 'PROVIDER_NAME', "
+                    + "a.HCLMDISCD1 as ICD1, a.HCLMDISCD2 as ICD2, a.HCLMDISCD3 as ICD3, "
+                    + "( "
+                    + "a.HCLMCAMT1 + a.HCLMCAMT2 + a.HCLMCAMT3 + a.HCLMCAMT4 + a.HCLMCAMT5 + a.HCLMCAMT6 + a.HCLMCAMT7 + a.HCLMCAMT8 + a.HCLMCAMT9 + a.HCLMCAMT10 + "
+                    + "a.HCLMCAMT11 + a.HCLMCAMT12 + a.HCLMCAMT13 + a.HCLMCAMT14 + a.HCLMCAMT15 + a.HCLMCAMT16 + a.HCLMCAMT17 + a.HCLMCAMT18 + a.HCLMCAMT19 + a.HCLMCAMT20 + "
+                    + "a.HCLMCAMT21 + a.HCLMCAMT22 + a.HCLMCAMT23 + a.HCLMCAMT24 + a.HCLMCAMT25 + a.HCLMCAMT26 + a.HCLMCAMT27 + a.HCLMCAMT28 + a.HCLMCAMT29 + a.HCLMCAMT30 "
+                    + ") as PROPOSED, "
+                    + "( "
+                    + "a.HCLMAAMT1 + a.HCLMAAMT2 + a.HCLMAAMT3 + a.HCLMAAMT4 + a.HCLMAAMT5 + a.HCLMAAMT6 + a.HCLMAAMT7 + a.HCLMAAMT8 + a.HCLMAAMT9 + a.HCLMAAMT10 + "
+                    + "a.HCLMAAMT11 + a.HCLMAAMT12 + a.HCLMAAMT13 + a.HCLMAAMT14 + a.HCLMAAMT15 + a.HCLMAAMT16 + a.HCLMAAMT17 + a.HCLMAAMT18 + a.HCLMAAMT19 + a.HCLMAAMT20 + "
+                    + "a.HCLMAAMT21 + a.HCLMAAMT22 + a.HCLMAAMT23 + a.HCLMAAMT24 + a.HCLMAAMT25 + a.HCLMAAMT26 + a.HCLMAAMT27 + a.HCLMAAMT28 + a.HCLMAAMT29 + a.HCLMAAMT30 "
+                    + ") as APPROVED, "
+                    + "a.HCLMRECID as STATUS, "
+                    + "(d.HMEM2DATA1 + '' + d.HMEM2DATA2 + '' + d.HMEM2DATA3) as MEMO, "
+                    + "b.HDT1SEX, "
+                    + "b.HDT1AGE "
+                    + "from IDNHLTPF.dbo.HLTCLM a "
+                    + "inner join IDNHLTPF.dbo.HLTDT1 b "
+                    + "on a.HCLMYY=b.HDT1YY "
+                    + "and a.HCLMBR=b.HDT1BR "
+                    + "and a.HCLMDIST=b.HDT1DIST "
+                    + "and a.HCLMPONO=b.HDT1PONO "
+                    + "and a.HCLMIDXNO=b.HDT1IDXNO "
+                    + "and a.HCLMSEQNO=b.HDT1SEQNO "
+                    + "inner join IDNHLTPF.dbo.HLTHDR c "
+                    + "on a.HCLMYY=c.HHDRYY "
+                    + "and a.HCLMBR=c.HHDRBR "
+                    + "and a.HCLMDIST=c.HHDRDIST "
+                    + "and a.HCLMPONO=c.HHDRPONO "
+                    + "left outer join IDNHLTPF.dbo.HLTMEMO2 d "
+                    + "on a.HCLMYY=d.HMEM2YY "
+                    + "and a.HCLMBR=d.HMEM2BR "
+                    + "and a.HCLMDIST=d.HMEM2DIST "
+                    + "and a.HCLMPONO=d.HMEM2PONO "
+                    + "and a.HCLMIDXNO=d.HMEM2IDXNO "
+                    + "and a.HCLMSEQNO=d.HMEM2SEQNO "
+                    + "and a.HCLMCOUNT=d.HMEM2COUNT "
+                    + "and a.HCLMTCLAIM=d.HMEM2CLAIM "
+                    + "inner join IDNHLTPF.dbo.HLTPRO e "
+                    + "on a.HCLMNHOSCD=e.HPRONOMOR "
+                    + "where b.HDT1CTR=0 "
+                    + "and a.HCLMIDXNO<>99999 "
+                    + "and a.HCLMRECID<>'C' "
+                    + "and c.hhdrinsid='" + client_id + "' ";
+
+            if (product!=null) {
+                qry += "and c.hhdryy=" + product.getYear() + " "
+                    + "and c.hhdrpono=" + product.getPolicy_number() + " ";
+            }
+
+            qry += "and convert(date, convert(varchar, a.HCLMCDATEY) + '-' + convert(varchar, a.HCLMCDATEM) + '-' + convert(varchar, a.HCLMCDATED)) "
+                    + "between "
+                    + "'" + new SimpleDateFormat("yyyy-MM-dd").format(daterange_date_start) + "' and '" + new SimpleDateFormat("yyyy-MM-dd").format(daterange_date_end) + "' ";
+
+            System.out.println(qry);
+
+            Session s = Libs.sfDB.openSession();
+            try {
+                List l = s.createSQLQuery(qry).list();
+
+                Workbook wb = new HSSFWorkbook();
+                Sheet sheet = wb.createSheet("Claim History");
+                sheet.createFreezePane(0, 1, 0, 1);
+                int cnt = 0;
+
+                org.apache.poi.ss.usermodel.Row row = sheet.createRow(cnt);
+
+                for (int i=0; i<columns.length; i++) {
+                    Libs.createCell(row, i, columns[i]);
+                }
+
+                cnt++;
+
+                for (Object[] o : l) {
+                    row = sheet.createRow(cnt);
+
+                    for (int i=0; i<o.length; i++) {
+                        Libs.createCell(row, i, o[i]);
+                    }
+
+                    cnt++;
+                }
+
+                FileOutputStream out = new FileOutputStream(fuuid);
+                wb.write(out);
+                out.close();
+
+                InputStream is = new FileInputStream(fuuid);
+                Filedownload.save(is, "application/vnd.ms-excel", "ClaimHistory-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+                fuuid.delete();
+            } catch (Exception ex) {
+                log.error("ClaimHistory.reportgenerator", ex);
+            } finally {
+                if (s!=null && s.isOpen()) s.close();
+            }
+        ]]>
+    </content>
+</reportgenerator>

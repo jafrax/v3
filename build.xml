@@ -2,9 +2,9 @@
 <project name="ocisv3">
 
     <property name="external.lib.path" value="/home/data/workspace/libraries/java"/>
-    <property name="webapps.dir" value="/home/data/programs/apache-tomcat-8.0.0-RC10/webapps/"/>
+    <property name="webapps.dir" value="/home/data/programs/apache-tomcat-8.0.3/webapps/"/>
     <property name="temp.dir" value="/home/data/temp/"/>
-    <property name="war.name" value="OCISv3"/>
+    <property name="war.name" value="v3"/>
 
     <path id="compile.classpath">
         <fileset dir="WebContent/WEB-INF/lib">
@@ -52,7 +52,7 @@
             <fileset dir="WebContent/resources" includes="**/*.*"/>
         </copy>
         <copy todir="${webapps.dir}/${war.name}/reports" overwrite="true">
-            <fileset dir="WebContent/reports" includes="**/*.*"/>
+            <fileset dir="WebContent/resources/reports" includes="**/*.*"/>
         </copy>
         <copy todir="${webapps.dir}/${war.name}/rules" overwrite="true">
             <fileset dir="WebContent/rules" includes="**/*.*"/>

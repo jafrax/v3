@@ -28,12 +28,17 @@
                             <listheader label="Policy Number" width="120px"/>
                             <listheader label="Product Name" width="130px"/>
                             <listheader label="Index" width="70px"/>
+                            <listheader label="Client ID" width="70px"/>
                             <listheader label="Name" width="200px"/>
                             <listheader label="Status" width="80px"/>
                             <listheader label="Claim Type" width="60px"/>
                             <listheader label="Amount" width="130px"/>
                             <listheader label="Paid" width="130px"/>
                             <listheader label="Provider Name" width="200px"/>
+                            <listheader label="Receipt Date" width="90px"/>
+                            <listheader label="Service In" width="90px"/>
+                            <listheader label="Service Out" width="90px"/>
+                            <listheader label="Payment Date" width="90px"/>
                         </listhead>
                     </listbox>
                     <paging id="pg" height="25px" pageSize="20"/>

@@ -218,18 +218,38 @@ public class ClaimHistoryController extends Window {
                     provider = remarks.substring(remarks.indexOf("[")+1, remarks.indexOf("]"));
                 }
 
+                String receiptDate = o[60] + "-" + o[61] + "-" + o[62];
+                String paymentDate = o[63] + "-" + o[64] + "-" + o[65];
+                String serviceIn = o[54] + "-" + o[55] + "-" + o[56];
+                String serviceOut = o[57] + "-" + o[58] + "-" + o[59];
+
                 Listitem li = new Listitem();
 
                 li.appendChild(new Listcell(Libs.nn(o[0])));
                 li.appendChild(new Listcell(Libs.nn(o[14]).trim()));
                 li.appendChild(new Listcell(policyName));
                 li.appendChild(new Listcell(o[6] + "-" + o[7]));
+                li.appendChild(new Listcell(Libs.nn(o[15]).trim()));
                 li.appendChild(new Listcell(Libs.nn(o[8])));
                 li.appendChild(new Listcell(Libs.getStatus(Libs.nn(o[69]))));
                 li.appendChild(new Listcell(Libs.getClaimType(Libs.nn(o[9]))));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[10])), "#,###.##"));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[11])), "#,###.##"));
                 li.appendChild(new Listcell(provider));
+
+                if (Libs.nn(o[9]).equals("I") || Libs.nn(o[9]).equals("R")) {
+                    li.appendChild(new Listcell(""));
+                    li.appendChild(new Listcell(Libs.fixDate(serviceIn)));
+                    li.appendChild(new Listcell(Libs.fixDate(serviceOut)));
+                } else {
+                    li.appendChild(new Listcell(Libs.fixDate(receiptDate)));
+                    li.appendChild(new Listcell(""));
+                    li.appendChild(new Listcell(""));
+                }
+
+                if (!Libs.nn(o[63]).equals("0")) {
+                    li.appendChild(new Listcell(Libs.fixDate(paymentDate)));
+                }
 
                 lb.appendChild(li);
 

@@ -77,7 +77,7 @@ public class MainController extends Window {
 
     public void open(String view) {
         if (Libs.getCenter().getChildren().size()>0) Libs.getCenter().removeChild(Libs.getCenter().getFirstChild());
-        Executions.createComponents("views/" + view + ".zul", Libs.getCenter(), null);
+        Executions.createComponents("/views/" + view + ".zul", Libs.getCenter(), null);
     }
 
     public void logout() {
@@ -93,7 +93,12 @@ public class MainController extends Window {
     }
 
     public void changePassword() {
-        Window w = (Window) Executions.createComponents("views/ChangePassword.zul", this, null);
+        Window w = (Window) Executions.createComponents("/views/ChangePassword.zul", this, null);
+        w.doModal();
+    }
+
+    public void openReportGenerator() {
+        Window w = (Window) Executions.createComponents("/views/ReportGenerator.zul", this, null);
         w.doModal();
     }
 

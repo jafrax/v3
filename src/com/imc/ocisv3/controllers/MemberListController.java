@@ -220,7 +220,7 @@ public class MemberListController extends Window {
 
                 Listcell lcStatus = new Listcell();
                 Label lStatus = new Label();
-                if (matureDays>0) {
+                if (matureDays>0 && !Libs.nn(o[40]).equals("M")) {
                     lStatus.setValue("ACTIVE");
                     lStatus.setStyle("color:#00FF00");
                 } else {

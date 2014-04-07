@@ -23,16 +23,16 @@
         <borderlayout width="100%" height="100%">
             <west size="220px" splittable="true" style="border-left:0px; border-top:0px; border-bottom:0px; background: url('resources/images/tile.png'); background-repeat: repeat;">
                 <vlayout height="100%" style="overflow:auto;">
-                    <space height="1px"/>
-                    <h:div style="text-align:center;">
-                        <label id="lUsername" style="color:#FFFFFF"/>
-                    </h:div>
-                    <space height="4px"/>
                     <h:div>
                         <h:img src="resources/images/shadow.png" alt="shadow" class="shadow"/>
                     </h:div>
+                    <space height="1px"/>
+                    <h:div style="text-align:center;">
+                        <label id="lUsername" style="color:#999999"/>
+                    </h:div>
+                    <space height="4px"/>
                     <vlayout style="text-align:center; vertical-align:middle; background:none;">
-                        <image id="imgCompanyLogo" width="150px" src="resources/companies/00000.jpg"/>
+                        <image id="imgCompanyLogo" width="150px" src="/resources/companies/00000.jpg"/>
                     </vlayout>
                     <space height="20px"/>
                     <tree id="tree" width="100%" height="100%" style="background:none; border-left:0px; border-top:0px; border-bottom:0px; border-right:0px;">
@@ -40,48 +40,48 @@
                             <treecol label="Menu"/>
                         </treecols>
                         <treechildren>
-                            <treeitem><treerow><treecell image="resources/icons/home.png" label="Home" onClick='spaceOwner.open("Dashboard");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                            <treeitem><treerow><treecell image="/resources/icons/home.png" label="Home" onClick='spaceOwner.open("Dashboard");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                             <treeitem>
                                 <treerow><treecell label="Insurance" style="color:#FFFFFF; border:0px none;"/></treerow>
                                 <treechildren>
-                                    <treeitem><treerow><treecell label="Products" image="resources/icons/product.png" onClick='spaceOwner.open("Policies");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
-                                    <treeitem><treerow><treecell label="Members" image="resources/icons/member.png" onClick='spaceOwner.open("MemberList");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Products" image="/resources/icons/product.png" onClick='spaceOwner.open("Policies");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Members" image="/resources/icons/member.png" onClick='spaceOwner.open("MemberList");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                                 </treechildren>
                             </treeitem>
                             <treeitem>
                                 <treerow><treecell label="Customer Service" style="color:#FFFFFF; border:0px none;"/></treerow>
                                 <treechildren>
-                                    <treeitem><treerow><treecell label="In Hospital Monitoring" image="resources/icons/ihm.png" onClick='spaceOwner.open("InHospitalMonitoring");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="In Hospital Monitoring" image="/resources/icons/ihm.png" onClick='spaceOwner.open("InHospitalMonitoring");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                                 </treechildren>
                             </treeitem>
                             <treeitem>
                                 <treerow><treecell label="Claim Processing" style="color:#FFFFFF; border:0px none;"/></treerow>
                                 <treechildren>
-                                    <treeitem><treerow><treecell label="Claim Summary" image="resources/icons/claim_summary.png" onClick='spaceOwner.open("ClaimSummary");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
-                                    <treeitem><treerow><treecell label="Claim History" image="resources/icons/claim_history.png" onClick='spaceOwner.open("ClaimHistory");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
-                                    <treeitem><treerow><treecell label="Rejected/Pending Claims" image="resources/icons/rd_claim.png" onClick='spaceOwner.open("RejectedPendingClaimList");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Claim Summary" image="/resources/icons/claim_summary.png" onClick='spaceOwner.open("ClaimSummary");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Claim History" image="/resources/icons/claim_history.png" onClick='spaceOwner.open("ClaimHistory");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Rejected/Pending Claims" image="/resources/icons/rd_claim.png" onClick='spaceOwner.open("RejectedPendingClaimList");' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                                 </treechildren>
                             </treeitem>
                             <treeitem>
-                                <treerow><treecell label="EDC Transactions" image="resources/icons/edc.png" onClick='spaceOwner.open("EDCTransactions");' style="color:#FFFFFF; border:0px none;"/></treerow>
+                                <treerow><treecell label="EDC Transactions" image="/resources/icons/edc.png" onClick='spaceOwner.open("EDCTransactions");' style="color:#FFFFFF; border:0px none;"/></treerow>
                             </treeitem>
                             <treeitem id="tiClientSelection" visible="false">
-                                <treerow><treecell image="resources/icons/client.png" label="Client Selection" onClick="spaceOwner.clientSelection();" style="color:#FFFFFF; border:0px none;"/></treerow>
+                                <treerow><treecell image="/resources/icons/client.png" label="Client Selection" onClick="spaceOwner.clientSelection();" style="color:#FFFFFF; border:0px none;"/></treerow>
                             </treeitem>
                             <treeitem>
                                 <treerow><treecell label="Reports" style="color:#FFFFFF; border:0px none;"/></treerow>
                                 <treechildren>
-                                    <treeitem><treerow><treecell label="Download Report" image="resources/icons/report.png" onClick='spaceOwner.changePassword();' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Download Report" image="/resources/icons/report.png" onClick="spaceOwner.openReportGenerator();" style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                                 </treechildren>
                             </treeitem>
                             <treeitem>
                                 <treerow><treecell label="Administration" style="color:#FFFFFF; border:0px none;"/></treerow>
                                 <treechildren>
-                                    <treeitem><treerow><treecell label="Change Password" image="resources/icons/password.png" onClick='spaceOwner.changePassword();' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
+                                    <treeitem><treerow><treecell label="Change Password" image="/resources/icons/password.png" onClick='spaceOwner.changePassword();' style="color:#FFFFFF; border:0px none;"/></treerow></treeitem>
                                 </treechildren>
                             </treeitem>
                             <treeitem>
-                                <treerow><treecell image="resources/icons/logout.png" label="Logout" onClick="spaceOwner.logout();" style="color:#FFFFFF; border:0px none;"/></treerow>
+                                <treerow><treecell image="/resources/icons/logout.png" label="Logout" onClick="spaceOwner.logout();" style="color:#FFFFFF; border:0px none;"/></treerow>
                             </treeitem>
                         </treechildren>
                     </tree>
