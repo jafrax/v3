@@ -74,6 +74,13 @@ public class ClaimHistoryController extends Window {
 
             if (show) cbPolicy.appendItem(policyName + " (" + s + ")");
         }
+
+        Listheader lhEmployeeId = (Listheader) getFellow("lhEmployeeId");
+        if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
+            lhEmployeeId.setVisible(true);
+        } else {
+            lhEmployeeId.setVisible(false);
+        }
     }
 
     private void populateCount() {
@@ -180,7 +187,8 @@ public class ClaimHistoryController extends Window {
                     + "a.hclmrdatey, a.hclmrdatem, a.hclmrdated, "
                     + "a.hclmpdatey, a.hclmpdatem, a.hclmpdated, "
                     + "a.hclmdiscd1, a.hclmdiscd2, a.hclmdiscd3, "
-                    + "a.hclmrecid "; // 69
+                    + "a.hclmrecid, " // 69
+                    + "e.hempmemo3 "; // 70
 
             String qry = "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
@@ -230,6 +238,11 @@ public class ClaimHistoryController extends Window {
                 li.appendChild(new Listcell(policyName));
                 li.appendChild(new Listcell(o[6] + "-" + o[7]));
                 li.appendChild(new Listcell(Libs.nn(o[15]).trim()));
+                if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
+                    li.appendChild(new Listcell(Libs.nn(o[70]).trim()));
+                } else {
+                    li.appendChild(new Listcell(""));
+                }
                 li.appendChild(new Listcell(Libs.nn(o[8])));
                 li.appendChild(new Listcell(Libs.getStatus(Libs.nn(o[69]))));
                 li.appendChild(new Listcell(Libs.getClaimType(Libs.nn(o[9]))));
@@ -262,6 +275,7 @@ public class ClaimHistoryController extends Window {
 
                 MemberPOJO memberPOJO = new MemberPOJO();
                 memberPOJO.setPolicy(policyPOJO);
+                memberPOJO.setEmployee_id(Libs.nn(o[70]).trim());
                 memberPOJO.setName(Libs.nn(o[8]).trim());
                 memberPOJO.setCard_number(Libs.nn(o[17]).trim());
                 memberPOJO.setDob(Libs.nn(o[18]) + "-" + Libs.nn(o[19]) + "-" + Libs.nn(o[20]));
@@ -323,6 +337,7 @@ public class ClaimHistoryController extends Window {
                     + "c.hdt1name like '%" + val + "%' or "
                     + "e.hempcnpol like '%" + val + "%' or "
                     + "e.hempcnid like '%" + val + "%' or "
+                    + "e.hempmemo3 like '%" + val + "%' or "
                     + "a.hclmcno like '%" + val + "%' ";
 
             populateCountForQuickSearch();

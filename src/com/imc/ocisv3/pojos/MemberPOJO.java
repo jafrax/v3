@@ -26,6 +26,7 @@ public class MemberPOJO implements Serializable {
     private String marital_status;
     private String idx;
     private String seq;
+    private String employee_id;
     private List<String> plan_entry_date = new ArrayList<String>();
     private List<String> plan_exit_date = new ArrayList<String>();
 
@@ -181,4 +182,11 @@ public class MemberPOJO implements Serializable {
         this.plan_exit_date = plan_exit_date;
     }
 
+    public String getEmployee_id() {
+        return employee_id;
+    }
+
+    public void setEmployee_id(String employee_id) {
+        this.employee_id = employee_id;
+    }
 }

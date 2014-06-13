@@ -23,6 +23,7 @@
                     <listbox id="lb" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;" onDoubleClick="spaceOwner.showMemberDetail();">
                         <listhead sizable="true">
                             <listheader label="Status" width="80px"/>
+                            <listheader id="lhEmployeeId" label="Employee ID" width="70px" visible="false"/>
                             <listheader label="Name" width="250px"/>
                             <listheader label="Policy Number" width="120px"/>
                             <listheader label="ID Number" width="120px"/>

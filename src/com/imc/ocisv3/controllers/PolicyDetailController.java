@@ -63,6 +63,13 @@ public class PolicyDetailController extends Window {
         if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
         String subTitle = "[" + policy.getYear() + "-" + policy.getBr() + "-" + policy.getDist() + "-" + policy.getPolicy_number() + "] " + policyName;
         lPolicy.setValue(subTitle);
+
+        Listheader lhEmployeeId = (Listheader) getFellow("lhEmployeeId");
+        if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
+            lhEmployeeId.setVisible(true);
+        } else {
+            lhEmployeeId.setVisible(false);
+        }
     }
 
     private void populatePlans() {
@@ -179,7 +186,8 @@ public class PolicyDetailController extends Window {
                     + "(convert(varchar,b.hdt2pxdty6)+'-'+convert(varchar,b.hdt2pxdtm6)+'-'+convert(varchar,b.hdt2pxdtd6)) as hdt2pxdt6, "
                     + "a.hdt1mstat, c.hempcnpol, " //33
                     + "b.hdt2moe, "
-                    + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd ";
+                    + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd, "
+                    + "c.hempmemo3 "; // 39
 
             String qry = "from idnhltpf.dbo.hltdt1 a "
                     + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
@@ -261,6 +269,11 @@ public class PolicyDetailController extends Window {
                 li.appendChild(lcStatus);
                 li.appendChild(new Listcell(Libs.nn(o[34]).trim()));
                 li.appendChild(new Listcell(Libs.nn(o[20]).trim()));
+                if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
+                    li.appendChild(new Listcell(Libs.nn(o[39]).trim()));
+                } else {
+                    li.appendChild(new Listcell(""));
+                }
                 li.appendChild(new Listcell(memberPOJO.getName()));
                 li.appendChild(new Listcell(memberPOJO.getDob()));
                 li.appendChild(Libs.createNumericListcell(ageDays/365, "#"));
@@ -334,6 +347,7 @@ public class PolicyDetailController extends Window {
             where = "convert(varchar,a.hdt1ncard) like '%" + val + "%' or "
                     + "a.hdt1name like '%" + val + "%' or "
                     + "c.hempcnpol like '%" + val + "%' or "
+                    + "c.hempmemo3 like '%" + val + "%' or "
                     + "c.hempcnid like '%" + val + "%' ";
             populateMembers(0, pgMembers.getPageSize());
         } else refreshMembers();

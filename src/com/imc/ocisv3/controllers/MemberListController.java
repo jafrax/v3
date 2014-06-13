@@ -67,6 +67,13 @@ public class MemberListController extends Window {
 
             if (show) cbPolicy.appendItem(policyName + " (" + s + ")");
         }
+
+        Listheader lhEmployeeId = (Listheader) getFellow("lhEmployeeId");
+        if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
+            lhEmployeeId.setVisible(true);
+        } else {
+            lhEmployeeId.setVisible(false);
+        }
     }
 
     private void populateCount() {
@@ -148,7 +155,8 @@ public class MemberListController extends Window {
                     + "a.hdt1yy, a.hdt1br, a.hdt1dist, a.hdt1pono, "
                     + "d.hhdrname, "
                     + "b.hdt2moe, " //40
-                    + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd ";
+                    + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd, "
+                    + "c.hempmemo3 ";
 
             String qry = "from idnhltpf.dbo.hltdt1 a "
                     + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
@@ -244,6 +252,11 @@ public class MemberListController extends Window {
                 li.setValue(memberPOJO);
 
                 li.appendChild(lcStatus);
+                if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
+                    li.appendChild(new Listcell(Libs.nn(o[44]).trim()));
+                } else {
+                    li.appendChild(new Listcell(""));
+                }
                 li.appendChild(new Listcell(memberPOJO.getName()));
                 li.appendChild(new Listcell(Libs.nn(o[34]).trim()));
                 li.appendChild(new Listcell(Libs.nn(o[20]).trim()));
@@ -287,6 +300,7 @@ public class MemberListController extends Window {
             where = "a.hdt1ncard like '%" + val + "%' or "
                     + "a.hdt1name like '%" + val + "%' or "
                     + "c.hempcnpol like '%" + val + "%' or "
+                    + "c.hempmemo3 like '%" + val + "%' or "
                     + "c.hempcnid like '%" + val + "%' ";
             populateCountForQuickSearch();
             populate(0, pg.getPageSize());

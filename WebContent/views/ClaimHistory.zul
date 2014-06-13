@@ -29,6 +29,7 @@
                             <listheader label="Product Name" width="130px"/>
                             <listheader label="Index" width="70px"/>
                             <listheader label="Client ID" width="70px"/>
+                            <listheader id="lhEmployeeId" label="Employee ID" width="70px"/>
                             <listheader label="Name" width="200px"/>
                             <listheader label="Status" width="80px"/>
                             <listheader label="Claim Type" width="60px"/>

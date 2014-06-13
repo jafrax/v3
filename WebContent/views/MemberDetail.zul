@@ -92,6 +92,7 @@
                             <listhead sizable="true">
                                 <listheader label="Card Number" width="130px"/>
                                 <listheader label="Status" width="80px"/>
+                                <listheader id="lhEmployeeId" label="Employee ID" width="70px" visible="false"/>
                                 <listheader label="Name" width="250px"/>
                                 <listheader label="DOB" width="80px"/>
                                 <listheader label="Age" width="50px"/>

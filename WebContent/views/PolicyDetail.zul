@@ -60,6 +60,7 @@
                                         <listheader label="Status" width="80px"/>
                                         <listheader label="Policy Number" width="100px"/>
                                         <listheader label="ID Number" width="100px"/>
+                                        <listheader id="lhEmployeeId" label="Employee ID" width="70px" visible="false"/>
                                         <listheader label="Policy Holder Name" width="250px"/>
                                         <listheader label="DOB" width="80px"/>
                                         <listheader label="Age" width="80px"/>
