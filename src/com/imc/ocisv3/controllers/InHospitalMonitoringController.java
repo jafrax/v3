@@ -89,6 +89,8 @@ public class InHospitalMonitoringController extends Window {
 
             qry += "order by nosurat desc;";
 
+            System.out.println(qry);
+
             Integer count = (Integer) s.createSQLQuery(countQry).uniqueResult();
             pg.setTotalSize(count);
 
