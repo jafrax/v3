@@ -18,10 +18,12 @@
                             <image src="resources/icons/browse.png"/>
                             <textbox id="tQuickSearch" onOK="spaceOwner.quickSearch();"/>
                             <combobox id="cbPolicy" onSelect="spaceOwner.policySelected();" readonly="true"/>
+                            <combobox id="cbStatus" onSelect="spaceOwner.policySelected();" readonly="true"/>
                         </toolbar>
                     </hbox>
                     <listbox id="lb" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;" onDoubleClick="spaceOwner.showMemberDetail();">
                         <listhead sizable="true">
+                        	<listheader label="No" width="50px"/>
                             <listheader label="Status" width="80px"/>
                             <listheader id="lhEmployeeId" label="Employee ID" width="70px" visible="false"/>
                             <listheader label="Name" width="250px"/>

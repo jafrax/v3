@@ -28,6 +28,7 @@ public class MemberListController extends Window {
     private Paging pg;
     private String where;
     private Combobox cbPolicy;
+    private Combobox cbStatus;
     private String userProductViewrestriction;
 
     public void onCreate() {
@@ -43,6 +44,7 @@ public class MemberListController extends Window {
         lb = (Listbox) getFellow("lb");
         pg = (Paging) getFellow("pg");
         cbPolicy = (Combobox) getFellow("cbPolicy");
+        cbStatus = (Combobox) getFellow("cbStatus");
 
         pg.addEventListener("onPaging", new EventListener() {
             @Override
@@ -67,6 +69,11 @@ public class MemberListController extends Window {
 
             if (show) cbPolicy.appendItem(policyName + " (" + s + ")");
         }
+        
+        cbStatus.appendItem("ACTIVE");
+        cbStatus.appendItem("INACTIVE");
+        cbStatus.appendItem("MATURE");
+        cbStatus.setSelectedIndex(0);
 
         Listheader lhEmployeeId = (Listheader) getFellow("lhEmployeeId");
         if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
@@ -79,14 +86,43 @@ public class MemberListController extends Window {
     private void populateCount() {
         Session s = Libs.sfDB.openSession();
         try {
-            String qry = "select count(*) "
-                    + "from idnhltpf.dbo.hltdt1 a "
-                    + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hdt1yy and b.hhdrpono=a.hdt1pono "
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1) insid = insid.substring(0, insid.length()-1);
+        	
+        	
+            String qry = "select count(*) from idnhltpf.dbo.hlthdr b "
+                    + "inner join idnhltpf.dbo.hltdt1 a "
+                    + "on b.hhdryy=a.hdt1yy and b.hhdrpono=a.hdt1pono "
+                    + "inner join idnhltpf.dbo.hltdt2 d "
+                    + "on a.hdt1yy=d.hdt2yy and a.hdt1pono=d.hdt2pono and a.hdt1idxno=d.hdt2idxno and a.hdt1seqno=d.hdt2seqno and a.hdt1ctr=d.hdt2ctr "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
-                    + "and a.hdt1ctr=0 ";
+                    + "b.hhdrinsid";
+            
+            	if(products.size() > 0) qry = qry + " in  ("+insid+")";
+            	else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+            
+            	qry = qry + " and a.hdt1ctr=0 and a.hdt1idxno < 99989 and a.hdt1pono <> 99999 ";
 
             if (where!=null) qry += "and (" + where + ") ";
+            
+            if (cbPolicy.getSelectedIndex()>0) {
+                String policy = cbPolicy.getSelectedItem().getLabel();
+                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+                qry += "and (convert(varchar,a.hdt1yy)+'-'+convert(varchar,a.hdt1br)+'-'+convert(varchar,a.hdt1dist)+'-'+convert(varchar,a.hdt1pono)='" + policy + "') ";
+            }
+            
+            if(cbStatus.getSelectedIndex() == 0){
+            	qry += " and d.hdt2moe not in('M','U')";
+            }else if(cbStatus.getSelectedIndex() == 1){
+            	qry += " and d.hdt2moe = 'U'";
+            }else qry += " and d.hdt2moe = 'M'";
+            
+//            System.out.println(qry);
 
             Integer recordsCount = (Integer) s.createSQLQuery(qry).uniqueResult();
             pg.setTotalSize(recordsCount);
@@ -100,22 +136,43 @@ public class MemberListController extends Window {
     private void populateCountForQuickSearch() {
         Session s = Libs.sfDB.openSession();
         try {
-            String qry = "select count(*) "
-                    + "from idnhltpf.dbo.hltdt1 a "
-                    + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hdt1yy and b.hhdrpono=a.hdt1pono "
-                    + "inner join idnhltpf.dbo.hltdt2 d on d.hdt2yy=a.hdt1yy and d.hdt2pono=a.hdt1pono and d.hdt2idxno=a.hdt1idxno and d.hdt2seqno=a.hdt1seqno and d.hdt2ctr=a.hdt1ctr "
-                    + "inner join idnhltpf.dbo.hltemp c on c.hempyy=a.hdt1yy and c.hemppono=a.hdt1pono and c.hempidxno=a.hdt1idxno and c.hempseqno=a.hdt1seqno and c.hempctr=a.hdt1ctr "
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1) insid = insid.substring(0, insid.length()-1);
+        	
+            String qry = "select count(*) from idnhltpf.dbo.hlthdr b "
+                    + "inner join idnhltpf.dbo.hltdt1 a "
+                    + "on b.hhdryy=a.hdt1yy and b.hhdrbr=a.hdt1br and b.hhdrdist=a.hdt1dist and b.hhdrpono=a.hdt1pono "
+                    + "inner join idnhltpf.dbo.hltdt2 d "
+                    + "on a.hdt1yy=d.hdt2yy and a.hdt1br=d.hdt2br and a.hdt1dist=d.hdt2dist and a.hdt1pono=d.hdt2pono and a.hdt1idxno=d.hdt2idxno and a.hdt1seqno=d.hdt2seqno and a.hdt1ctr=d.hdt2ctr "
+                    + " inner join idnhltpf.dbo.hltemp c on a.hdt1yy=c.hempyy and  a.HDT1BR=c.HEMPBR and a.HDT1DIST=c.HEMPDIST and a.hdt1pono=c.hemppono and a.hdt1idxno=c.hempidxno and a.hdt1seqno=c.hempseqno and a.hdt1ctr=c.hempctr "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
-                    + "and a.hdt1ctr=0 ";
-
+                    + "b.hhdrinsid";
+            		if(products.size() > 0) qry = qry + " in  ("+insid+") ";
+            		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+            		
+            		if (cbPolicy.getSelectedIndex()>0) {
+                        String policy = cbPolicy.getSelectedItem().getLabel();
+                        policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+                        qry += " and (convert(varchar,b.hhdryy)+'-'+convert(varchar,b.hhdrbr)+'-'+convert(varchar,b.hhdrdist)+'-'+convert(varchar,b.hhdrpono)='" + policy + "') ";
+                    }
+            		
+            		qry = qry + " and a.hdt1ctr=0 and a.hdt1idxno < 99989 and a.hdt1pono <> 99999 ";
+                     
+            		
             if (where!=null) qry += "and (" + where + ") ";
 
-            if (cbPolicy.getSelectedIndex()>0) {
-                String policy = cbPolicy.getSelectedItem().getLabel();
-                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
-                qry += "and (convert(varchar,a.hdt1yy)+'-'+convert(varchar,a.hdt1br)+'-'+convert(varchar,a.hdt1dist)+'-'+convert(varchar,a.hdt1pono)='" + policy + "') ";
-            }
+            
+            if(cbStatus.getSelectedIndex() == 0){
+            	qry += " and d.hdt2moe not in('M','U')";
+            }else if(cbStatus.getSelectedIndex() == 1){
+            	qry += " and d.hdt2moe = 'U'";
+            }else qry += " and d.hdt2moe = 'M'";
+            
+            System.out.println(qry);
 
             Integer recordsCount = (Integer) s.createSQLQuery(qry).uniqueResult();
             pg.setTotalSize(recordsCount);
@@ -130,6 +187,14 @@ public class MemberListController extends Window {
         lb.getItems().clear();
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String select = "select "
                     + "a.hdt1ncard, a.hdt1name, "
                     + "a.hdt1bdtyy, a.hdt1bdtmm, a.hdt1bdtdd, "
@@ -158,28 +223,45 @@ public class MemberListController extends Window {
                     + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd, "
                     + "c.hempmemo3 ";
 
-            String qry = "from idnhltpf.dbo.hltdt1 a "
-                    + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
-                    + "inner join idnhltpf.dbo.hltemp c on c.hempyy=a.hdt1yy and c.hemppono=a.hdt1pono and c.hempidxno=a.hdt1idxno and c.hempseqno=a.hdt1seqno and c.hempctr=a.hdt1ctr "
-                    + "inner join idnhltpf.dbo.hlthdr d on d.hhdryy=a.hdt1yy and d.hhdrpono=a.hdt1pono "
+            String qry = "from idnhltpf.dbo.hlthdr d  "
+            		+" inner join idnhltpf.dbo.hltdt1 a on d.hhdryy=a.hdt1yy and d.hhdrbr=a.hdt1br and d.hhdrdist=a.hdt1dist and d.hhdrpono=a.hdt1pono " 
+                    + "inner join idnhltpf.dbo.hltdt2 b on a.hdt1yy=b.hdt2yy and a.hdt1br=b.hdt2br and a.hdt1dist=b.hdt2dist and a.hdt1pono=b.hdt2pono and a.hdt1idxno=b.hdt2idxno and a.hdt1seqno=b.hdt2seqno and a.hdt1ctr=b.hdt2ctr "
+                    + "inner join idnhltpf.dbo.hltemp c on a.hdt1yy=c.hempyy and a.HDT1BR=c.HEMPBR and a.HDT1DIST=c.HEMPDIST and a.hdt1pono=c.hemppono and a.hdt1idxno=c.hempidxno and a.hdt1seqno=c.hempseqno and a.hdt1ctr=c.hempctr "
                     + "where "
-                    + "a.hdt1ctr=0 "
-                    + "and d.hhdrinsid='" + Libs.getInsuranceId() + "' "
-                    + "and a.hdt1idxno<>99999 ";
+                    + "d.hhdrinsid";
+            		if(products.size() > 0) qry = qry + " in  ("+insid+")";
+            		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+            		
+            		if (cbPolicy.getSelectedIndex()>0) {
+                        String policy = cbPolicy.getSelectedItem().getLabel();
+                        policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+                        qry += "and (convert(varchar,d.hhdryy)+'-'+convert(varchar,d.hhdrbr)+'-'+convert(varchar,d.hhdrdist)+'-'+convert(varchar,d.hhdrpono)='" + policy + "') ";
+                    }
+            		
+            		qry = qry + "and a.hdt1ctr=0 and a.hdt1idxno < 99989 and a.hdt1pono <> 99999 ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and d.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (where!=null) qry += "and (" + where + ") ";
 
-            if (cbPolicy.getSelectedIndex()>0) {
-                String policy = cbPolicy.getSelectedItem().getLabel();
-                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
-                qry += "and (convert(varchar,a.hdt1yy)+'-'+convert(varchar,a.hdt1br)+'-'+convert(varchar,a.hdt1dist)+'-'+convert(varchar,a.hdt1pono)='" + policy + "') ";
-            }
+            
+            
+            if(cbStatus.getSelectedIndex() == 0){
+            	qry += " and b.hdt2moe not in('M','U') ";
+            }else if(cbStatus.getSelectedIndex() == 1){
+            	qry += " and b.hdt2moe = 'U' ";
+            }else qry += " and b.hdt2moe = 'M' ";
+            
 
             String order = "order by a.hdt1name asc ";
+            
+//            System.out.println(select + qry + order);
 
             List<Object[]> l = s.createSQLQuery(select + qry + order).setFirstResult(offset).setMaxResults(limit).list();
+            
+            int page = pg.getActivePage();
+            
+            int startNumber = (((page+1) * 20) - 20) + 1; 
 
             for (Object[] o : l) {
                 PolicyPOJO policyPOJO = new PolicyPOJO();
@@ -228,12 +310,19 @@ public class MemberListController extends Window {
 
                 Listcell lcStatus = new Listcell();
                 Label lStatus = new Label();
-                if (matureDays>0 && !Libs.nn(o[40]).equals("M")) {
+                if (matureDays>0 && !Libs.nn(o[40]).equals("M") && !Libs.nn(o[40]).equals("U")) {
                     lStatus.setValue("ACTIVE");
                     lStatus.setStyle("color:#00FF00");
                 } else {
-                    lStatus.setValue("MATURE");
-                    lStatus.setStyle("color:#FF0000;");
+                	if(Libs.nn(o[40]).equals("M")){
+                		lStatus.setValue("MATURE");
+                        lStatus.setStyle("color:#FF0000;");
+                	}
+                	else {
+                		lStatus.setValue("INACTIVE");
+                        lStatus.setStyle("color:#000000");
+                	}
+                    
                 }
                 if (Libs.nn(o[40]).equals("U")) {
                     String effectiveDate = Libs.nn(o[41]) + "-" + Libs.nn(o[42]) + "-" + Libs.nn(o[43]);
@@ -250,6 +339,8 @@ public class MemberListController extends Window {
 
                 Listitem li = new Listitem();
                 li.setValue(memberPOJO);
+                
+                li.appendChild(new Listcell(startNumber+""));
 
                 li.appendChild(lcStatus);
                 if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
@@ -280,6 +371,8 @@ public class MemberListController extends Window {
                     li.appendChild(new Listcell("-"));
                 }
                 lb.appendChild(li);
+                
+                startNumber = startNumber + 1;
             }
         } catch (Exception ex) {
             log.error("populate", ex);

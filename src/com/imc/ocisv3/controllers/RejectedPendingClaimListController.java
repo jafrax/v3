@@ -76,13 +76,23 @@ public class RejectedPendingClaimListController extends Window {
     private void populateCount() {
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String countSelect = "select count(*) ";
 
             String qry = "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
-                    + "and a.hclmrecid in ('D', 'R') ";
+                    + "b.hhdrinsid";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                    qry= qry + "and a.hclmrecid in ('D', 'R') ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
@@ -107,6 +117,14 @@ public class RejectedPendingClaimListController extends Window {
         lb.getItems().clear();
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String countSelect = "select count(*) ";
 
             String qry = "from idnhltpf.dbo.hltclm a "
@@ -115,8 +133,10 @@ public class RejectedPendingClaimListController extends Window {
                     + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.hclmnhoscd "
                     + "inner join idnhltpf.dbo.hltemp e on e.hempyy=a.hclmyy and e.hemppono=a.hclmpono and e.hempidxno=a.hclmidxno and e.hempseqno=a.hclmseqno and e.hempctr=0 "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
-                    + "and a.hclmrecid in ('D', 'R') ";
+                    + "b.hhdrinsid";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                    qry= qry + "and a.hclmrecid in ('D', 'R') ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
@@ -141,6 +161,13 @@ public class RejectedPendingClaimListController extends Window {
         lb.getItems().clear();
         Session s = Libs.sfDB.openSession();
         try {
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String select = "select "
                     + "a.hclmcno, a.hclmyy, a.hclmbr, a.hclmdist, a.hclmpono, "
                     + "b.hhdrname, a.hclmidxno, a.hclmseqno, "
@@ -187,8 +214,10 @@ public class RejectedPendingClaimListController extends Window {
                     + "inner join idnhltpf.dbo.hltdt2 f on f.hdt2yy=a.hclmyy and f.hdt2pono=a.hclmpono and f.hdt2idxno=a.hclmidxno and f.hdt2seqno=a.hclmseqno and f.hdt2ctr=0 "
                     + "left outer join idnhltpf.dbo.hltmemo2 g on g.hmem2yy=a.hclmyy and g.hmem2pono=a.hclmpono and g.hmem2idxno=a.hclmidxno and g.hmem2seqno=a.hclmseqno and g.hmem2claim=a.hclmtclaim and g.hmem2count=a.hclmcount "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
-                    + "and a.hclmrecid in ('D', 'R') ";
+                    + "b.hhdrinsid";
+            		if(products.size() > 0) qry = qry + " in  ("+insid+")";
+            		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                    qry = qry + "and a.hclmrecid in ('D', 'R') ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
@@ -353,6 +382,14 @@ public class RejectedPendingClaimListController extends Window {
             } else {
                 Session s = Libs.sfDB.openSession();
                 try {
+                	
+                	String insid="";
+                	List products = Libs.getProductByUserId(Libs.getUser());
+                	for(int i=0; i < products.size(); i++){
+                		insid=insid+"'"+(String)products.get(i)+"'"+",";
+                	}
+                	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+                	
                     String productName = String.valueOf(w.getAttribute("product"));
                     int period = (Integer) w.getAttribute("period");
 
@@ -393,8 +430,10 @@ public class RejectedPendingClaimListController extends Window {
                             + "inner join idnhltpf.dbo.hltdt2 f on f.hdt2yy=a.hclmyy and f.hdt2pono=a.hclmpono and f.hdt2idxno=a.hclmidxno and f.hdt2seqno=a.hclmseqno and f.hdt2ctr=0 "
                             + "left outer join idnhltpf.dbo.hltmemo2 g on g.hmem2yy=a.hclmyy and g.hmem2pono=a.hclmpono and g.hmem2idxno=a.hclmidxno and g.hmem2seqno=a.hclmseqno and g.hmem2claim=a.hclmtclaim and g.hmem2count=a.hclmcount "
                             + "where "
-                            + "b.hhdrinsid='" + Libs.getInsuranceId() + "' "
-                            + "and a.hclmrecid in ('R', 'D') ";
+                            + "b.hhdrinsid";
+                    		if(products.size() > 0) qry = qry + " in  ("+insid+")";
+                    		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                            qry = qry + "and a.hclmrecid in ('R', 'D') ";
 
                     if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 

@@ -40,6 +40,8 @@ public class IndexController extends Window {
                     + "where "
                     + "user_id='" + tUsername.getText() + "' and "
                     + "pass='" + tPassword.getText() + "'";
+            
+            System.out.println(qry);
 
             List<Object[]> l = s.createSQLQuery(qry).list();
             if (l.size()==1) {

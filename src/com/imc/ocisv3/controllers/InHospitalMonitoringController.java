@@ -49,13 +49,22 @@ public class InHospitalMonitoringController extends Window {
 
         Session s = Libs.sfDB.openSession();
         try {
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String countQry = "select count(*) "
                     + "from surjam_new.dbo.ms_surjam a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.thn_polis and b.hhdrpono=a.no_polis "
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' ";
-
+                    + "b.hhdrinsid";
+            		if(products.size() > 0) countQry = countQry + " in  ("+insid+")";
+            		else countQry = countQry + "='" + Libs.getInsuranceId() + "' ";  
+            		
             String qry = "select "
                     + "a.nosurat, "
                     + "a.thn_polis, a.br_polis, a.dist_polis, a.no_polis, "
@@ -78,8 +87,10 @@ public class InHospitalMonitoringController extends Window {
                     + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
                     + "left outer join idnhltpf.dbo.hltclm d on d.hclmcno='IDN/' + a.no_hid "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' ";
-
+                    + "b.hhdrinsid";
+            		if(products.size() > 0) qry = qry + " in  ("+insid+")";
+            		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+            
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (where!=null) {

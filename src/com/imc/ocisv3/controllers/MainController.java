@@ -56,13 +56,23 @@ public class MainController extends Window {
         Libs.policyMap.clear();
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String qry = "select "
                     + "(convert(varchar,a.hhdryy)+'-'+convert(varchar,a.hhdrbr)+'-'+convert(varchar,a.hhdrdist)+'-'+convert(varchar,a.hhdrpono)) as policy, "
                     + "a.hhdrname "
                     + "from idnhltpf.dbo.hlthdr a "
-                    + "where "
-                    + "a.hhdrinsid='" + Libs.getInsuranceId() + "' "
-                    + "order by a.hhdrname asc ";
+                    + "where a.hhdrinsid";
+            		if(products.size() > 0) qry = qry + " in  ("+insid+")";
+            		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                    
+                    qry= qry + "order by a.hhdrname asc ";
 
             List<Object[]> l = s.createSQLQuery(qry).list();
             for (Object[] o : l) {

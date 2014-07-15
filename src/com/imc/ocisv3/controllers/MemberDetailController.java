@@ -159,6 +159,8 @@ public class MemberDetailController extends Window {
             qry += "and a.hdt1ctr=0 "
                     + "and a.hdt1idxno<>99999 "
                     + "order by a.hdt1seqno asc ";
+            
+            System.out.println(qry);
 
             List<Object[]> l = s.createSQLQuery(qry).list();
             for (Object[] o : l) {

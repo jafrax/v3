@@ -295,11 +295,21 @@ public class ReportGeneratorController extends Window {
         lbProduct.getItems().clear();
 
         Session s = Libs.sfDB.openSession();
+        
+        String insid="";
+    	List products = Libs.getProductByUserId(Libs.getUser());
+    	for(int i=0; i < products.size(); i++){
+    		insid=insid+"'"+(String)products.get(i)+"'"+",";
+    	}
+    	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        
         String q = "select "
                 + "hhdryy, hhdrpono, hhdrname "
                 + "from idnhltpf.dbo.hlthdr "
                 + "where "
-                + "hhdrinsid='" + Libs.getInsuranceId() + "' ";
+                + "hhdrinsid";
+        		if(products.size() > 0) q = q + " in  ("+insid+")";
+        		else q = q + "='" + Libs.getInsuranceId() + "' ";  
         try {
             List<Object[]> l = s.createSQLQuery(q).list();
             for (Object[] o : l) {

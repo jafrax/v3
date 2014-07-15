@@ -5,7 +5,10 @@ import com.imc.ocisv3.tools.Libs;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.hibernate.Hibernate;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -53,16 +56,35 @@ public class PoliciesController extends Window {
             }
         });
     }
+    
 
     private void populate(int offset, int limit) {
         lb.getItems().clear();
 
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String countQry = "select count(*) "
                     + "from idnhltpf.dbo.hlthdr a "
                     + "where "
-                    + "a.hhdrinsid='" + Libs.getInsuranceId() + "' ";
+                    + "a.hhdrinsid";
+            
+            
+                    if(products.size() > 0){
+                    	countQry = countQry + " in ("+insid+")";
+                    }
+                    else{
+                    	countQry = countQry + " = '" + Libs.getInsuranceId() + "'";
+                    }
+                  
 
             String qry = "select "
                     + "a.hhdryy, a.hhdrbr, a.hhdrdist, a.hhdrpono, "
@@ -71,18 +93,29 @@ public class PoliciesController extends Window {
                     + "a.hhdrmdtyy, a.hhdrmdtmm, a.hhdrmdtdd "
                     + "from idnhltpf.dbo.hlthdr a "
                     + "where "
-                    + "a.hhdrinsid='" + Libs.getInsuranceId() + "' ";
+                    + "a.hhdrinsid";
+            	if(products.size() > 0) qry = qry + " in  ("+insid+")";
+            	else qry = qry + " = '" + Libs.getInsuranceId() + "'";
+            
+            
 
             if (where!=null) {
                 countQry += "and (" + where + ") ";
                 qry += "and (" + where + ") ";
             }
 
-            Integer count = (Integer) s.createSQLQuery(countQry).uniqueResult();
+            SQLQuery query = s.createSQLQuery(countQry);
+                      
+            Integer count = (Integer) query.uniqueResult();
             pg.setTotalSize(count);
-
+            
+            query = s.createSQLQuery(qry);
+           
+  
             boolean show = true;
-            List<Object[]> l = s.createSQLQuery(qry).setFirstResult(offset).setMaxResults(limit).list();
+//            List<Object[]> l = s.createSQLQuery(qry).setFirstResult(offset).setMaxResults(limit).list();
+            List<Object[]> l = query.setFirstResult(offset).setMaxResults(limit).list();
+            
             for (Object[] o : l) {
                 String policyNumber = Libs.nn(o[0]) + "-" + Libs.nn(o[1]) + "-" + Libs.nn(o[2]) + "-" + Libs.nn(o[3]);
                 String startingDate = Libs.nn(o[5]) + "-" + Libs.nn(o[6]) + "-" + Libs.nn(o[7]);
@@ -129,6 +162,7 @@ public class PoliciesController extends Window {
             log.error("populate", ex);
         } finally {
             if (s!=null && s.isOpen()) s.close();
+            
         }
     }
 

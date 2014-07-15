@@ -116,13 +116,22 @@ public class ClaimSummaryController extends Window {
 
         Session s = Libs.sfDB.openSession();
         try {
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String qry = "select "
                     + "a.hclmcdatey, a.hclmcdatem, a.hclmtclaim, count(*) "
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and "
-                    + "a.hclmrecid<>'C' ";
+                    + "b.hhdrinsid";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                    qry = qry + " and a.hclmrecid<>'C' ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
@@ -223,14 +232,24 @@ public class ClaimSummaryController extends Window {
 
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String qry = "select "
                     + "a.hclmcdatey, a.hclmcdatem, a.hclmtclaim, "
                     + "sum(" + Libs.createAddFieldString("a.hclmaamt") + ") as approved "
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and "
-                    + "a.hclmrecid<>'C' ";
+                    + "b.hhdrinsid";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                    qry = qry + " and a.hclmrecid<>'C' ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
@@ -331,12 +350,23 @@ public class ClaimSummaryController extends Window {
 
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String qry = "select "
                     + "a.hclmcdatey, a.hclmcdatem, a.hclmtclaim, count(distinct a.hclmcno) "
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and hclmrecid<>'C' ";
+                    + "b.hhdrinsid";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                    qry = qry + " and hclmrecid<>'C' ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
@@ -437,6 +467,13 @@ public class ClaimSummaryController extends Window {
 
         Session s = Libs.sfDB.openSession();
         try {
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
             String qry = "select "
                     + "a.hclmcdatey, a.hclmcdatem, a.hclmtclaim, "
                     + "sum(" + Libs.createAddFieldString("a.hclmcamt") + ") as proposed, "
@@ -444,8 +481,10 @@ public class ClaimSummaryController extends Window {
                     + "from idnhltpf.dbo.hltclm a "
                     + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
                     + "where "
-                    + "b.hhdrinsid='" + Libs.getInsuranceId() + "' and "
-                    + "a.hclmrecid<>'C' ";
+                    + "b.hhdrinsid";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+                    qry = qry + " and a.hclmrecid<>'C' ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 

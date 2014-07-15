@@ -8,6 +8,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -126,6 +127,28 @@ public class Libs {
             if (s!=null && s.isOpen()) s.close();
         }
         return result;
+    }
+    
+    public static List getProductByUserId(String userId){
+    	List product = null;
+    	
+    	Session edcSession = Libs.sfEDC.openSession();
+    	
+    	try{
+    		String query = "SELECT product FROM OCIS.dbo.CIS_User_Product WHERE user_id=:userId";
+    		SQLQuery q = edcSession.createSQLQuery(query);
+    		q.setString("userId", Libs.getUser());
+    		
+    		product = q.list();
+    		
+    	}catch(Exception e){
+    		log.error("getProductByUserId", e);
+    		
+    	}finally{
+    		if(edcSession != null && edcSession.isOpen()) edcSession.close();
+    	}
+    	
+    	return product;
     }
 
     public static String getProposed() {
