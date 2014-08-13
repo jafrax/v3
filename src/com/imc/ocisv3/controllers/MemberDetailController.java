@@ -9,6 +9,9 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
 
 import java.math.BigDecimal;
@@ -333,15 +336,28 @@ public class MemberDetailController extends Window {
                     li.appendChild(new Listcell((serviceIn.startsWith("0")) ? "" : serviceIn));
                     li.appendChild(new Listcell((serviceOut.startsWith("0")) ? "" : serviceOut));
                     li.appendChild(new Listcell(planString));
-
-                    ClaimPOJO claimPOJO = new ClaimPOJO();
+                    
+                    
+                    
+                    final ClaimPOJO claimPOJO = new ClaimPOJO();
                     claimPOJO.setClaim_number(Libs.nn(o[12]).trim());
                     claimPOJO.setPolicy_number(policy.getYear() + "-" + policy.getBr() + "-" + policy.getDist() + "-" + policy.getPolicy_number());
                     claimPOJO.setIndex(Libs.nn(o[18]) + "-" + Libs.nn(o[16]));
                     claimPOJO.setClaim_count(Integer.valueOf(Libs.nn(o[13])));
+                    claimPOJO.setPolicy(policy);
 
                     li.setValue(claimPOJO);
                     lbClaimHistory.appendChild(li);
+                    
+                    lbClaimHistory.addEventListener(Events.ON_SELECT, new EventListener<Event>() {
+
+						@Override
+						public void onEvent(Event arg0) throws Exception {
+							// TODO Auto-generated method stub
+							showClaimDetail(claimPOJO);
+							lbClaimHistory.clearSelection();
+						}
+					});
                 }
 
 //                Policy Claim History
@@ -699,9 +715,9 @@ public class MemberDetailController extends Window {
         ((Tabbox) getFellow("tbx")).setSelectedIndex(0);
     }
 
-    public void showClaimDetail() {
+    public void showClaimDetail(ClaimPOJO claimPOJO) {
         Window w = (Window) Executions.createComponents("views/ClaimDetail.zul", this, null);
-        w.setAttribute("claim", lbClaimHistory.getSelectedItem().getValue());
+        w.setAttribute("claim", claimPOJO);
         w.doModal();
     }
 

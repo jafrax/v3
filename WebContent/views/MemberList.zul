@@ -22,7 +22,7 @@
                             <combobox id="cbStatus" onSelect="spaceOwner.policySelected();" readonly="true"/>
                         </toolbar>
                     </hbox>
-                    <listbox id="lb" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;" onDoubleClick="spaceOwner.showMemberDetail();">
+                    <listbox id="lb" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;">
                         <listhead sizable="true">
                         	<listheader label="No" width="50px"/>
                             <listheader label="Status" width="80px"/>
