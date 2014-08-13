@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
 import org.zkoss.zul.event.PagingEvent;
 
@@ -79,7 +80,7 @@ public class PoliciesController extends Window {
             
             
                     if(products.size() > 0){
-                    	countQry = countQry + " in ("+insid+")";
+                    	countQry = countQry + " in ("+insid+") ";
                     }
                     else{
                     	countQry = countQry + " = '" + Libs.getInsuranceId() + "'";
@@ -135,7 +136,7 @@ public class PoliciesController extends Window {
 
                 Listitem li = new Listitem();
 
-                PolicyPOJO policyPOJO = new PolicyPOJO();
+               final PolicyPOJO policyPOJO = new PolicyPOJO();
                 policyPOJO.setYear(Integer.valueOf(Libs.nn(o[0])));
                 policyPOJO.setBr(Integer.valueOf(Libs.nn(o[1])));
                 policyPOJO.setDist(Integer.valueOf(Libs.nn(o[2])));
@@ -144,8 +145,14 @@ public class PoliciesController extends Window {
 
                 li.setValue(policyPOJO);
 
+                A policyName = new A(Libs.nn(o[4]).trim());
+                policyName.setStyle("color:#00bbee;text-decoration:none");
+                
                 li.appendChild(new Listcell(policyNumber));
-                li.appendChild(new Listcell(((Libs.config.get("demo_mode")).equals("true") && Libs.getInsuranceId().equals("00051")) ? Libs.nn(Libs.config.get("demo_name")) : Libs.nn(o[4]).trim()));
+//                li.appendChild(new Listcell(((Libs.config.get("demo_mode")).equals("true") && Libs.getInsuranceId().equals("00051")) ? Libs.nn(Libs.config.get("demo_name")) : Libs.nn(o[4]).trim()));
+                Listcell lc = new Listcell();
+                lc.appendChild(policyName);
+                li.appendChild(lc);
                 li.appendChild(lcStatus);
                 li.appendChild(Libs.createNumericListcell(getMemberCount(Libs.nn(o[0]), Libs.nn(o[3])), "#,###"));
                 li.appendChild(new Listcell(startingDate));
@@ -155,6 +162,15 @@ public class PoliciesController extends Window {
                     if (!userProductViewrestriction.contains(Libs.nn(o[3]))) show=false;
                     else show=true;
                 }
+                
+                policyName.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						showPolicyDetail(policyPOJO);
+						
+					}
+				});
 
                 if (show) lb.appendChild(li);
             }
@@ -170,10 +186,31 @@ public class PoliciesController extends Window {
         int result = 0;
         Session s = Libs.sfDB.openSession();
         try {
-            String qry = "select count(*) "
-                    + "from idnhltpf.dbo.hltdt1 a "
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1) insid = insid.substring(0, insid.length()-1);
+        	
+        	String policyNo = hdt1yy+"-1"+"-0-"+hdt1pono;
+            String qry = "select count(*) from idnhltpf.dbo.hlthdr b "
+                    + "inner join idnhltpf.dbo.hltdt1 a "
+            		+ "on b.hhdryy=a.hdt1yy and b.hhdrbr=a.hdt1br and b.hhdrdist=a.hdt1dist and b.hhdrpono=a.hdt1pono "
+            		+ "inner join idnhltpf.dbo.hltdt2 d "
+                    + "on a.hdt1yy=d.hdt2yy and a.hdt1br=d.hdt2br and a.hdt1dist=d.hdt2dist and a.hdt1pono=d.hdt2pono and a.hdt1idxno=d.hdt2idxno and a.hdt1seqno=d.hdt2seqno and a.hdt1ctr=d.hdt2ctr "
+            		+ "inner join idnhltpf.dbo.hltemp c on a.hdt1yy=c.hempyy and  a.HDT1BR=c.HEMPBR and a.HDT1DIST=c.HEMPDIST and a.hdt1pono=c.hemppono and a.hdt1idxno=c.hempidxno and a.hdt1seqno=c.hempseqno and a.hdt1ctr=c.hempctr "
                     + "where "
-                    + "a.hdt1yy=" + hdt1yy + " and a.hdt1pono=" + hdt1pono;
+            		+ "b.hhdrinsid";
+            		if(products.size() > 0) qry = qry + " in  ("+insid+") ";
+            		else qry = qry + "='" + Libs.getInsuranceId() + "' "; 
+            		
+            		qry += "and (convert(varchar,b.hhdryy)+'-'+convert(varchar,b.hhdrbr)+'-'+convert(varchar,b.hhdrdist)+'-'+convert(varchar,b.hhdrpono)='" + policyNo + "') "
+                    + "and a.hdt1ctr=0 and a.hdt1idxno < 99989 and a.hdt1pono <> 99999 "
+            		+ "and d.hdt2moe not in('M','U') ";
+            
+//            System.out.println(qry);
 
             result = (Integer) s.createSQLQuery(qry).uniqueResult();
         } catch (Exception ex) {
@@ -202,15 +239,26 @@ public class PoliciesController extends Window {
 
     }
 
-    public void showPolicyDetail() {
+    public void showPolicyDetail(PolicyPOJO pojo) {
         if (Libs.getCenter().getChildren().size()>0) Libs.getCenter().removeChild(Libs.getCenter().getFirstChild());
         Window w = (Window) Executions.createComponents("views/PolicyDetail.zul", Libs.getCenter(), null);
-        w.setAttribute("policy", lb.getSelectedItem().getValue());
+//        w.setAttribute("policy", lb.getSelectedItem().getValue());
+        w.setAttribute("policy", pojo);
     }
 
     public void export() {
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1) insid = insid.substring(0, insid.length()-1);
+        	
+        	
+        	
             String qry = "select "
                     + "a.hhdryy, a.hhdrbr, a.hhdrdist, a.hhdrpono, "
                     + "a.hhdrname, "
@@ -218,7 +266,10 @@ public class PoliciesController extends Window {
                     + "a.hhdrmdtyy, a.hhdrmdtmm, a.hhdrmdtdd "
                     + "from idnhltpf.dbo.hlthdr a "
                     + "where "
-                    + "a.hhdrinsid='" + Libs.getInsuranceId() + "' ";
+                    + "a.hhdrinsid";
+            
+            		if(products.size() > 0) qry = qry + " in  ("+insid+") ";
+            		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  //='" + Libs.getInsuranceId() + "' ";
 
             if (where!=null) qry += "and (" + where + ") ";
 

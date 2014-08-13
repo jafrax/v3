@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
 import org.zkoss.zul.event.PagingEvent;
 
@@ -273,7 +274,7 @@ public class MemberListController extends Window {
 
                 Map<String,String> clientPlanMap = Libs.getClientPlanMap(policyPOJO.getPolicy_string());
 
-                MemberPOJO memberPOJO = new MemberPOJO();
+                final MemberPOJO memberPOJO = new MemberPOJO();
                 memberPOJO.setPolicy(policyPOJO);
                 memberPOJO.setName(Libs.nn(o[1]).trim());
                 memberPOJO.setCard_number(Libs.nn(o[0]).trim());
@@ -348,7 +349,12 @@ public class MemberListController extends Window {
                 } else {
                     li.appendChild(new Listcell(""));
                 }
-                li.appendChild(new Listcell(memberPOJO.getName()));
+                
+                Listcell cell = new Listcell();
+                A memberName = new A(memberPOJO.getName());
+                memberName.setStyle("color:#00bbee;text-decoration:none");
+                cell.appendChild(memberName);
+                li.appendChild(cell);
                 li.appendChild(new Listcell(Libs.nn(o[34]).trim()));
                 li.appendChild(new Listcell(Libs.nn(o[20]).trim()));
                 li.appendChild(new Listcell(memberPOJO.getCard_number()));
@@ -371,6 +377,14 @@ public class MemberListController extends Window {
                     li.appendChild(new Listcell("-"));
                 }
                 lb.appendChild(li);
+                
+                memberName.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						showMemberDetail(memberPOJO);
+					}
+				});
                 
                 startNumber = startNumber + 1;
             }
@@ -400,8 +414,8 @@ public class MemberListController extends Window {
         } else refresh();
     }
 
-    public void showMemberDetail() {
-        MemberPOJO memberPOJO = lb.getSelectedItem().getValue();
+    public void showMemberDetail(MemberPOJO memberPOJO) {
+//        MemberPOJO memberPOJO = lb.getSelectedItem().getValue();
         Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.getRootWindow(), null);
         w.setAttribute("policy", memberPOJO.getPolicy());
         w.setAttribute("member", memberPOJO);

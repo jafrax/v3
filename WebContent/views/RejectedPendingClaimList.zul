@@ -17,8 +17,8 @@
                             <toolbarbutton id="tbnShowMemberDetail" image="resources/icons/member.png" disabled="true" tooltiptext="Show Member Detail" onClick="spaceOwner.showMemberDetail();"/>
                         </toolbar>
                         <toolbar align="end" height="21px">
-                            <image src="resources/icons/browse.png"/>
-                            <textbox id="tQuickSearch" onOK="spaceOwner.quickSearch();"/>
+                            <!-- <image src="resources/icons/browse.png"/>
+                            <textbox id="tQuickSearch" onOK="spaceOwner.quickSearch();"/> -->
                             <combobox id="cbPolicy" onSelect="spaceOwner.policySelected();" readonly="true"/>
                         </toolbar>
                     </hbox>

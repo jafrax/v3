@@ -69,7 +69,7 @@ public class ClientSelectionController extends Window {
 
     private void populateInactive(int offset, int limit) {
         lbInactive.getItems().clear();
-        Session s = Libs.sfEDC.openSession();
+        Session s = Libs.sfDB.openSession();
         try {
             String countQry = "select count(*) from ocis.dbo.cis_inslf where hinsid not in (" + activeClients + ") ";
             String qry = "select hinsid, hinsname from ocis.dbo.cis_inslf where hinsid not in (" + activeClients + ") ";

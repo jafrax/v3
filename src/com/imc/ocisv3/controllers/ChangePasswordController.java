@@ -37,7 +37,7 @@ public class ChangePasswordController extends Window {
         boolean valid = true;
         boolean validPass = false;
 
-        Session s3 = Libs.sfEDC.openSession();
+        Session s3 = Libs.sfDB.openSession();
         try {
             String q = "select count(*) "
                     + "from ocis.dbo.cis_user "
@@ -70,7 +70,7 @@ public class ChangePasswordController extends Window {
     public void changePassword() {
         if (validate()) {
             if (Messagebox.show("Are you sure you want to change the password?", "Confirmation", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, Messagebox.CANCEL)==Messagebox.OK) {
-                Session s3 = Libs.sfEDC.openSession();
+                Session s3 = Libs.sfDB.openSession();
                 try {
                     String q = "update ocis.dbo.cis_user "
                             + "set pass='" + tNewPassword.getText() + "' "

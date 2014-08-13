@@ -25,11 +25,12 @@
                     <row id="rowPeriod">
                         Period
                         <combobox id="cbPeriod" readonly="true">
-                            <comboitem label="Year To Date"/>
+                        	<comboitem label="Date Range"/>
+                            <!-- <comboitem label="Year To Date"/>
                             <comboitem label="Policy Start to Date"/>
                             <comboitem label="Date Range"/>
                             <comboitem label="Month Range"/>
-                            <comboitem label="Year Range"/>
+                            <comboitem label="Year Range"/> -->
                         </combobox>
                     </row>
                     <row id="rowToDate">

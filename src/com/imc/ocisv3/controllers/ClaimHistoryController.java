@@ -4,15 +4,20 @@ import com.imc.ocisv3.pojos.ClaimPOJO;
 import com.imc.ocisv3.pojos.MemberPOJO;
 import com.imc.ocisv3.pojos.PolicyPOJO;
 import com.imc.ocisv3.tools.Libs;
+import com.sun.xml.internal.stream.StaxXMLInputSource;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.*;
 import org.zkoss.zul.event.PagingEvent;
 
@@ -34,6 +39,11 @@ public class ClaimHistoryController extends Window {
     private Listbox lb;
     private Paging pg;
     private Combobox cbPolicy;
+    private Combobox cbFilter;
+    private Combobox cbClaimType;
+    private Textbox tQuickSearch;
+    private Datebox startDate;
+    private Datebox endDate;
     private String where;
     private String queryString;
     private String userProductViewrestriction;
@@ -42,7 +52,8 @@ public class ClaimHistoryController extends Window {
         if (!Libs.checkSession()) {
             userProductViewrestriction = Libs.restrictUserProductView.get(Libs.getUser());
             initComponents();
-            populateCount();
+            populateCountForQuickSearch();
+//            populateCount();
             populate(0, pg.getPageSize());
         }
     }
@@ -51,6 +62,11 @@ public class ClaimHistoryController extends Window {
         lb = (Listbox) getFellow("lb");
         pg = (Paging) getFellow("pg");
         cbPolicy = (Combobox) getFellow("cbPolicy");
+        cbFilter = (Combobox) getFellow("cbFilter");
+        cbClaimType = (Combobox)getFellow("cbClaimType");
+        tQuickSearch = (Textbox)getFellow("tQuickSearch");
+        startDate = (Datebox)getFellow("startDate");
+        endDate = (Datebox)getFellow("endDate");
 
         pg.addEventListener("onPaging", new EventListener() {
             @Override
@@ -62,6 +78,10 @@ public class ClaimHistoryController extends Window {
 
         cbPolicy.appendItem("All Products");
         cbPolicy.setSelectedIndex(0);
+        cbFilter.setSelectedIndex(0);
+        cbClaimType.setSelectedIndex(0);
+        
+        cbClaimType.setVisible(false);
         boolean show = true;
         for (String s : Libs.policyMap.keySet()) {
             String policyName = Libs.policyMap.get(s);
@@ -81,6 +101,25 @@ public class ClaimHistoryController extends Window {
         } else {
             lhEmployeeId.setVisible(false);
         }
+        
+        endDate.setValue(new Date());
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -30);
+        startDate.setValue(cal.getTime());
+    }
+    
+    
+    public void filterBy(){
+    	if(cbFilter.getSelectedIndex() == 4){
+    		cbClaimType.setVisible(true);
+    		tQuickSearch.setVisible(false);
+    		cbClaimType.setSelectedIndex(0);
+    	}else{
+    		cbClaimType.setVisible(false);
+    		tQuickSearch.setValue(null);
+    		tQuickSearch.setVisible(true);
+    	}
     }
 
     private void populateCount() {
@@ -96,24 +135,34 @@ public class ClaimHistoryController extends Window {
         	
             String countSelect = "select count(*) ";
 
-            String qry = "from idnhltpf.dbo.hltclm a "
-                    + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
+            String qry = "from idnhltpf.dbo.hlthdr b  "
+                    + "inner join idnhltpf2.dbo.tclaim_header a on b.hhdryy=a.ThnPolis and b.HHDRBR=a.BrPolis and b.HHDRDIST=a.DistPolis and b.hhdrpono=a.NoPolis "
                     + "where "
                     + "b.hhdrinsid";
-    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+") ";
     				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+    				
+    				if (cbPolicy.getSelectedIndex()>0) {
+    	                String policy = cbPolicy.getSelectedItem().getLabel();
+    	                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+    	                String policyNo[] = policy.split("-");
+    	                qry += "and b.hhdryy='"+policyNo[0]+"' and b.hhdrbr='"+policyNo[1]+"' and b.hhdrdist='"+policyNo[2]+"' and b.hhdrpono='" + policyNo[3] + "' ";
+    	            }
+    				
+    				if(startDate.getValue() != null && endDate.getValue() != null){
+    					qry += "and cdate BETWEEN '"+startDate.getText()+"' AND '"+endDate.getText()+"' ";
+    				}
 
-                    qry = qry + "and a.hclmrecid<>'C' ";
+                    qry = qry + "and a.recid<>'C' AND hdt1PONO<>99999 AND hdt1IDXNO < 99989";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
             if (where!=null) qry += "and (" + where + ") ";
 
-            if (cbPolicy.getSelectedIndex()>0) {
-                String policy = cbPolicy.getSelectedItem().getLabel();
-                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
-                qry += "and (convert(varchar,a.hclmyy)+'-'+convert(varchar,a.hclmbr)+'-'+convert(varchar,a.hclmdist)+'-'+convert(varchar,a.hclmpono)='" + policy + "') ";
-            }
+
+
+            
+//            System.out.println(countSelect + qry + "\n");
 
             Integer count = (Integer) s.createSQLQuery(countSelect + qry).uniqueResult();
             pg.setTotalSize(count);
@@ -138,28 +187,51 @@ public class ClaimHistoryController extends Window {
         	
             String countSelect = "select count(*) ";
 
-            String qry = "from idnhltpf.dbo.hltclm a "
-                    + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
-                    + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
-                    + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.hclmnhoscd "
-                    + "inner join idnhltpf.dbo.hltemp e on e.hempyy=a.hclmyy and e.hemppono=a.hclmpono and e.hempidxno=a.hclmidxno and e.hempseqno=a.hclmseqno and e.hempctr=0 "
+//            String qry = "from idnhltpf.dbo.hlthdr b "
+//                    + "inner join idnhltpf2.dbo.tclaim_header a on b.hhdryy=a.ThnPolis and b.HHDRBR=a.BrPolis and b.HHDRDIST=a.DistPolis and b.hhdrpono=a.NoPolis "
+//                    + "inner join idnhltpf.dbo.hltdt1 c  "
+//                    + "on a.ThnPolis=c.hdt1yy and a.BrPolis=c.HDT1BR and a.DistPolis=c.HDT1DIST and a.NoPolis=c.hdt1pono and a.Idx=c.hdt1idxno and a.Seq=c.hdt1seqno and c.hdt1ctr=0  "
+//                    + "inner join idnhltpf.dbo.hltemp e  " 
+//                    + "on c.HDT1YY=e.hempyy and c.HDT1BR=e.HEMPBR and c.HDT1DIST=e.HEMPDIST and c.HDT1PONO=e.hemppono and c.HDT1IDXNO=e.hempidxno and c.HDT1SEQNO=e.hempseqno and c.HDT1CTR=e.hempctr "
+//                    + "where "
+//                    + "b.hhdrinsid";
+            
+            String qry = "from idnhltpf.dbo.hlthdr b "
+                    + "inner join idnhltpf2.dbo.tclaim_header a "
+                    + "on b.hhdryy=a.ThnPolis and b.HHDRBR=a.BrPolis and b.HHDRDIST=a.DistPolis and b.hhdrpono=a.NoPolis "
+                    + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.procode "
+                    + "inner join idnhltpf.dbo.hltdt1 c "
+                    + "on a.ThnPolis=c.hdt1yy and a.BrPolis=c.HDT1BR and a.DistPolis=c.HDT1DIST and a.NoPolis=c.hdt1pono and a.Idx=c.hdt1idxno and a.Seq=c.hdt1seqno and c.hdt1ctr=0 "
+                    + "inner join idnhltpf.dbo.hltdt2 f  "
+                    + "on c.HDT1YY=f.hdt2yy and c.HDT1BR=f.HDT2BR and c.HDT1DIST=f.HDT2DIST and c.HDT1PONO=f.hdt2pono and c.HDT1IDXNO=f.hdt2idxno and c.HDT1SEQNO=f.hdt2seqno and c.HDT1CTR=f.hdt2ctr "
+                    + "inner join idnhltpf.dbo.hltemp e "
+                    + "on f.HDT2YY=e.hempyy and f.HDT2BR=e.HEMPBR and f.HDT2DIST=e.HEMPDIST and f.HDT2PONO=e.hemppono and f.HDT2IDXNO=e.hempidxno and f.HDT2SEQNO=e.hempseqno and f.HDT2CTR=e.hempctr "
+                    + "left outer join idnhltpf.dbo.hltmemo2 g  "
+                    + "on a.ThnPolis=g.hmem2yy and a.BrPolis=g.HMEM2BR and a.DistPolis=g.HMEM2DIST and a.NoPolis=g.hmem2pono and a.Idx=g.hmem2idxno and a.Seq=g.hmem2seqno and a.tclaim=g.hmem2claim and a.Counter=g.hmem2count "
                     + "where "
                     + "b.hhdrinsid";
             
-    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+") ";
     				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+    				
+    				if (cbPolicy.getSelectedIndex()>0) {
+    	                String policy = cbPolicy.getSelectedItem().getLabel();
+    	                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+    	                String policyNo[] = policy.split("-");
+    	                qry += "and b.hhdryy='"+policyNo[0]+"' and b.hhdrbr='"+policyNo[1]+"' and b.hhdrdist='"+policyNo[2]+"' and b.hhdrpono='" + policyNo[3] + "' ";
+    	            }
+    				
+    				if(startDate.getValue() != null && endDate.getValue() != null){
+    					qry += "and cdate BETWEEN '"+startDate.getText()+"' AND '"+endDate.getText()+"' ";
+    				}
 
-                    qry=qry + "and a.hclmrecid<>'C' ";
+                    qry=qry + "and a.recid<>'C' AND hdt1PONO<>99999 AND hdt1IDXNO < 99989";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
-            if (where!=null) qry += "and (" + where + ") ";
+            if (where!=null) qry +=  where;
 
-            if (cbPolicy.getSelectedIndex()>0) {
-                String policy = cbPolicy.getSelectedItem().getLabel();
-                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
-                qry += "and (convert(varchar,a.hclmyy)+'-'+convert(varchar,a.hclmbr)+'-'+convert(varchar,a.hclmdist)+'-'+convert(varchar,a.hclmpono)='" + policy + "') ";
-            }
+            System.out.println(countSelect + qry);
 
             Integer count = (Integer) s.createSQLQuery(countSelect + qry).uniqueResult();
             pg.setTotalSize(count);
@@ -181,19 +253,15 @@ public class ClaimHistoryController extends Window {
         	}
         	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
         	
+//        	String countQry = "select count(*) "; 
+        	
             String select = "select "
-                    + "a.hclmcno, a.hclmyy, a.hclmbr, a.hclmdist, a.hclmpono, "
-                    + "b.hhdrname, a.hclmidxno, a.hclmseqno, "
-                    + "c.hdt1name, a.hclmtclaim, "
-                    + "(" + Libs.getProposed() + ") as proposed, " //10
-                    + "(" + Libs.getApproved() + ") as approved, "
-                    + "d.hproname, "
-                    + "a.hclmcount, "
-                    + "e.hempcnpol, e.hempcnid, "
-                    + "'' as blank1, "
-                    + "c.hdt1ncard, "
-                    + "c.hdt1bdtyy, c.hdt1bdtmm, c.hdt1bdtdd, "
-                    + "c.hdt1sex, " //21
+                    + "a.HID2 , a.ThnPolis, a.BrPolis, a.DistPolis, a.NoPolis, "
+                    + "b.hhdrname, a.Idx, a.seq, "
+                    + "c.hdt1name, a.tclaim, "
+                    + "a.diAjukan as proposed, " //10
+                    + "a.diBayarkan as approved, "
+                    + "d.hproname, a.Counter, e.hempcnpol, e.hempcnid, '' as blank1, c.hdt1ncard, c.hdt1bdtyy, c.hdt1bdtmm, c.hdt1bdtdd, c.hdt1sex, " //21
                     + "f.hdt2plan1, f.hdt2plan2, f.hdt2plan3, f.hdt2plan4, f.hdt2plan5, f.hdt2plan6, "
                     + "f.hdt2sdtyy, f.hdt2sdtmm, f.hdt2sdtdd, "
                     + "f.hdt2mdtyy, f.hdt2mdtmm, f.hdt2mdtdd, "
@@ -211,43 +279,65 @@ public class ClaimHistoryController extends Window {
                     + "(convert(varchar,f.hdt2pxdty6)+'-'+convert(varchar,f.hdt2pxdtm6)+'-'+convert(varchar,f.hdt2pxdtd6)) as hdt2pxdt6, "
                     + "c.hdt1mstat, " // 46
                     + "g.hmem2data1, g.hmem2data2, g.hmem2data3, g.hmem2data4, "
-                    + "a.hclmcdatey, a.hclmcdatem, a.hclmcdated, "
-                    + "a.hclmsinyy, a.hclmsinmm, a.hclmsindd, "
-                    + "a.hclmsoutyy, a.hclmsoutmm, a.hclmsoutdd, "
-                    + "a.hclmrdatey, a.hclmrdatem, a.hclmrdated, "
-                    + "a.hclmpdatey, a.hclmpdatem, a.hclmpdated, "
-                    + "a.hclmdiscd1, a.hclmdiscd2, a.hclmdiscd3, "
-                    + "a.hclmrecid, " // 69
-                    + "e.hempmemo3 "; // 70
+                    + "a.cdate, " //"a.hclmcdatey, a.hclmcdatem, a.hclmcdated, "
+                    + "a.sindate, " //"a.hclmsinyy, a.hclmsinmm, a.hclmsindd, "
+                    + "a.soutdate, " //"a.hclmsoutyy, a.hclmsoutmm, a.hclmsoutdd, "
+                    + "a.rdate, " //"a.hclmrdatey, a.hclmrdatem, a.hclmrdated, "
+                    + "a.pdate, " //"a.hclmpdatey, a.hclmpdatem, a.hclmpdated, "
+                    + "a.icd1, a.icd2, a.icd3, "
+                    + "a.recid, " // 59
+                    + "e.hempmemo3 "; // 60
 
-            String qry = "from idnhltpf.dbo.hltclm a "
-                    + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
-                    + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
-                    + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.hclmnhoscd "
-                    + "inner join idnhltpf.dbo.hltemp e on e.hempyy=a.hclmyy and e.hemppono=a.hclmpono and e.hempidxno=a.hclmidxno and e.hempseqno=a.hclmseqno and e.hempctr=0 "
-                    + "inner join idnhltpf.dbo.hltdt2 f on f.hdt2yy=a.hclmyy and f.hdt2pono=a.hclmpono and f.hdt2idxno=a.hclmidxno and f.hdt2seqno=a.hclmseqno and f.hdt2ctr=0 "
-                    + "left outer join idnhltpf.dbo.hltmemo2 g on g.hmem2yy=a.hclmyy and g.hmem2pono=a.hclmpono and g.hmem2idxno=a.hclmidxno and g.hmem2seqno=a.hclmseqno and g.hmem2claim=a.hclmtclaim and g.hmem2count=a.hclmcount "
+            String qry = "from idnhltpf.dbo.hlthdr b "
+                    + "inner join idnhltpf2.dbo.tclaim_header a "
+                    + "on b.hhdryy=a.ThnPolis and b.HHDRBR=a.BrPolis and b.HHDRDIST=a.DistPolis and b.hhdrpono=a.NoPolis "
+                    + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.procode "
+                    + "inner join idnhltpf.dbo.hltdt1 c "
+                    + "on a.ThnPolis=c.hdt1yy and a.BrPolis=c.HDT1BR and a.DistPolis=c.HDT1DIST and a.NoPolis=c.hdt1pono and a.Idx=c.hdt1idxno and a.Seq=c.hdt1seqno and c.hdt1ctr=0 "
+                    + "inner join idnhltpf.dbo.hltdt2 f  "
+                    + "on c.HDT1YY=f.hdt2yy and c.HDT1BR=f.HDT2BR and c.HDT1DIST=f.HDT2DIST and c.HDT1PONO=f.hdt2pono and c.HDT1IDXNO=f.hdt2idxno and c.HDT1SEQNO=f.hdt2seqno and c.HDT1CTR=f.hdt2ctr "
+                    + "inner join idnhltpf.dbo.hltemp e "
+                    + "on f.HDT2YY=e.hempyy and f.HDT2BR=e.HEMPBR and f.HDT2DIST=e.HEMPDIST and f.HDT2PONO=e.hemppono and f.HDT2IDXNO=e.hempidxno and f.HDT2SEQNO=e.hempseqno and f.HDT2CTR=e.hempctr "
+                    + "left outer join idnhltpf.dbo.hltmemo2 g  "
+                    + "on a.ThnPolis=g.hmem2yy and a.BrPolis=g.HMEM2BR and a.DistPolis=g.HMEM2DIST and a.NoPolis=g.hmem2pono and a.Idx=g.hmem2idxno and a.Seq=g.hmem2seqno and a.tclaim=g.hmem2claim and a.Counter=g.hmem2count "
                     + "where "
                     + "b.hhdrinsid";
             
-    				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+    				if(products.size() > 0) qry = qry + " in  ("+insid+") ";
     				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+    				
+    				if (cbPolicy.getSelectedIndex()>0) {
+    	                String policy = cbPolicy.getSelectedItem().getLabel();
+    	                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+    	                String policyNo[] = policy.split("-");
+    	                qry += "and b.hhdryy='"+policyNo[0]+"' and b.hhdrbr='"+policyNo[1]+"' and b.hhdrdist='"+policyNo[2]+"' and b.hhdrpono='" + policyNo[3] + "' ";
+    	            }
+    				
+    				if(startDate.getValue() != null && endDate.getValue() != null){
+    					qry += "and cdate BETWEEN '"+startDate.getText()+"' AND '"+endDate.getText()+"' ";
+    				}
+    				
+    				
 
-                    qry = qry + "and a.hclmrecid<>'C' ";
+                    qry = qry + "and a.recid<>'C' AND hdt1PONO<>99999 AND hdt1IDXNO < 99989 ";
 
             if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
-            if (where!=null) qry += "and (" + where + ") ";
+            if (where!=null) qry +=  where;
 
-            if (cbPolicy.getSelectedIndex()>0) {
-                String policy = cbPolicy.getSelectedItem().getLabel();
-                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
-                qry += "and (convert(varchar,a.hclmyy)+'-'+convert(varchar,a.hclmbr)+'-'+convert(varchar,a.hclmdist)+'-'+convert(varchar,a.hclmpono)='" + policy + "') ";
-            }
+            
 
-            String order = "order by convert(date,convert(varchar,a.hclmcdated)+'-'+convert(varchar,a.hclmcdatem)+'-'+convert(varchar,a.hclmcdatey),105) desc ";
+            String order = "order by cdate desc "; //convert(date,convert(varchar,a.hclmcdated)+'-'+convert(varchar,a.hclmcdatem)+'-'+convert(varchar,a.hclmcdatey),105) desc ";
 
             queryString = select + qry + order;
+            
+//            Integer count = (Integer) s.createSQLQuery(countQry + qry).uniqueResult();
+//            pg.setTotalSize(count);
+            
+//            System.out.println(countQry+qry +"\n");
+            
+//            System.out.println(select + qry + order +"\n");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
             List<Object[]> l = s.createSQLQuery(select + qry + order).setFirstResult(offset).setMaxResults(limit).list();
             for (Object[] o : l) {
@@ -260,25 +350,36 @@ public class ClaimHistoryController extends Window {
                     provider = remarks.substring(remarks.indexOf("[")+1, remarks.indexOf("]"));
                 }
 
-                String receiptDate = o[60] + "-" + o[61] + "-" + o[62];
-                String paymentDate = o[63] + "-" + o[64] + "-" + o[65];
-                String serviceIn = o[54] + "-" + o[55] + "-" + o[56];
-                String serviceOut = o[57] + "-" + o[58] + "-" + o[59];
+                String receiptDate = sdf.format((Date)o[54]); //Libs.nn(o[54]); //sdf.format((Date)o[55]); //o[60] + "-" + o[61] + "-" + o[62];
+                String paymentDate = sdf.format((Date)o[55]); //Libs.nn(o[55]); //sdf.format((Date)o[56]); //o[63] + "-" + o[64] + "-" + o[65];
+                String serviceIn = sdf.format((Date)o[52]); //Libs.nn(o[52]);//sdf.format((Date)o[53]); //o[54] + "-" + o[55] + "-" + o[56];
+                String serviceOut = sdf.format((Date)o[53]); //Libs.nn(o[53]); //sdf.format((Date)o[54]); //o[57] + "-" + o[58] + "-" + o[59];
 
                 Listitem li = new Listitem();
 
-                li.appendChild(new Listcell(Libs.nn(o[0])));
+                Listcell cell = new Listcell();
+                A hidNumber = new A(Libs.nn(o[0]));
+                hidNumber.setStyle("color:#00bbee;text-decoration:none");
+                cell.appendChild(hidNumber);
+                li.appendChild(cell);
+//                li.appendChild(new Listcell(Libs.nn(o[0])));
                 li.appendChild(new Listcell(Libs.nn(o[14]).trim()));
                 li.appendChild(new Listcell(policyName));
                 li.appendChild(new Listcell(o[6] + "-" + o[7]));
                 li.appendChild(new Listcell(Libs.nn(o[15]).trim()));
                 if (Libs.getInsuranceId().equals("00078") || Libs.getInsuranceId().equals("00088")) {
-                    li.appendChild(new Listcell(Libs.nn(o[70]).trim()));
+                    li.appendChild(new Listcell(Libs.nn(o[60]).trim()));
                 } else {
                     li.appendChild(new Listcell(""));
                 }
-                li.appendChild(new Listcell(Libs.nn(o[8])));
-                li.appendChild(new Listcell(Libs.getStatus(Libs.nn(o[69]))));
+                
+                cell = new Listcell();
+                A memberName = new A(Libs.nn(o[8]));
+                memberName.setStyle("color:#00bbee;text-decoration:none");
+                cell.appendChild(memberName);
+                li.appendChild(cell);
+//                li.appendChild(new Listcell(Libs.nn(o[8])));
+                li.appendChild(new Listcell(Libs.getStatus(Libs.nn(o[59]))));
                 li.appendChild(new Listcell(Libs.getClaimType(Libs.nn(o[9]))));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[10])), "#,###.##"));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[11])), "#,###.##"));
@@ -286,17 +387,20 @@ public class ClaimHistoryController extends Window {
 
                 if (Libs.nn(o[9]).equals("I") || Libs.nn(o[9]).equals("R")) {
                     li.appendChild(new Listcell(""));
-                    li.appendChild(new Listcell(Libs.fixDate(serviceIn)));
-                    li.appendChild(new Listcell(Libs.fixDate(serviceOut)));
+                    li.appendChild(new Listcell(serviceIn));
+                    li.appendChild(new Listcell(serviceOut));
                 } else {
-                    li.appendChild(new Listcell(Libs.fixDate(receiptDate)));
+                  li.appendChild(new Listcell(receiptDate));
                     li.appendChild(new Listcell(""));
                     li.appendChild(new Listcell(""));
                 }
-
-                if (!Libs.nn(o[63]).equals("0")) {
+                
+                if(paymentDate.equalsIgnoreCase("01-01-1900")) li.appendChild(new Listcell("-"));
+                else li.appendChild(new Listcell(paymentDate)); 
+                
+                /*if (!Libs.nn(o[63]).equals("0")) {
                     li.appendChild(new Listcell(Libs.fixDate(paymentDate)));
-                }
+                }*/
 
                 lb.appendChild(li);
 
@@ -309,7 +413,7 @@ public class ClaimHistoryController extends Window {
 
                 MemberPOJO memberPOJO = new MemberPOJO();
                 memberPOJO.setPolicy(policyPOJO);
-                memberPOJO.setEmployee_id(Libs.nn(o[70]).trim());
+                memberPOJO.setEmployee_id(Libs.nn(o[60]).trim());
                 memberPOJO.setName(Libs.nn(o[8]).trim());
                 memberPOJO.setCard_number(Libs.nn(o[17]).trim());
                 memberPOJO.setDob(Libs.nn(o[18]) + "-" + Libs.nn(o[19]) + "-" + Libs.nn(o[20]));
@@ -339,7 +443,7 @@ public class ClaimHistoryController extends Window {
                 memberPOJO.getPlan_exit_date().add(Libs.nn(o[44]));
                 memberPOJO.getPlan_exit_date().add(Libs.nn(o[45]));
 
-                ClaimPOJO claimPOJO = new ClaimPOJO();
+               final  ClaimPOJO claimPOJO = new ClaimPOJO();
                 claimPOJO.setPolicy(policyPOJO);
                 claimPOJO.setMember(memberPOJO);
                 claimPOJO.setClaim_number(Libs.nn(o[0]).trim());
@@ -348,8 +452,24 @@ public class ClaimHistoryController extends Window {
                 claimPOJO.setClaim_count(Integer.valueOf(Libs.nn(o[13])));
 
                 li.setValue(claimPOJO);
+                
+                memberName.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 
-                ((Toolbarbutton) getFellow("tbnShowMemberDetail")).setDisabled(true);
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						showMemberDetail(claimPOJO);
+					}
+				});
+                
+                hidNumber.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						showClaimDetail(claimPOJO);
+					}
+				});
+
+//                ((Toolbarbutton) getFellow("tbnShowMemberDetail")).setDisabled(true);
             }
         } catch (Exception ex) {
             log.error("populate", ex);
@@ -363,18 +483,43 @@ public class ClaimHistoryController extends Window {
         populateCount();
         populate(0, pg.getPageSize());
     }
+    
+    public void viewClaimHistory(){
+    	if(cbFilter.getSelectedIndex() == 0){
+    		//filter by Name
+    		where = " AND hdt1name like '%" + tQuickSearch.getText() + "%' ";
+    	}else if(cbFilter.getSelectedIndex() == 1){
+    		//filter by claim no (HID)
+    		where = " and hid2 like '%" + tQuickSearch.getText() + "%' ";
+    	}else if(cbFilter.getSelectedIndex() == 2){
+    		//filter by client policy number
+    		where = " and hempcnpol like '%" + tQuickSearch.getText() + "%' "; 
+    	}else if(cbFilter.getSelectedIndex() == 3){
+    		//filter by product (policy name)
+    		where = " and hhdrname like '%" + tQuickSearch.getText() + "%' ";
+    	}else if(cbFilter.getSelectedIndex() == 4){
+    		//filter by claim type
+    		if(cbClaimType.getSelectedIndex() == 0)
+    			where = " and tclaim='I'";
+    		else where = " and tclaim<>'I'";
+    	}
+    	
+    	populateCountForQuickSearch();
+    	populate(0, pg.getPageSize());
+    }
 
     public void quickSearch() {
-        String val = ((Textbox) getFellow("tQuickSearch")).getText();
+        String val = "";// ((Textbox) getFellow("tQuickSearch")).getText();
         if (!val.isEmpty()) {
-            where = "convert(varchar,c.hdt1ncard) like '%" + val + "%' or "
+            where = "(convert(varchar,c.hdt1ncard) like '%" + val + "%' or "
                     + "c.hdt1name like '%" + val + "%' or "
                     + "e.hempcnpol like '%" + val + "%' or "
                     + "e.hempcnid like '%" + val + "%' or "
                     + "e.hempmemo3 like '%" + val + "%' or "
-                    + "a.hclmcno like '%" + val + "%' ";
+                    + "a.hid2 like '%" + val + "%') ";
 
-            populateCountForQuickSearch();
+//            populateCountForQuickSearch();
+            populateCount();
             populate(0, pg.getPageSize());
         } else refresh();
     }
@@ -385,9 +530,9 @@ public class ClaimHistoryController extends Window {
         }
     }
 
-    public void showClaimDetail() {
+    public void showClaimDetail(ClaimPOJO claimPojo) {
         Window w = (Window) Executions.createComponents("views/ClaimDetail.zul", this, null);
-        w.setAttribute("claim", lb.getSelectedItem().getValue());
+        w.setAttribute("claim", claimPojo);
         w.doModal();
     }
 
@@ -395,12 +540,103 @@ public class ClaimHistoryController extends Window {
         quickSearch();
     }
 
-    public void showMemberDetail() {
-        ClaimPOJO claimPOJO = lb.getSelectedItem().getValue();
+    public void showMemberDetail(ClaimPOJO claimPOJO) {
+    	/*if(lb.getSelectedItem() == null){
+    		Messagebox.show("Select Claim History Data First!", "Information", Messagebox.OK, Messagebox.INFORMATION);
+    		return;
+    	}*/
+//        ClaimPOJO claimPOJO = lb.getSelectedItem().getValue();
         Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.getRootWindow(), null);
         w.setAttribute("policy", claimPOJO.getPolicy());
         w.setAttribute("member", claimPOJO.getMember());
         w.doModal();
+    }
+    
+    public void exportToXls(){
+    	Session s = Libs.sfDB.openSession();
+    	try{
+    		String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
+        	 String qry = "select "
+                     + "a.HID2 , a.ThnPolis, a.BrPolis, a.DistPolis, a.NoPolis, b.hhdrname, a.Idx, a.seq, c.hdt1name, a.tclaim, "
+                     + "a.diAjukan as proposed, " //10
+                     + "a.diBayarkan as approved, "
+                     + "d.hproname, a.Counter, e.hempcnpol, e.hempcnid, '' as blank1, c.hdt1ncard, c.hdt1bdtyy, c.hdt1bdtmm, c.hdt1bdtdd, c.hdt1sex,  " //21
+                     + "f.hdt2plan1, f.hdt2plan2, f.hdt2plan3, f.hdt2plan4, f.hdt2plan5, f.hdt2plan6, "
+                     + "f.hdt2sdtyy, f.hdt2sdtmm, f.hdt2sdtdd, "
+                     + "f.hdt2mdtyy, f.hdt2mdtmm, f.hdt2mdtdd, "
+                     + "(convert(varchar,f.hdt2pedty1)+'-'+convert(varchar,f.hdt2pedtm1)+'-'+convert(varchar,f.hdt2pedtd1)) as hdt2pedt1,"
+                     + "(convert(varchar,f.hdt2pedty2)+'-'+convert(varchar,f.hdt2pedtm2)+'-'+convert(varchar,f.hdt2pedtd2)) as hdt2pedt2,"
+                     + "(convert(varchar,f.hdt2pedty3)+'-'+convert(varchar,f.hdt2pedtm3)+'-'+convert(varchar,f.hdt2pedtd3)) as hdt2pedt3,"
+                     + "(convert(varchar,f.hdt2pedty4)+'-'+convert(varchar,f.hdt2pedtm4)+'-'+convert(varchar,f.hdt2pedtd4)) as hdt2pedt4,"
+                     + "(convert(varchar,f.hdt2pedty5)+'-'+convert(varchar,f.hdt2pedtm5)+'-'+convert(varchar,f.hdt2pedtd5)) as hdt2pedt5,"
+                     + "(convert(varchar,f.hdt2pedty6)+'-'+convert(varchar,f.hdt2pedtm6)+'-'+convert(varchar,f.hdt2pedtd6)) as hdt2pedt6,"
+                     + "(convert(varchar,f.hdt2pxdty1)+'-'+convert(varchar,f.hdt2pxdtm1)+'-'+convert(varchar,f.hdt2pxdtd1)) as hdt2pxdt1,"
+                     + "(convert(varchar,f.hdt2pxdty2)+'-'+convert(varchar,f.hdt2pxdtm2)+'-'+convert(varchar,f.hdt2pxdtd2)) as hdt2pxdt2,"
+                     + "(convert(varchar,f.hdt2pxdty3)+'-'+convert(varchar,f.hdt2pxdtm3)+'-'+convert(varchar,f.hdt2pxdtd3)) as hdt2pxdt3,"
+                     + "(convert(varchar,f.hdt2pxdty4)+'-'+convert(varchar,f.hdt2pxdtm4)+'-'+convert(varchar,f.hdt2pxdtd4)) as hdt2pxdt4,"
+                     + "(convert(varchar,f.hdt2pxdty5)+'-'+convert(varchar,f.hdt2pxdtm5)+'-'+convert(varchar,f.hdt2pxdtd5)) as hdt2pxdt5,"
+                     + "(convert(varchar,f.hdt2pxdty6)+'-'+convert(varchar,f.hdt2pxdtm6)+'-'+convert(varchar,f.hdt2pxdtd6)) as hdt2pxdt6, "
+                     + "c.hdt1mstat, "
+                     + "g.hmem2data1, g.hmem2data2, g.hmem2data3, g.hmem2data4, "
+                     + "a.cdate,"  //"a.hclmcdatey, a.hclmcdatem, a.hclmcdated, "
+                     + "a.sindate, " //"a.hclmsinyy, a.hclmsinmm, a.hclmsindd, "
+                     + "a.soutdate, " //"a.hclmsoutyy, a.hclmsoutmm, a.hclmsoutdd, "
+                     + "a.rdate, " //"a.hclmrdatey, a.hclmrdatem, a.hclmrdated, "
+                     + "a.pdate, "//"a.hclmpdatey, a.hclmpdatem, a.hclmpdated, "
+                     + "a.icd1, a.icd2, a.icd3, "
+                     + "a.recid "
+                     + "from idnhltpf.dbo.hlthdr b "
+                     + "inner join idnhltpf2.dbo.tclaim_header a "
+                     + "on b.hhdryy=a.ThnPolis and b.HHDRBR=a.BrPolis and b.HHDRDIST=a.DistPolis and b.hhdrpono=a.NoPolis "
+                     + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.procode "
+                     + "inner join idnhltpf.dbo.hltdt1 c "
+                     + "on a.ThnPolis=c.hdt1yy and a.BrPolis=c.HDT1BR and a.DistPolis=c.HDT1DIST and a.NoPolis=c.hdt1pono and a.Idx=c.hdt1idxno and a.Seq=c.hdt1seqno and c.hdt1ctr=0 "
+                     + "inner join idnhltpf.dbo.hltdt2 f  "
+                     + "on c.HDT1YY=f.hdt2yy and c.HDT1BR=f.HDT2BR and c.HDT1DIST=f.HDT2DIST and c.HDT1PONO=f.hdt2pono and c.HDT1IDXNO=f.hdt2idxno and c.HDT1SEQNO=f.hdt2seqno and c.HDT1CTR=f.hdt2ctr "
+                     + "inner join idnhltpf.dbo.hltemp e "
+                     + "on f.HDT2YY=e.hempyy and f.HDT2BR=e.HEMPBR and f.HDT2DIST=e.HEMPDIST and f.HDT2PONO=e.hemppono and f.HDT2IDXNO=e.hempidxno and f.HDT2SEQNO=e.hempseqno and f.HDT2CTR=e.hempctr "
+                     + "left outer join idnhltpf.dbo.hltmemo2 g  "
+                     + "on a.ThnPolis=g.hmem2yy and a.BrPolis=g.HMEM2BR and a.DistPolis=g.HMEM2DIST and a.NoPolis=g.hmem2pono and a.Idx=g.hmem2idxno and a.Seq=g.hmem2seqno and a.tclaim=g.hmem2claim and a.Counter=g.hmem2count "
+                     + "where "
+                     + "b.hhdrinsid";                    
+     				if(products.size() > 0) qry = qry + " in  ("+insid+") ";
+     				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
+     				
+     				if (cbPolicy.getSelectedIndex()>0) {
+    	                String policy = cbPolicy.getSelectedItem().getLabel();
+    	                policy = policy.substring(policy.indexOf("(")+1, policy.indexOf(")"));
+    	                String policyNo[] = policy.split("-");
+    	                qry += "and b.hhdryy='"+policyNo[0]+"' and b.hhdrbr='"+policyNo[1]+"' and b.hhdrdist='"+policyNo[2]+"' and b.hhdrpono='" + policyNo[3] + "' ";
+    	            }
+    				
+    				if(startDate.getValue() != null && endDate.getValue() != null){
+    					qry += "and cdate BETWEEN '"+startDate.getText()+"' AND '"+endDate.getText()+"' ";
+    				}
+
+                    qry = qry + "and a.recid<>'C' AND hdt1PONO<>99999 AND hdt1IDXNO < 99989";
+                    
+                    if (where!=null) qry +=  where;
+                    
+                    qry = qry + " order by cdate desc ";
+                    
+                    List<Object[]> l = s.createSQLQuery(qry).list();
+                    createReport(l);
+        	
+        	
+    	}catch(Exception ex){
+    		log.error("exportToXls", ex);
+    	}finally {
+            if (s!=null && s.isOpen()) s.close();
+        }
+    	
+    	
+        
     }
 
     public void export() {
@@ -436,10 +672,10 @@ public class ClaimHistoryController extends Window {
                     int period = (Integer) w.getAttribute("period");
 
                     String qry = "select "
-                            + "a.hclmcno, a.hclmyy, a.hclmbr, a.hclmdist, a.hclmpono, b.hhdrname, a.hclmidxno, a.hclmseqno, c.hdt1name, a.hclmtclaim, "
-                            + "(" + Libs.getProposed() + ") as proposed, " //10
-                            + "(" + Libs.getApproved() + ") as approved, "
-                            + "d.hproname, a.hclmcount, e.hempcnpol, e.hempcnid, '' as blank1, c.hdt1ncard, c.hdt1bdtyy, c.hdt1bdtmm, c.hdt1bdtdd, c.hdt1sex, " //21
+                            + "a.HID2 , a.ThnPolis, a.BrPolis, a.DistPolis, a.NoPolis, b.hhdrname, a.Idx, a.seq, c.hdt1name, a.tclaim, "
+                            + "a.diAjukan as proposed, " //10
+                            + "a.diBayarkan as approved, "
+                            + "d.hproname, a.Counter, e.hempcnpol, e.hempcnid, '' as blank1, c.hdt1ncard, c.hdt1bdtyy, c.hdt1bdtmm, c.hdt1bdtdd, c.hdt1sex,  " //21
                             + "f.hdt2plan1, f.hdt2plan2, f.hdt2plan3, f.hdt2plan4, f.hdt2plan5, f.hdt2plan6, "
                             + "f.hdt2sdtyy, f.hdt2sdtmm, f.hdt2sdtdd, "
                             + "f.hdt2mdtyy, f.hdt2mdtmm, f.hdt2mdtdd, "
@@ -457,34 +693,48 @@ public class ClaimHistoryController extends Window {
                             + "(convert(varchar,f.hdt2pxdty6)+'-'+convert(varchar,f.hdt2pxdtm6)+'-'+convert(varchar,f.hdt2pxdtd6)) as hdt2pxdt6, "
                             + "c.hdt1mstat, "
                             + "g.hmem2data1, g.hmem2data2, g.hmem2data3, g.hmem2data4, "
-                            + "a.hclmcdatey, a.hclmcdatem, a.hclmcdated, "
-                            + "a.hclmsinyy, a.hclmsinmm, a.hclmsindd, "
-                            + "a.hclmsoutyy, a.hclmsoutmm, a.hclmsoutdd, "
-                            + "a.hclmrdatey, a.hclmrdatem, a.hclmrdated, "
-                            + "a.hclmpdatey, a.hclmpdatem, a.hclmpdated, "
-                            + "a.hclmdiscd1, a.hclmdiscd2, a.hclmdiscd3, "
-                            + "a.hclmrecid "
-                            + "from idnhltpf.dbo.hltclm a "
-                            + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.hclmyy and b.hhdrpono=a.hclmpono "
-                            + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.hclmyy and c.hdt1pono=a.hclmpono and c.hdt1idxno=a.hclmidxno and c.hdt1seqno=a.hclmseqno and c.hdt1ctr=0 "
-                            + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.hclmnhoscd "
-                            + "inner join idnhltpf.dbo.hltemp e on e.hempyy=a.hclmyy and e.hemppono=a.hclmpono and e.hempidxno=a.hclmidxno and e.hempseqno=a.hclmseqno and e.hempctr=0 "
-                            + "inner join idnhltpf.dbo.hltdt2 f on f.hdt2yy=a.hclmyy and f.hdt2pono=a.hclmpono and f.hdt2idxno=a.hclmidxno and f.hdt2seqno=a.hclmseqno and f.hdt2ctr=0 "
-                            + "left outer join idnhltpf.dbo.hltmemo2 g on g.hmem2yy=a.hclmyy and g.hmem2pono=a.hclmpono and g.hmem2idxno=a.hclmidxno and g.hmem2seqno=a.hclmseqno and g.hmem2claim=a.hclmtclaim and g.hmem2count=a.hclmcount "
+                            + "a.cdate,"  //"a.hclmcdatey, a.hclmcdatem, a.hclmcdated, "
+                            + "a.sindate, " //"a.hclmsinyy, a.hclmsinmm, a.hclmsindd, "
+                            + "a.soutdate, " //"a.hclmsoutyy, a.hclmsoutmm, a.hclmsoutdd, "
+                            + "a.rdate, " //"a.hclmrdatey, a.hclmrdatem, a.hclmrdated, "
+                            + "a.pdate, "//"a.hclmpdatey, a.hclmpdatem, a.hclmpdated, "
+                            + "a.icd1, a.icd2, a.icd3, "
+                            + "a.recid "
+                            + "from idnhltpf.dbo.hlthdr b "
+                            + "inner join idnhltpf2.dbo.tclaim_header a "
+                            + "on b.hhdryy=a.ThnPolis and b.HHDRBR=a.BrPolis and b.HHDRDIST=a.DistPolis and b.hhdrpono=a.NoPolis "
+                            + "inner join idnhltpf.dbo.hltpro d on d.hpronomor=a.procode "
+                            + "inner join idnhltpf.dbo.hltdt1 c "
+                            + "on a.ThnPolis=c.hdt1yy and a.BrPolis=c.HDT1BR and a.DistPolis=c.HDT1DIST and a.NoPolis=c.hdt1pono and a.Idx=c.hdt1idxno and a.Seq=c.hdt1seqno and c.hdt1ctr=0 "
+                            + "inner join idnhltpf.dbo.hltdt2 f  "
+                            + "on c.HDT1YY=f.hdt2yy and c.HDT1BR=f.HDT2BR and c.HDT1DIST=f.HDT2DIST and c.HDT1PONO=f.hdt2pono and c.HDT1IDXNO=f.hdt2idxno and c.HDT1SEQNO=f.hdt2seqno and c.HDT1CTR=f.hdt2ctr "
+                            + "inner join idnhltpf.dbo.hltemp e "
+                            + "on f.HDT2YY=e.hempyy and f.HDT2BR=e.HEMPBR and f.HDT2DIST=e.HEMPDIST and f.HDT2PONO=e.hemppono and f.HDT2IDXNO=e.hempidxno and f.HDT2SEQNO=e.hempseqno and f.HDT2CTR=e.hempctr "
+                            + "left outer join idnhltpf.dbo.hltmemo2 g  "
+                            + "on a.ThnPolis=g.hmem2yy and a.BrPolis=g.HMEM2BR and a.DistPolis=g.HMEM2DIST and a.NoPolis=g.hmem2pono and a.Idx=g.hmem2idxno and a.Seq=g.hmem2seqno and a.tclaim=g.hmem2claim and a.Counter=g.hmem2count "
                             + "where "
-                            + "b.hhdrinsid";
-                    
-            				if(products.size() > 0) qry = qry + " in  ("+insid+")";
+                            + "b.hhdrinsid";                    
+            				if(products.size() > 0) qry = qry + " in  ("+insid+") ";
             				else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
 
-                            qry = qry + "and a.hclmrecid<>'C' ";
+                            qry = qry + "and a.recid<>'C' AND hdt1PONO<>99999 AND hdt1IDXNO < 99989";
 
                     if (!Libs.nn(userProductViewrestriction).isEmpty()) qry += "and b.hhdrpono in (" + userProductViewrestriction + ") ";
 
                     if (!productName.toLowerCase().equals("all products")) {
                         String policy = productName.substring(productName.indexOf("(")+1, productName.indexOf(")"));
-                        qry += "and (convert(varchar,a.hclmyy)+'-'+convert(varchar,a.hclmbr)+'-'+convert(varchar,a.hclmdist)+'-'+convert(varchar,a.hclmpono)='" + policy + "') ";
+                        String policyNo[] = policy.split("-");
+    	                qry += "and b.hhdryy='"+policyNo[0]+"' and b.hhdrbr='"+policyNo[1]+"' and b.hhdrdist='"+policyNo[2]+"' and b.hhdrpono='" + policyNo[3] + "' ";
+    	                
+//                        qry += "and (convert(varchar,a.hclmyy)+'-'+convert(varchar,a.hclmbr)+'-'+convert(varchar,a.hclmdist)+'-'+convert(varchar,a.hclmpono)='" + policy + "') ";
                     }
+                    
+                    Date dateStart = (Date) w.getAttribute("dateStart");
+                    Date dateEnd = (Date) w.getAttribute("dateEnd");
+                    
+                    qry += "and a.cdate between '" + new SimpleDateFormat("yyyy-MM-dd").format(dateStart) + "' and '" + new SimpleDateFormat("yyyy-MM-dd").format(dateEnd) + "'";
+                    
+                    /*
 
                     switch (period) {
                         case 0:
@@ -524,6 +774,9 @@ public class ClaimHistoryController extends Window {
                             qry += "and convert(datetime,convert(varchar,hclmcdated)+'-'+convert(varchar,hclmcdatem)+'-'+convert(varchar,hclmcdatey),105) between '" + new SimpleDateFormat("yyyy-MM-dd").format(calStart1.getTime()) + "' and '" + new SimpleDateFormat("yyyy-MM-dd").format(calEnd1.getTime()) + "'";
                             break;
                     }
+                    */
+                    
+                    System.out.println("\n" +qry);
 
                     List<Object[]> l = s.createSQLQuery(qry).list();
                     createReport(l);
@@ -537,12 +790,19 @@ public class ClaimHistoryController extends Window {
     }
 
     private void createReport(List<Object[]> list) {
-        String[] columnsMemberWise = new String[] {
+        /*String[] columnsMemberWise = new String[] {
                 "POLICY YEAR", "BR", "DIST", "POLICY NUMBER", "COMPANY NAME", "INDEX", "SEQ", "CARD NUMBER",
                 "NAME", "COUNT", "TYPE", "CLAIM-YEAR", "CLAIM-MONTH", "CLAIM-DAY", "SIN-YEAR", "SIN-MONTH",
                 "SIN-DAY", "SOUT-YEAR", "SOUT-MONTH", "SOUT-DAY", "RECEIPT-YEAR", "RECEIPT-MONTH",
                 "RECEIPT-DAY", "PAYMENT-YEAR", "PAYMENT-MONTH", "PAYMENT-DAY", "HID NUMBER", "PROVIDER NAME",
-                "ICD1", "ICD2", "ICD3", "PROPOSED", "APPROVED", "STATUS", "MEMO" };
+                "ICD1", "ICD2", "ICD3", "PROPOSED", "APPROVED", "STATUS", "MEMO" };*/
+    	
+    	String[] columnsMemberWise = new String[] {
+                "POLICY YEAR", "BR", "DIST", "POLICY NUMBER", "COMPANY NAME", "INDEX", "SEQ", "CARD NUMBER",
+                "NAME", "COUNT", "TYPE", "CLAIM-DATE", "SIN-DATE", "SOUT-DATE", "RECEIPT-DATE", "PAYMENT-DATE", 
+                "HID NUMBER", "PROVIDER NAME", "ICD1", "ICD2", "ICD3", "PROPOSED", "APPROVED", "STATUS", "MEMO" };
+    	
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
         try {
             Workbook wb = new HSSFWorkbook();
@@ -571,11 +831,20 @@ public class ClaimHistoryController extends Window {
                 Libs.createCell(row, 8, Libs.nn(o[8]));
                 Libs.createCell(row, 9, Libs.nn(o[13]));
                 Libs.createCell(row, 10, Libs.nn(o[9]));
-                Libs.createCell(row, 11, Libs.nn(o[51]));
-                Libs.createCell(row, 12, Libs.nn(o[52]));
-                Libs.createCell(row, 13, Libs.nn(o[53]));
-                Libs.createCell(row, 14, Libs.nn(o[54]));
-                Libs.createCell(row, 15, Libs.nn(o[55]));
+                
+                String receiptDate = sdf.format((Date)o[54]); if(receiptDate.equalsIgnoreCase("01-01-1900")) receiptDate="-";
+                String paymentDate = sdf.format((Date)o[55]); if(paymentDate.equalsIgnoreCase("01-01-1900")) paymentDate="-";
+                String serviceIn = sdf.format((Date)o[52]); if(serviceIn.equalsIgnoreCase("01-01-1900")) serviceIn="-";
+                String serviceOut = sdf.format((Date)o[53]); if(serviceOut.equalsIgnoreCase("01-01-1900")) serviceOut="-";
+                String claimDate = sdf.format((Date)o[51]);
+                
+                Libs.createCell(row, 11, claimDate);  //Libs.createCell(row, 11, Libs.nn(o[51]));
+                Libs.createCell(row, 12, serviceIn);  //Libs.createCell(row, 12, Libs.nn(o[52]));
+                Libs.createCell(row, 13, serviceOut);  //Libs.createCell(row, 13, Libs.nn(o[53]));
+                Libs.createCell(row, 14, receiptDate); //Libs.createCell(row, 14, Libs.nn(o[54]));
+                Libs.createCell(row, 15, paymentDate);  //Libs.createCell(row, 15, Libs.nn(o[55]));
+                
+                /*
                 Libs.createCell(row, 16, Libs.nn(o[56]));
                 Libs.createCell(row, 17, Libs.nn(o[57]));
                 Libs.createCell(row, 18, Libs.nn(o[58]));
@@ -585,16 +854,19 @@ public class ClaimHistoryController extends Window {
                 Libs.createCell(row, 22, Libs.nn(o[62]));
                 Libs.createCell(row, 23, Libs.nn(o[63]));
                 Libs.createCell(row, 24, Libs.nn(o[64]));
-                Libs.createCell(row, 25, Libs.nn(o[65]));
-                Libs.createCell(row, 26, Libs.nn(o[0]));
-                Libs.createCell(row, 27, Libs.nn(o[12]));
-                Libs.createCell(row, 28, Libs.nn(o[66]));
-                Libs.createCell(row, 29, Libs.nn(o[67]));
-                Libs.createCell(row, 30, Libs.nn(o[68]));
-                Libs.createCell(row, 31, o[10]);
-                Libs.createCell(row, 32, o[11]);
-                Libs.createCell(row, 33, Libs.getStatus(Libs.nn(o[69])));
-                Libs.createCell(row, 34, Libs.nn(o[47]).trim() + Libs.nn(o[48]).trim() + Libs.nn(o[49]).trim() + Libs.nn(o[50]).trim());
+                Libs.createCell(row, 25, Libs.nn(o[65]));*/
+                
+                Libs.createCell(row, 16, Libs.nn(o[0]));
+                Libs.createCell(row, 17, Libs.nn(o[12]));
+                
+                Libs.createCell(row, 18, Libs.nn(o[56]));
+                Libs.createCell(row, 19, Libs.nn(o[57]));
+                Libs.createCell(row, 20, Libs.nn(o[58]));
+                
+                Libs.createCell(row, 21, o[10]);
+                Libs.createCell(row, 22, o[11]);
+                Libs.createCell(row, 23, Libs.getStatus(Libs.nn(o[59])));
+                Libs.createCell(row, 24, Libs.nn(o[47]).trim() + Libs.nn(o[48]).trim() + Libs.nn(o[49]).trim() + Libs.nn(o[50]).trim());
 
                 cnt++;
             }

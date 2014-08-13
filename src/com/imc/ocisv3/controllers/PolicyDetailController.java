@@ -161,6 +161,16 @@ public class PolicyDetailController extends Window {
         lbMembers.getItems().clear();
         Session s = Libs.sfDB.openSession();
         try {
+        	
+        	String insid="";
+        	List products = Libs.getProductByUserId(Libs.getUser());
+        	for(int i=0; i < products.size(); i++){
+        		insid=insid+"'"+(String)products.get(i)+"'"+",";
+        	}
+        	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
+        	
+        	String policyNo = policy.getYear()+"-1-0-"+policy.getPolicy_number();
+        	
             String count = "select count(*) ";
 
             String select = "select "
@@ -189,14 +199,19 @@ public class PolicyDetailController extends Window {
                     + "b.hdt2xdtyy, b.hdt2xdtmm, b.hdt2xdtdd, "
                     + "c.hempmemo3 "; // 39
 
-            String qry = "from idnhltpf.dbo.hltdt1 a "
-                    + "inner join idnhltpf.dbo.hltdt2 b on b.hdt2yy=a.hdt1yy and b.hdt2pono=a.hdt1pono and b.hdt2idxno=a.hdt1idxno and b.hdt2seqno=a.hdt1seqno and b.hdt2ctr=a.hdt1ctr "
-                    + "inner join idnhltpf.dbo.hltemp c on c.hempyy=a.hdt1yy and c.hemppono=a.hdt1pono and c.hempidxno=a.hdt1idxno and c.hempseqno=a.hdt1seqno and c.hempctr=a.hdt1ctr "
+            String qry = "from idnhltpf.dbo.hlthdr d "
+            		+ "inner join idnhltpf.dbo.hltdt1 a on d.hhdryy=a.hdt1yy and d.hhdrbr=a.hdt1br and d.hhdrdist=a.hdt1dist and d.hhdrpono=a.hdt1pono "
+                    + "inner join idnhltpf.dbo.hltdt2 b on a.hdt1yy=b.hdt2yy and a.hdt1br=b.hdt2br and a.hdt1dist=b.hdt2dist and a.hdt1pono=b.hdt2pono and a.hdt1idxno=b.hdt2idxno and a.hdt1seqno=b.hdt2seqno and a.hdt1ctr=b.hdt2ctr "
+                    + "inner join idnhltpf.dbo.hltemp c on a.hdt1yy=c.hempyy and a.HDT1BR=c.HEMPBR and a.HDT1DIST=c.HEMPDIST and a.hdt1pono=c.hemppono and a.hdt1idxno=c.hempidxno and a.hdt1seqno=c.hempseqno and a.hdt1ctr=c.hempctr "
                     + "where "
-                    + "a.hdt1yy=" + policy.getYear() + " and "
-                    + "a.hdt1pono=" + policy.getPolicy_number() + " and "
-                    + "a.hdt1ctr=0 and "
-                    + "a.hdt1seqno='A' ";
+                    + "d.hhdrinsid";
+                    
+            		if(products.size() > 0) qry = qry + " in  ("+insid+")";
+            		else qry = qry + "='" + Libs.getInsuranceId() + "' "; 
+                    
+            		qry +="and (convert(varchar,d.hhdryy)+'-'+convert(varchar,d.hhdrbr)+'-'+convert(varchar,d.hhdrdist)+'-'+convert(varchar,d.hhdrpono)='" + policyNo + "') "
+                    + "and a.hdt1ctr=0 and a.hdt1idxno < 99989 and a.hdt1pono <> 99999 "
+                    + "and a.hdt1seqno='A' and b.hdt2moe not in('M','U') ";
 
             if (where!=null) qry += "and (" + where + ") ";
 
@@ -204,6 +219,10 @@ public class PolicyDetailController extends Window {
 
             Integer recordsCount = (Integer) s.createSQLQuery(count + qry).uniqueResult();
             pgMembers.setTotalSize(recordsCount);
+            
+            int page = pgMembers.getActivePage();
+            
+            int startNumber = (((page+1) * 20) - 20) + 1; 
 
             List<Object[]> l = s.createSQLQuery(select + qry + order).setFirstResult(offset).setMaxResults(limit).list();
             for (Object[] o : l) {
@@ -264,7 +283,8 @@ public class PolicyDetailController extends Window {
 
                 Listitem li = new Listitem();
                 li.setValue(memberPOJO);
-
+                
+                li.appendChild(new Listcell(startNumber+""));
                 li.appendChild(new Listcell(memberPOJO.getCard_number()));
                 li.appendChild(lcStatus);
                 li.appendChild(new Listcell(Libs.nn(o[34]).trim()));
@@ -286,6 +306,8 @@ public class PolicyDetailController extends Window {
                 li.appendChild(new Listcell(memberPOJO.getStarting_date()));
                 li.appendChild(new Listcell(memberPOJO.getMature_date()));
                 lbMembers.appendChild(li);
+                
+                startNumber = startNumber + 1;
             }
         } catch (Exception ex) {
             log.error("populateMembers", ex);
@@ -358,6 +380,11 @@ public class PolicyDetailController extends Window {
         w.setAttribute("policy", policy);
         w.setAttribute("member", lbMembers.getSelectedItem().getValue());
         w.doModal();
+    }
+    
+    public void back(){
+    	 if (Libs.getCenter().getChildren().size()>0) Libs.getCenter().removeChild(Libs.getCenter().getFirstChild());
+         Window w = (Window) Executions.createComponents("views/Policies.zul", Libs.getCenter(), null);
     }
 
     private void displayPlanItems(String plan) {

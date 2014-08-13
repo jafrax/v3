@@ -6,12 +6,18 @@
                 <label id="lPolicy" style="color: #999999;"/>
                 <space height="10px"/>
             </vlayout>
+           
         </north>
         <center style="border:0px none;">
+        <panel width="100%" height="100%">
+         <panelchildren>
+         	 <toolbar height="21px">
+        		<a label="Back" style="color:#00bbee;text-decoration :none" onClick="spaceOwner.back();" />
+        	</toolbar>	
             <tabbox width="100%" height="100%">
                 <tabs>
                     <tab label="Plans List"/>
-                    <tab label="Policies List"/>
+                    <tab label="Employees List"/>
                 </tabs>
                 <tabpanels>
                     <tabpanel>
@@ -56,6 +62,7 @@
                                 </hbox>
                                 <listbox id="lbMembers" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;" onSelect="spaceOwner.lbSelected();" onDoubleClick="spaceOwner.showMemberDetail();">
                                     <listhead sizable="true">
+                                    	<listheader label="No" width="40px"/>
                                         <listheader label="Card Number" width="130px"/>
                                         <listheader label="Status" width="80px"/>
                                         <listheader label="Policy Number" width="100px"/>
@@ -80,6 +87,8 @@
                     </tabpanel>
                 </tabpanels>
             </tabbox>
+             </panelchildren>
+            </panel>
         </center>
     </borderlayout>
 </window>

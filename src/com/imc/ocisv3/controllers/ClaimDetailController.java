@@ -4,6 +4,10 @@ import bsh.Interpreter;
 import com.imc.ocisv3.pojos.BenefitPOJO;
 import com.imc.ocisv3.pojos.ClaimPOJO;
 import com.imc.ocisv3.tools.Libs;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +17,8 @@ import org.zkoss.zul.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -39,7 +45,7 @@ public class ClaimDetailController extends Window {
 
     private void initComponents() {
         lb = (Listbox) getFellow("lb");
-        lhDaysLeft = (Listheader) getFellow("lhDaysLeft");
+//        lhDaysLeft = (Listheader) getFellow("lhDaysLeft");
 
         getCaption().setLabel("Claim Detail [" + claimPOJO.getClaim_number() + "]");
     }
@@ -58,7 +64,7 @@ public class ClaimDetailController extends Window {
                     + "a.hclmdiscd1, a.hclmdiscd2, a.hclmdiscd3, "
                     + "b.hproname, a.hclmtclaim, c.hdt1name, "
                     + "c.hdt1bdtyy, c.hdt1bdtmm, c.hdt1bdtdd, "
-                    + "c.hdt1sex, c.hdt1ncard, d.hhdrname, "
+                    + "c.hdt1sex, c.hdt1ncard, c.hdt1mstat, d.hhdrname, "
                     + "e.hmem2data1, e.hmem2data2, e.hmem2data3, e.hmem2data4, "
                     + "a.hclmrdatey, a.hclmrdatem, a.hclmrdated "
                     + "from idnhltpf.dbo.hltclm a "
@@ -118,7 +124,7 @@ public class ClaimDetailController extends Window {
                 }
 
                 String dob = Libs.nn(o[12]) + "-" + Libs.nn(o[13]) + "-" + Libs.nn(o[14]);
-                String receiptDate = Libs.nn(o[22]) + "-" + Libs.nn(o[23]) + "-" + Libs.nn(o[24]);
+                String receiptDate = Libs.nn(o[23]) + "-" + Libs.nn(o[24]) + "-" + Libs.nn(o[25]);
                 int ageDays = 0;
                 try {
                     ageDays = Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(dob), new Date());
@@ -132,7 +138,7 @@ public class ClaimDetailController extends Window {
 
                 String serviceIn = o[0] + "-" + o[1] + "-" + o[2];
                 String serviceOut = o[3] + "-" + o[4] + "-" + o[5];
-                String remarks = Libs.nn(o[18]).trim() + Libs.nn(o[19]).trim() + "\n" + Libs.nn(o[20]).trim() + Libs.nn(o[21]).trim();
+                String remarks = Libs.nn(o[19]).trim() + Libs.nn(o[20]).trim() + "\n" + Libs.nn(o[21]).trim() + Libs.nn(o[22]).trim();
                 String provider = Libs.nn(o[9]).trim();
 
                 if (remarks.indexOf("[")>-1 && remarks.indexOf("]")>-1) {
@@ -140,7 +146,7 @@ public class ClaimDetailController extends Window {
                     remarks = remarks.substring(remarks.indexOf("]")+1);
                 }
 
-                String companyName = Libs.nn(o[17]).trim();
+                String companyName = Libs.nn(o[18]).trim();
                 if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) companyName = Libs.nn(Libs.config.get("demo_name"));
 
                 ((Label) getFellow("lProvider")).setValue(provider);
@@ -154,6 +160,7 @@ public class ClaimDetailController extends Window {
                 ((Label) getFellow("lDOB")).setValue(Libs.fixDate(dob));
                 ((Label) getFellow("lSex")).setValue(Libs.nn(o[15]).trim());
                 ((Label) getFellow("lCardNumber")).setValue(Libs.nn(o[16]).trim());
+                ((Label) getFellow("lMaritalStatus")).setValue(Libs.nn(o[17]).trim());
                 ((Label) getFellow("lCompanyName")).setValue(companyName);
                 ((Label) getFellow("lServiceDays")).setValue(String.valueOf(Libs.getDiffDays(new SimpleDateFormat("yyyy-MM-dd").parse(serviceIn), new SimpleDateFormat("yyyy-MM-dd").parse(serviceOut))+1));
                 ((Label) getFellow("tRemarks")).setValue(remarks);
@@ -202,7 +209,7 @@ public class ClaimDetailController extends Window {
                         Listitem li = new Listitem();
                         li.appendChild(new Listcell(Libs.getBenefitItemDescription(planItem)));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+61])), "#"));
-                        li.appendChild(Libs.createNumericListcell(0, "#"));
+//                        li.appendChild(Libs.createNumericListcell(0, "#"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+1])), "#,###.##"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+31])), "#,###.##"));
                         li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[i+1]))-Double.valueOf(Libs.nn(o[i+31])), "#,###.##"));
@@ -244,6 +251,98 @@ public class ClaimDetailController extends Window {
         } finally {
             if (s!=null && s.isOpen()) s.close();
         }
+    }
+    
+    public void exportToXls(){
+    	String[] columnsHeaderInap = new String[] {
+                "NAME", "DATE OF BIRTH (AGE)", "SEX", "MARITAL STATUS", "CARD NUMBER", "COMPANY NAME",  "CLAIM TYPE", "PROVIDER",
+                "DIAGNOSIS", "DIAGNOSIS DESCRIPTION", "REMARKS", "SERVICE IN", "SERVICE OUT", "SERVICES DAY"};
+    	String[] detailHeaderInap = new String[]{
+    			((Label) getFellow("lName")).getValue(), ((Label) getFellow("lDOB")).getValue() + " "+ ((Label) getFellow("lAge")).getValue(),
+    			((Label) getFellow("lSex")).getValue(), ((Label) getFellow("lMaritalStatus")).getValue(),  ((Label) getFellow("lCardNumber")).getValue(),
+    			((Label) getFellow("lCompanyName")).getValue(), ((Label) getFellow("lClaimType")).getValue(),  ((Label) getFellow("lProvider")).getValue(),
+    			((Label) getFellow("lDiagnosis")).getValue(), ((Label) getFellow("lDescription")).getValue(),  ((Label) getFellow("tRemarks")).getValue(),
+    			((Label) getFellow("lServiceIn")).getValue(),  ((Label) getFellow("lServiceOut")).getValue(),  ((Label) getFellow("lServiceDays")).getValue()
+    	};
+    	
+    	String[] detailHeaderJalan = new String[]{
+    			((Label) getFellow("lName")).getValue(), ((Label) getFellow("lDOB")).getValue() + " "+ ((Label) getFellow("lAge")).getValue(),
+    			((Label) getFellow("lSex")).getValue(), ((Label) getFellow("lMaritalStatus")).getValue(),  ((Label) getFellow("lCardNumber")).getValue(),
+    			((Label) getFellow("lCompanyName")).getValue(), ((Label) getFellow("lClaimType")).getValue(),  ((Label) getFellow("lProvider")).getValue(),
+    			((Label) getFellow("lDiagnosis")).getValue(), ((Label) getFellow("lDescription")).getValue(),  ((Label) getFellow("tRemarks")).getValue(),
+    			((Label) getFellow("lReceiptDate")).getValue()
+    	};
+    	
+    	String[] columnsHeaderJalan = new String[] {
+                "NAME", "DATE OF BIRTH (AGE)", "SEX", "MARITAL STATUS", "CARD NUMBER", "COMPANY NAME",  "CLAIM TYPE", "PROVIDER",
+                "DIAGNOSIS", "DIAGNOSIS DESCRIPTION", "REMARKS", "RECEIPT DATE"};
+    	
+    	String[] columnsDetail = new String[] {
+                "BENEFIT", "DAYS", "PROPOSE", "APPROVE", "EXCESS", "REMARKS"};
+    	
+    	try{
+    		
+    		 Workbook wb = new HSSFWorkbook();
+             Sheet sheet = wb.createSheet("Claim History Detail");
+             int cnt = 0;
+
+    		
+    		org.apache.poi.ss.usermodel.Row row = sheet.createRow(cnt);
+    		if(getFellow("lTitleServiceIn").isVisible()){
+    			for (int i=0; i<columnsHeaderInap.length; i++) {
+                    Libs.createCell(row, i, columnsHeaderInap[i]);
+                }
+    			cnt++;
+    			row = sheet.createRow(cnt);
+    			for(int i=0; i < columnsHeaderInap.length; i++){
+    				Libs.createCell(row, i, detailHeaderInap[i]);
+    			}
+    		}else{
+    			for (int i=0; i<columnsHeaderJalan.length; i++) {
+                    Libs.createCell(row, i, columnsHeaderJalan[i]);
+                }
+    			cnt++;
+    			row = sheet.createRow(cnt);
+    			for(int i=0; i < columnsHeaderJalan.length; i++){
+    				Libs.createCell(row, i, detailHeaderJalan[i]);
+    			}
+    			
+    		}
+    		
+    		cnt = cnt + 2;
+    		row = sheet.createRow(cnt);
+    		for(int i=0; i < columnsDetail.length; i++){
+    			Libs.createCell(row, i, columnsDetail[i]);
+    		}
+    		
+    		Doublebox db = new Doublebox();
+    		db.setFormat("#,###.##");
+    		for(Listitem item : lb.getItems()){
+    			cnt++;
+    			row = sheet.createRow(cnt);
+    			for(int i=0; i < columnsDetail.length; i++){
+        			Libs.createCell(row, i, ((Listcell)item.getChildren().get(i)).getLabel());
+        		}
+    		}
+    		
+    		String fn = "ClaimDetail-"+((Label) getFellow("lName")).getValue() + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+
+            FileOutputStream out = new FileOutputStream(Libs.config.get("temp_dir").toString() + File.separator + fn);
+            wb.write(out);
+            out.close();
+
+            Thread.sleep(5000);
+
+            File f = new File(Libs.config.get("temp_dir").toString() + File.separator + fn);
+            InputStream is = new FileInputStream(f);
+            Filedownload.save(is, "application/vnd.ms-excel", fn);
+            f.delete();
+    		
+    	}catch(Exception ex){
+    		
+    	}
+    	
+    	
     }
 
 }

@@ -56,10 +56,9 @@ public class InHospitalMonitoringController extends Window {
         	}
         	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
         	
-            String countQry = "select count(*) "
-                    + "from surjam_new.dbo.ms_surjam a "
-                    + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.thn_polis and b.hhdrpono=a.no_polis "
-                    + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
+            String countQry = "select count(*) from idnhltpf.dbo.hlthdr b "
+                    + "inner join surjam_new.dbo.ms_surjam a on b.hhdryy=a.thn_polis and b.hhdrpono=a.no_polis "
+                    + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.HDT1BR=a.Br_Polis and c.HDT1DIST=a.Dist_Polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
                     + "where "
                     + "b.hhdrinsid";
             		if(products.size() > 0) countQry = countQry + " in  ("+insid+")";
@@ -82,9 +81,9 @@ public class InHospitalMonitoringController extends Window {
                     + "c.hdt1mstat, " // 27
                     + "(convert(varchar,hclmsinyy)+'-'+convert(varchar,hclmsinmm)+'-'+convert(varchar,hclmsindd)) as sin, "
                     + "(convert(varchar,hclmsoutyy)+'-'+convert(varchar,hclmsoutmm)+'-'+convert(varchar,hclmsoutdd)) as sout "
-                    + "from surjam_new.dbo.ms_surjam a "
-                    + "inner join idnhltpf.dbo.hlthdr b on b.hhdryy=a.thn_polis and b.hhdrpono=a.no_polis "
-                    + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
+                    + "from idnhltpf.dbo.hlthdr b "
+                    + "inner join surjam_new.dbo.ms_surjam a on b.hhdryy=a.thn_polis and b.hhdrpono=a.no_polis "
+                    + "inner join idnhltpf.dbo.hltdt1 c on c.hdt1yy=a.thn_polis and c.HDT1BR=a.Br_Polis and c.HDT1DIST=a.Dist_Polis and c.hdt1pono=a.no_polis and c.hdt1idxno=a.idx and c.hdt1seqno=a.seq and c.hdt1ctr=0 "
                     + "left outer join idnhltpf.dbo.hltclm d on d.hclmcno='IDN/' + a.no_hid "
                     + "where "
                     + "b.hhdrinsid";
@@ -99,7 +98,8 @@ public class InHospitalMonitoringController extends Window {
             }
 
             qry += "order by nosurat desc;";
-
+            
+            System.out.println(countQry + "\n");
             System.out.println(qry);
 
             Integer count = (Integer) s.createSQLQuery(countQry).uniqueResult();

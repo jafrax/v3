@@ -11,8 +11,9 @@
                 <panelchildren>
                     <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
                         <toolbar height="21px">
+                        	<a label="Refresh" style="color:#00bbee;text-decoration :none" onClick="spaceOwner.refresh();"/>
                             <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.export();"/>
-                            <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refresh();"/>
+                            <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" visible="false" onClick="spaceOwner.refresh();"/>
                         </toolbar>
                         <toolbar align="end" height="21px">
                             <image src="resources/icons/browse.png"/>

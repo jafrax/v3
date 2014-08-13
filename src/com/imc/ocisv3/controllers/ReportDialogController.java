@@ -70,6 +70,11 @@ public class ReportDialogController extends Window {
         cbScope.setSelectedIndex(1);
         cbPeriod.setSelectedIndex(0);
         dDate.setValue(new Date());
+        
+        rowPeriod.setVisible(true);
+        rowDateRange.setVisible(true);
+        dDateStart.setValue(new Date());
+        dDateEnd.setValue(new Date());
 
         cbScope.addEventListener("onSelect", new EventListener() {
             @Override
@@ -82,13 +87,15 @@ public class ReportDialogController extends Window {
                     case 1:
                         cbProduct.setDisabled(false);
                         rowPeriod.setVisible(true);
-                        rowToDate.setVisible(true);
+//                        rowToDate.setVisible(true);
                         cbScope.setSelectedIndex(1);
                         cbPeriod.setSelectedIndex(0);
                         dDate.setValue(new Date());
                 }
             }
         });
+        
+        rowToDate.setVisible(false);
 
         cbPeriod.addEventListener("onSelect", new EventListener() {
             @Override
@@ -97,6 +104,14 @@ public class ReportDialogController extends Window {
                 int year = Calendar.getInstance().get(Calendar.YEAR);
                 int month = Calendar.getInstance().get(Calendar.MONTH);
                 switch (cbPeriod.getSelectedIndex()) {
+                case 0:
+                    rowPeriod.setVisible(true);
+                    rowDateRange.setVisible(true);
+                    dDateStart.setValue(new Date());
+                    dDateEnd.setValue(new Date());
+                    break;
+                    
+                	/**
                     case 0:
                         rowPeriod.setVisible(true);
                         rowToDate.setVisible(true);
@@ -130,7 +145,7 @@ public class ReportDialogController extends Window {
                         rowYearRange.setVisible(true);
                         spnYearStart.setValue(year);
                         spnYearEnd.setValue(year);
-                        break;
+                        break; */
                 }
             }
         });

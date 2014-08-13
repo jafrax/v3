@@ -32,7 +32,7 @@ public class IndexController extends Window {
     }
 
     public void login() {
-        Session s = Libs.sfEDC.openSession();
+        Session s = Libs.sfDB.openSession();
         try {
             String qry = "select "
                     + "fullname, ins_id, userlv "
