@@ -72,8 +72,14 @@ public class MainController extends Window {
             		if(products.size() > 0) qry = qry + " in  ("+insid+")";
             		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
                     
-                    qry= qry + "order by a.hhdrname asc ";
-
+            		/*
+            		 * Author : Heri Siswanto BN
+            		 * Date : 14 August 2014
+            		 * Updae : Ordered by date (Reguest Mr Jame)
+            		 */
+                    //qry= qry + "order by a.hhdrname desc ";
+                    qry= qry + "order by a.hhdradtyy desc, a.hhdradtmm desc, a.hhdradtdd desc";
+                    
             List<Object[]> l = s.createSQLQuery(qry).list();
             for (Object[] o : l) {
                 Libs.policyMap.put(Libs.nn(o[0]), Libs.nn(o[1]).trim());

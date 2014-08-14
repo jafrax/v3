@@ -46,12 +46,19 @@ public class IndexController extends Window {
             List<Object[]> l = s.createSQLQuery(qry).list();
             if (l.size()==1) {
                 Object[] o = l.get(0);
-
+                
+                if(Executions.getCurrent().getSession().getAttribute("u") != null)
+                	Executions.getCurrent().getSession().removeAttribute("u");
+                
                 Executions.getCurrent().getSession().setAttribute("u", tUsername.getText());
                 Libs.userLevel = Integer.valueOf(Libs.nn(o[2]));
 
                 Libs.log_login(tUsername.getText(), new Timestamp(new Date().getTime()));
-
+                
+                
+                if(Executions.getCurrent().getSession().getAttribute("insuranceId") != null)
+                	Executions.getCurrent().getSession().removeAttribute("insuranceId");
+                
                 if (Libs.userLevel==1) {
                     Executions.sendRedirect("views/ClientSelection.zul");
                 } else {

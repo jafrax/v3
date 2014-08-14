@@ -75,6 +75,13 @@ public class ClaimHistoryController extends Window {
                 populate(evt.getActivePage()*pg.getPageSize(), pg.getPageSize());
             }
         });
+        
+        tQuickSearch.addEventListener("onOK", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+            	viewClaimHistory();
+            }
+        });
 
         cbPolicy.appendItem("All Products");
         cbPolicy.setSelectedIndex(0);
@@ -83,6 +90,7 @@ public class ClaimHistoryController extends Window {
         
         cbClaimType.setVisible(false);
         boolean show = true;
+        
         for (String s : Libs.policyMap.keySet()) {
             String policyName = Libs.policyMap.get(s);
             if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
@@ -379,7 +387,19 @@ public class ClaimHistoryController extends Window {
                 cell.appendChild(memberName);
                 li.appendChild(cell);
 //                li.appendChild(new Listcell(Libs.nn(o[8])));
-                li.appendChild(new Listcell(Libs.getStatus(Libs.nn(o[59]))));
+                
+                /*
+                 *  Author : Heri Siswanto BN
+                 *  Date : 14 August 2014
+                 *  Update : Change Wrap on field Status
+                 */
+                cell = new Listcell();
+                Label lblStatus = new Label(Libs.getStatus(Libs.nn(o[59])));
+                lblStatus.setPre(true);
+                lblStatus.setMultiline(true);
+                lblStatus.setParent(cell);
+                
+                li.appendChild(cell);
                 li.appendChild(new Listcell(Libs.getClaimType(Libs.nn(o[9]))));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[10])), "#,###.##"));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[11])), "#,###.##"));
