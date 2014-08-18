@@ -1,34 +1,46 @@
 package com.imc.ocisv3.controllers;
 
-import com.imc.ocisv3.pojos.ClaimPOJO;
-import com.imc.ocisv3.pojos.MemberPOJO;
-import com.imc.ocisv3.pojos.PolicyPOJO;
-import com.imc.ocisv3.tools.Libs;
-import com.sun.xml.internal.stream.StaxXMLInputSource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zul.*;
+import org.zkoss.zul.A;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Paging;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.Window;
 import org.zkoss.zul.event.PagingEvent;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Calendar;
+import com.imc.ocisv3.pojos.ClaimPOJO;
+import com.imc.ocisv3.pojos.MemberPOJO;
+import com.imc.ocisv3.pojos.PolicyPOJO;
+import com.imc.ocisv3.tools.Libs;
 
 /**
  * Created by faizal on 10/25/13.
@@ -44,6 +56,7 @@ public class ClaimHistoryController extends Window {
     private Textbox tQuickSearch;
     private Datebox startDate;
     private Datebox endDate;
+//    private Checkbox claimVoucherCb;
     private String where;
     private String queryString;
     private String userProductViewrestriction;
@@ -67,6 +80,7 @@ public class ClaimHistoryController extends Window {
         tQuickSearch = (Textbox)getFellow("tQuickSearch");
         startDate = (Datebox)getFellow("startDate");
         endDate = (Datebox)getFellow("endDate");
+//        claimVoucherCb = (Checkbox)getFellow("claimVoucherCb");
 
         pg.addEventListener("onPaging", new EventListener() {
             @Override
@@ -82,7 +96,7 @@ public class ClaimHistoryController extends Window {
             	viewClaimHistory();
             }
         });
-
+//        claimVoucherCb.setChecked(true);
         cbPolicy.appendItem("All Products");
         cbPolicy.setSelectedIndex(0);
         cbFilter.setSelectedIndex(0);
@@ -115,8 +129,17 @@ public class ClaimHistoryController extends Window {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -30);
         startDate.setValue(cal.getTime());
+        
+      /*  claimVoucherCb.addEventListener(Events.ON_CHECK, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				populate(0, pg.getPageSize());
+			}
+		}); */
     }
     
+  
     
     public void filterBy(){
     	if(cbFilter.getSelectedIndex() == 4){
@@ -216,6 +239,7 @@ public class ClaimHistoryController extends Window {
                     + "on f.HDT2YY=e.hempyy and f.HDT2BR=e.HEMPBR and f.HDT2DIST=e.HEMPDIST and f.HDT2PONO=e.hemppono and f.HDT2IDXNO=e.hempidxno and f.HDT2SEQNO=e.hempseqno and f.HDT2CTR=e.hempctr "
                     + "left outer join idnhltpf.dbo.hltmemo2 g  "
                     + "on a.ThnPolis=g.hmem2yy and a.BrPolis=g.HMEM2BR and a.DistPolis=g.HMEM2DIST and a.NoPolis=g.hmem2pono and a.Idx=g.hmem2idxno and a.Seq=g.hmem2seqno and a.tclaim=g.hmem2claim and a.Counter=g.hmem2count "
+                    + "INNER JOIN idnhltpf.dbo.hltovc on a.hid=hovccno "
                     + "where "
                     + "b.hhdrinsid";
             
@@ -261,7 +285,7 @@ public class ClaimHistoryController extends Window {
         	}
         	if(insid.length() > 1)insid = insid.substring(0, insid.length()-1);
         	
-//        	String countQry = "select count(*) "; 
+//        	String countQry = "select count(*)  ";
         	
             String select = "select "
                     + "a.HID2 , a.ThnPolis, a.BrPolis, a.DistPolis, a.NoPolis, "
@@ -294,7 +318,8 @@ public class ClaimHistoryController extends Window {
                     + "a.pdate, " //"a.hclmpdatey, a.hclmpdatem, a.hclmpdated, "
                     + "a.icd1, a.icd2, a.icd3, "
                     + "a.recid, " // 59
-                    + "e.hempmemo3 "; // 60
+                    + "e.hempmemo3, " // 60
+            		+ "hovcoutno ";
 
             String qry = "from idnhltpf.dbo.hlthdr b "
                     + "inner join idnhltpf2.dbo.tclaim_header a "
@@ -308,6 +333,7 @@ public class ClaimHistoryController extends Window {
                     + "on f.HDT2YY=e.hempyy and f.HDT2BR=e.HEMPBR and f.HDT2DIST=e.HEMPDIST and f.HDT2PONO=e.hemppono and f.HDT2IDXNO=e.hempidxno and f.HDT2SEQNO=e.hempseqno and f.HDT2CTR=e.hempctr "
                     + "left outer join idnhltpf.dbo.hltmemo2 g  "
                     + "on a.ThnPolis=g.hmem2yy and a.BrPolis=g.HMEM2BR and a.DistPolis=g.HMEM2DIST and a.NoPolis=g.hmem2pono and a.Idx=g.hmem2idxno and a.Seq=g.hmem2seqno and a.tclaim=g.hmem2claim and a.Counter=g.hmem2count "
+                    + "INNER JOIN idnhltpf.dbo.hltovc on a.hid=hovccno "
                     + "where "
                     + "b.hhdrinsid";
             
@@ -335,19 +361,30 @@ public class ClaimHistoryController extends Window {
 
             
 
-            String order = "order by cdate desc "; //convert(date,convert(varchar,a.hclmcdated)+'-'+convert(varchar,a.hclmcdatem)+'-'+convert(varchar,a.hclmcdatey),105) desc ";
+            //convert(date,convert(varchar,a.hclmcdated)+'-'+convert(varchar,a.hclmcdatem)+'-'+convert(varchar,a.hclmcdatey),105) desc ";
+                  
+            String order = "order by cdate desc ";
 
-            queryString = select + qry + order;
+
+        	/*
+            if(claimVoucherCb.isChecked()){
+            	queryString = select + qry + order;
+            	queryCount = countQry + select + qry;
+            }
+            else {
+            	queryString = subqry+ select + qry + subqryend2 + order;
+            	queryCount = countQry + select + qry + subqryend2;
+            }*/
+
+
             
-//            Integer count = (Integer) s.createSQLQuery(countQry + qry).uniqueResult();
-//            pg.setTotalSize(count);
-            
-//            System.out.println(countQry+qry +"\n");
+//            System.out.println("ini query ambil data history claim "+ select + qry + order);
             
 //            System.out.println(select + qry + order +"\n");
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
             List<Object[]> l = s.createSQLQuery(select + qry + order).setFirstResult(offset).setMaxResults(limit).list();
+//            List<Object[]> l = s.createSQLQuery(queryString).setFirstResult(offset).setMaxResults(limit).list();
             for (Object[] o : l) {
                 String policyName = Libs.nn(o[5]);
                 if (Libs.config.get("demo_mode").equals("true") && Libs.getInsuranceId().equals("00051")) policyName = Libs.nn(Libs.config.get("demo_name"));
@@ -370,6 +407,10 @@ public class ClaimHistoryController extends Window {
                 hidNumber.setStyle("color:#00bbee;text-decoration:none");
                 cell.appendChild(hidNumber);
                 li.appendChild(cell);
+                
+                //new filed (voucher no)
+                li.appendChild(new Listcell(Libs.nn(o[61]).trim()));
+                
 //                li.appendChild(new Listcell(Libs.nn(o[0])));
                 li.appendChild(new Listcell(Libs.nn(o[14]).trim()));
                 li.appendChild(new Listcell(policyName));
@@ -524,6 +565,14 @@ public class ClaimHistoryController extends Window {
     		else where = " and tclaim<>'I'";
     	}
     	
+    	/*
+    	if(claimVoucherCb.isChecked()){
+    		where = " and hovcoutno is not null ";
+    	}
+    	else {
+    		where = " and hovcoutno is null ";
+    	}*/
+    	
     	populateCountForQuickSearch();
     	populate(0, pg.getPageSize());
     }
@@ -610,7 +659,8 @@ public class ClaimHistoryController extends Window {
                      + "a.rdate, " //"a.hclmrdatey, a.hclmrdatem, a.hclmrdated, "
                      + "a.pdate, "//"a.hclmpdatey, a.hclmpdatem, a.hclmpdated, "
                      + "a.icd1, a.icd2, a.icd3, "
-                     + "a.recid "
+                     + "a.recid, "
+                     + "hovcoutno "
                      + "from idnhltpf.dbo.hlthdr b "
                      + "inner join idnhltpf2.dbo.tclaim_header a "
                      + "on b.hhdryy=a.ThnPolis and b.HHDRBR=a.BrPolis and b.HHDRDIST=a.DistPolis and b.hhdrpono=a.NoPolis "
@@ -623,6 +673,7 @@ public class ClaimHistoryController extends Window {
                      + "on f.HDT2YY=e.hempyy and f.HDT2BR=e.HEMPBR and f.HDT2DIST=e.HEMPDIST and f.HDT2PONO=e.hemppono and f.HDT2IDXNO=e.hempidxno and f.HDT2SEQNO=e.hempseqno and f.HDT2CTR=e.hempctr "
                      + "left outer join idnhltpf.dbo.hltmemo2 g  "
                      + "on a.ThnPolis=g.hmem2yy and a.BrPolis=g.HMEM2BR and a.DistPolis=g.HMEM2DIST and a.NoPolis=g.hmem2pono and a.Idx=g.hmem2idxno and a.Seq=g.hmem2seqno and a.tclaim=g.hmem2claim and a.Counter=g.hmem2count "
+                     + "INNER JOIN idnhltpf.dbo.hltovc on a.hid=hovccno "
                      + "where "
                      + "b.hhdrinsid";                    
      				if(products.size() > 0) qry = qry + " in  ("+insid+") ";
@@ -820,16 +871,41 @@ public class ClaimHistoryController extends Window {
     	String[] columnsMemberWise = new String[] {
                 "POLICY YEAR", "BR", "DIST", "POLICY NUMBER", "COMPANY NAME", "INDEX", "SEQ", "CARD NUMBER",
                 "NAME", "COUNT", "TYPE", "CLAIM-DATE", "SIN-DATE", "SOUT-DATE", "RECEIPT-DATE", "PAYMENT-DATE", 
-                "HID NUMBER", "PROVIDER NAME", "ICD1", "ICD2", "ICD3", "PROPOSED", "APPROVED", "STATUS", "MEMO" };
+                "HID NUMBER", "VOUCHER NO", "PROVIDER NAME", "ICD1", "ICD2", "ICD3", "PROPOSED", "APPROVED", "STATUS", "MEMO" };
     	
     	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
         try {
             Workbook wb = new HSSFWorkbook();
             Sheet sheet = wb.createSheet("Claim History");
+            
             int cnt = 0;
-
+            
+          
+            StringBuffer sb = new StringBuffer();
+            String judul = "Claim History Periode "+sdf.format(startDate.getValue()) + " To "+sdf.format(endDate.getValue());
+            
+            sb.append(judul);
+            if(cbFilter.getSelectedIndex() != 4 && !tQuickSearch.getText().equalsIgnoreCase("")){
+            	sb.append(" Filter By " +cbFilter.getSelectedItem().getLabel() + " : "+ tQuickSearch.getText());
+            }else if(cbFilter.getSelectedIndex() == 4){
+            	sb.append(" Filter By " +cbFilter.getSelectedItem().getLabel() + " : "+ cbClaimType.getSelectedItem().getLabel());
+            }
+            
+            sb.append(" Product : " + cbPolicy.getSelectedItem().getLabel());
+            
             org.apache.poi.ss.usermodel.Row row = sheet.createRow(cnt);
+            Libs.createCell(row, 0, sb.toString());
+            
+            cnt++;
+            
+            row = sheet.createRow(cnt);
+            
+            cnt++;
+            row = sheet.createRow(cnt);
+            
+            cnt++;
+            row = sheet.createRow(cnt);
 
             for (int i=0; i<columnsMemberWise.length; i++) {
                 Libs.createCell(row, i, columnsMemberWise[i]);
@@ -877,16 +953,27 @@ public class ClaimHistoryController extends Window {
                 Libs.createCell(row, 25, Libs.nn(o[65]));*/
                 
                 Libs.createCell(row, 16, Libs.nn(o[0]));
-                Libs.createCell(row, 17, Libs.nn(o[12]));
+                Libs.createCell(row, 17, Libs.nn(o[60]));
                 
-                Libs.createCell(row, 18, Libs.nn(o[56]));
-                Libs.createCell(row, 19, Libs.nn(o[57]));
-                Libs.createCell(row, 20, Libs.nn(o[58]));
+                Libs.createCell(row, 18, Libs.nn(o[12]));
+                Libs.createCell(row, 19, Libs.nn(o[56]));
+                Libs.createCell(row, 20, Libs.nn(o[57]));
+                Libs.createCell(row, 21, Libs.nn(o[58]));
                 
-                Libs.createCell(row, 21, o[10]);
-                Libs.createCell(row, 22, o[11]);
-                Libs.createCell(row, 23, Libs.getStatus(Libs.nn(o[59])));
-                Libs.createCell(row, 24, Libs.nn(o[47]).trim() + Libs.nn(o[48]).trim() + Libs.nn(o[49]).trim() + Libs.nn(o[50]).trim());
+                BigDecimal d =(BigDecimal)o[10];
+                Cell cell = row.createCell(22); //Libs.createCell(row, 22, o[10]);
+                cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(d.doubleValue());
+                
+                d = (BigDecimal)o[11];
+                cell = row.createCell(23); //Libs.createCell(row, 22, o[10]);
+                cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(d.doubleValue());
+                
+                
+//                Libs.createCell(row, 23, o[11]);
+                Libs.createCell(row, 24, Libs.getStatus(Libs.nn(o[59])));
+                Libs.createCell(row, 25, Libs.nn(o[47]).trim() + Libs.nn(o[48]).trim() + Libs.nn(o[49]).trim() + Libs.nn(o[50]).trim());
 
                 cnt++;
             }

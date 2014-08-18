@@ -519,7 +519,8 @@ public class Libs {
 
         try {
             double d = (Double) value;
-            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+//            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+//            cell.setCellType(Cell.CELL_TYPE_BLANK)
             cell.setCellValue(d);
         } catch (Exception ex) {
             cell.setCellValue(Libs.nn(value));
