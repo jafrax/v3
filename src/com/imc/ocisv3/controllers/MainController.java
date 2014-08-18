@@ -69,6 +69,7 @@ public class MainController extends Window {
                     + "a.hhdrname "
                     + "from idnhltpf.dbo.hlthdr a "
                     + "where a.hhdrinsid";
+            
             		if(products.size() > 0) qry = qry + " in  ("+insid+")";
             		else qry = qry + "='" + Libs.getInsuranceId() + "' ";  
                     
@@ -77,7 +78,12 @@ public class MainController extends Window {
             		 * Date : 14 August 2014
             		 * Updae : Ordered by date (Reguest Mr Jame)
             		 */
-                    //qry= qry + "order by a.hhdrname desc ";
+            		
+            		if(Executions.getCurrent().getSession().getAttribute("insuranceId") != "99999"){
+            			//qry = qry + " and ='"+Executions.getCurrent().getSession().getAttribute("insuranceId")+"'";
+            		}
+            		//qry= qry + "order by a.hhdrname desc ";
+            		
                     qry= qry + "order by a.hhdradtyy desc, a.hhdradtmm desc, a.hhdradtdd desc";
                     
             List<Object[]> l = s.createSQLQuery(qry).list();

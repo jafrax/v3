@@ -1,9 +1,13 @@
 package com.imc.ocisv3.controllers;
 
-import com.imc.ocisv3.pojos.ClaimPOJO;
-import com.imc.ocisv3.pojos.MemberPOJO;
-import com.imc.ocisv3.pojos.PolicyPOJO;
-import com.imc.ocisv3.tools.Libs;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -13,14 +17,22 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.*;
+import org.zkoss.zul.A;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Paging;
+import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.Window;
 import org.zkoss.zul.event.PagingEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.*;
+
+import com.imc.ocisv3.pojos.ClaimPOJO;
+import com.imc.ocisv3.pojos.MemberPOJO;
+import com.imc.ocisv3.pojos.PolicyPOJO;
+import com.imc.ocisv3.tools.Libs;
 
 /**
  * Created by faizal on 10/25/13.
@@ -322,19 +334,22 @@ public class RejectedPendingClaimListController extends Window {
                     provider = remarks.substring(remarks.indexOf("[")+1, remarks.indexOf("]"));
                 }
 
-                Listitem li = new Listitem();
-
+                Listcell lcMember = new Listcell();
+                A aMember = new A(Libs.nn(o[8]));
+                aMember.setStyle("color:#00bbee;");
+                aMember.setParent(lcMember);
+                
+               final Listitem li = new Listitem();
                 li.appendChild(new Listcell(Libs.nn(o[0])));
                 li.appendChild(new Listcell(Libs.nn(o[14]).trim()));
                 li.appendChild(new Listcell(policyName));
                 li.appendChild(new Listcell(o[6] + "-" + o[7]));
-                li.appendChild(new Listcell(Libs.nn(o[8])));
+                li.appendChild(lcMember);
                 li.appendChild(new Listcell(Libs.getStatus(Libs.nn(o[59])))); //li.appendChild(new Listcell(Libs.getStatus(Libs.nn(o[69]))));
                 li.appendChild(new Listcell(Libs.getClaimType(Libs.nn(o[9]))));
                 li.appendChild(Libs.createNumericListcell(Double.valueOf(Libs.nn(o[10])), "#,###.##"));
                 li.appendChild(new Listcell(provider));
                 li.appendChild(new Listcell(Libs.nn(o[47]).trim() + Libs.nn(o[48]).trim() + Libs.nn(o[49]).trim() + Libs.nn(o[50]).trim()));
-
                 lb.appendChild(li);
 
                 PolicyPOJO policyPOJO = new PolicyPOJO();
@@ -385,7 +400,13 @@ public class RejectedPendingClaimListController extends Window {
 
                 li.setValue(claimPOJO);
 
-                ((Toolbarbutton) getFellow("tbnShowMemberDetail")).setDisabled(true);
+                aMember.addEventListener("onClick", new EventListener<Event>() {
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						li.setSelected(true);
+						showMemberDetail();
+					}
+				});
             }
         } catch (Exception ex) {
             log.error("populate", ex);
@@ -417,14 +438,19 @@ public class RejectedPendingClaimListController extends Window {
 
     public void lbSelected() {
         if (lb.getSelectedCount()>0) {
-            ((Toolbarbutton) getFellow("tbnShowMemberDetail")).setDisabled(false);
+            //((Toolbarbutton) getFellow("tbnShowMemberDetail")).setDisabled(false);
         }
     }
 
     public void showClaimDetail() {
-        Window w = (Window) Executions.createComponents("views/ClaimDetail.zul", this, null);
-        w.setAttribute("claim", lb.getSelectedItem().getValue());
-        w.doModal();
+    	if(lb.getSelectedItem() != null){
+    		Window w = (Window) Executions.createComponents("views/ClaimDetail.zul", this, null);
+            w.setAttribute("claim", lb.getSelectedItem().getValue());
+            w.doModal();
+    	}else{
+    		Messagebox.show("No claim is selected.");
+    	}
+        
     }
 
     public void policySelected() {
@@ -432,11 +458,15 @@ public class RejectedPendingClaimListController extends Window {
     }
 
     public void showMemberDetail() {
-        ClaimPOJO claimPOJO = lb.getSelectedItem().getValue();
-        Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.getRootWindow(), null);
-        w.setAttribute("policy", claimPOJO.getPolicy());
-        w.setAttribute("member", claimPOJO.getMember());
-        w.doModal();
+    	if(lb.getSelectedItem() != null){
+    		ClaimPOJO claimPOJO = lb.getSelectedItem().getValue();
+            Window w = (Window) Executions.createComponents("views/MemberDetail.zul", Libs.getRootWindow(), null);
+            w.setAttribute("policy", claimPOJO.getPolicy());
+            w.setAttribute("member", claimPOJO.getMember());
+            w.doModal();
+    	}else{
+    		Messagebox.show("No claim is selected.");
+    	}
     }
 
     public void export() {

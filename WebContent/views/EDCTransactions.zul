@@ -18,10 +18,10 @@
                         <panel width="100%" height="100%">
                             <panelchildren>
                                 <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
-                                    <toolbar height="21px">
-                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.exportActiveTransactions();"/>
-                                        <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refreshActiveTransactions();"/>
-                                    </toolbar>
+                                	<hbox>
+                                		<a label="Export" visible="false" onClick="spaceOwner.exportActiveTransactions();"/>
+                                		<a label="Refresh" onClick="spaceOwner.refreshActiveTransactions();"/>
+                                	</hbox>
                                     <toolbar align="end" height="21px">
                                         <image src="resources/icons/browse.png"/>
                                         <textbox id="tQuickSearchActiveTransactions" onOK="spaceOwner.quickSearchActiveTransactions();"/>
@@ -47,10 +47,10 @@
                         <panel width="100%" height="100%">
                             <panelchildren>
                                 <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
-                                    <toolbar height="21px">
-                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.exportClosedTransactions();"/>
-                                        <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refreshClosedTransactions();"/>
-                                    </toolbar>
+                                    <hbox>
+                                		<a label="Export" visible="false" onClick="spaceOwner.exportClosedTransactions();"/>
+                                		<a label="Refresh" onClick="spaceOwner.refreshClosedTransactions();"/>
+                                	</hbox>
                                     <toolbar align="end" height="21px">
                                         <image src="resources/icons/browse.png"/>
                                         <textbox id="tQuickSearchClosedTransactions" onOK="spaceOwner.quickSearchClosedTransactions();"/>
@@ -77,10 +77,10 @@
                         <panel width="100%" height="100%">
                             <panelchildren>
                                 <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
-                                    <toolbar height="21px">
-                                        <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" visible="false" onClick="spaceOwner.exportManualTransactions();"/>
-                                        <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refreshManualTransactions();"/>
-                                    </toolbar>
+                                    <hbox>
+                                		<a label="Export" visible="false" onClick="spaceOwner.exportManualTransactions();"/>
+                                		<a label="Refresh" onClick="spaceOwner.refreshManualTransactions();"/>
+                                	</hbox>
                                     <toolbar align="end" height="21px">
                                         <image src="resources/icons/browse.png"/>
                                         <textbox id="tQuickSearchManualTransactions" onOK="spaceOwner.quickSearchManualTransactions();"/>

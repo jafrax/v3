@@ -10,19 +10,21 @@
             <panel width="100%" height="100%">
                 <panelchildren>
                     <hbox pack="stretch" sclass="hboxRemoveWhiteStrips" width="100%">
-                        <toolbar height="21px">
-                            <toolbarbutton image="resources/icons/export.png" tooltiptext="Export" onClick="spaceOwner.export();"/>
-                            <toolbarbutton image="resources/icons/refresh.png" tooltiptext="Refresh" onClick="spaceOwner.refresh();"/>
-                            <space width="10px"/>
-                            <toolbarbutton id="tbnShowMemberDetail" image="resources/icons/member.png" disabled="true" tooltiptext="Show Member Detail" onClick="spaceOwner.showMemberDetail();"/>
-                        </toolbar>
+                    	<hbox>
+	                    	<a label="Export"  onClick="spaceOwner.export();" style="color:#00bbee;text-decoration :none;"/>
+	                    	<space width="10px"/>
+	                    	<a label="Refresh"  onClick="spaceOwner.refresh();" style="color:#00bbee;text-decoration :none;"/>
+	                    	<space width="10px"/>
+	                    	<a label="Claim Detail"  onClick="spaceOwner.showClaimDetail();" style="color:#00bbee;text-decoration :none;"/>
+                    	</hbox>
+                    	
                         <toolbar align="end" height="21px">
                             <!-- <image src="resources/icons/browse.png"/>
                             <textbox id="tQuickSearch" onOK="spaceOwner.quickSearch();"/> -->
                             <combobox id="cbPolicy" onSelect="spaceOwner.policySelected();" readonly="true"/>
                         </toolbar>
                     </hbox>
-                    <listbox id="lb" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;" onSelect="spaceOwner.lbSelected();" onDoubleClick="spaceOwner.showClaimDetail();">
+                    <listbox id="lb" width="100%" height="100%" vflex="true" style="border-left:0px none; white-space:nowrap;" onSelect="spaceOwner.lbSelected();">
                         <listhead sizable="true">
                             <listheader label="Claim Number" width="130px"/>
                             <listheader label="Policy Number" width="120px"/>

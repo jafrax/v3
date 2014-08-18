@@ -53,6 +53,10 @@ public class Libs {
     public static String getUser() {
         return Libs.nn(Executions.getCurrent().getSession().getAttribute("u"));
     }
+    
+    public static String getUserId() {
+        return Libs.nn(Executions.getCurrent().getSession().getAttribute("uid"));
+    }
 
     public static Center getCenter() {
         return (Center) getDesktop().getAttribute("center");
